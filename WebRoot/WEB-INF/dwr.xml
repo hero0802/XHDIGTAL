@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC
+    "-//GetAhead Limited//DTD Direct Web Remoting 3.0//EN"
+    "http://getahead.org/dwr/dwr30.dtd">
+
+<dwr>
+	<allow>
+	<convert    converter="servlet" match="javax.servlet.http.HttpServletRequest"/>
+		<create creator="new" javascript="SocketDwr">
+			 <param name="class" value="com.dwr.SocketDwr"/>
+			<!-- <include method="refresh"/>
+			 <include method="BsViewDwr"/>
+			  <include method="BsOffLineDwr"/>
+			 <include method="BsControlDwr"/>
+			 <include method="OnOffStatus"/>
+			 <include method="rssi"/>
+			 <include method="callColor"/>
+			 <include method="changeColor"/>
+			  <include method="sendMessage"/>-->
+		</create>  
+		
+		<create creator="new" javascript="indexDwr">
+			 <param name="class" value="com.dwr.IndexDwr"/>
+		</create>  
+		<create creator="new" javascript="RadioDwr" scope="page">
+			 <param name="class" value="com.dwr.RadioDwr"/>
+		</create> 
+		<create creator="new" javascript="loadDataDwr">
+			 <param name="class" value="com.dwr.loadDataDwr"/>
+		</create>  
+		
+		<create creator="new" javascript="AlarmDwr">
+			 <param name="class" value="com.dwr.AlarmDwr"/>
+		</create>        
+		                                                     
+	</allow>
+</dwr>
+

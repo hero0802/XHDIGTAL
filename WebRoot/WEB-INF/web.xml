@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <filter>
+    <filter-name>struts2</filter-name>
+    <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+   <!--  <filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter</filter-class> -->
+  </filter>
+   <!--  <filter>
+ <filter-name>GZIPFilter</filter-name>
+    <filter-class>com.tacitknowledge.filters.gzipfilter.GZIPFilter</filter-class>
+  </filter>
+  <filter>
+    <filter-name>CacheFilter</filter-name>
+    <filter-class>com.tacitknowledge.filters.cache.CacheHeaderFilter</filter-class>
+  </filter>-->
+  <filter-mapping>
+    <filter-name>struts2</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <!--<filter-mapping>
+    <filter-name>GZIPFilter</filter-name>
+    <url-pattern>*.js</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>GZIPFilter</filter-name>
+    <url-pattern>*.png</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CacheFilter</filter-name>
+    <url-pattern>*.gif</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CacheFilter</filter-name>
+    <url-pattern>*.jpg</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CacheFilter</filter-name>
+    <url-pattern>*.png</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CacheFilter</filter-name>
+    <url-pattern>*.js</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CacheFilter</filter-name>
+    <url-pattern>*.css</url-pattern>
+  </filter-mapping>-->
+  <filter>
+    <filter-name>checkLogin</filter-name>
+    <filter-class>com.servlet.loginFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>checkLogin</filter-name>
+    <url-pattern>/View/*</url-pattern>
+    <url-pattern>/index.html</url-pattern>
+    <url-pattern>/Model/*</url-pattern>
+  </filter-mapping>
+  <listener>
+    <description>语音接收服务随web服务启动而启动</description>
+    <listener-class>com.socket.VoiceUdpListener</listener-class>
+  </listener>
+  <!--   <listener>
+   <description>UdpServer</description>
+    <listener-class>com.socket.UdpServerListenner</listener-class>
+  </listener>-->
+  <listener>
+    <description>TCP长连接 </description>
+    <listener-class>com.socket.TCPListener</listener-class>
+  </listener>
+ <listener>
+  <description>sms TCP长连接 </description>
+    <listener-class>com.smsnet.SmsTcpListener</listener-class>
+  </listener>
+  <listener>
+    <description>UDP组播</description>
+    <listener-class>com.socket.UdpMulticastListener</listener-class>
+  </listener>
+  <listener>
+    <description>基站状态获取</description>
+    <listener-class>com.listener.BsStatusListener</listener-class>
+  </listener>
+    <listener>
+    <description>基站遥测</description>
+    <listener-class>com.listener.BScontrolListener</listener-class>
+  </listener>
+  
+     <listener>
+    <description>短信网关心跳</description>
+    <listener-class>com.listener.SmsHeartListener</listener-class>
+  </listener>
+  
+  <listener>
+    <description>GPS自动任务</description>
+    <listener-class>com.listener.GpsTaskListener</listener-class>
+  </listener>
+  
+  
+  <!--  <listener>
+    <description>GPS定时自动任务</description>
+    <listener-class>com.listener.GpsClockTaskListener</listener-class>
+  </listener>-->
+    
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <servlet-name>dwr-invoker</servlet-name>
+    <servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
+    <init-param>
+      <param-name>debug</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>pollAndCometEnabled</param-name>
+      <param-value>true</param-value>
+    </init-param>
+
+    <init-param>
+      <param-name>crossDomainSessionSecurity</param-name>
+      <param-value>false</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>dwr-invoker</servlet-name>
+    <url-pattern>/dwr/*</url-pattern>
+  </servlet-mapping>
+  <login-config>
+    <auth-method>BASIC</auth-method>
+  </login-config>
+  <session-config>
+    <session-timeout>5000</session-timeout>
+  </session-config>
+</web-app>

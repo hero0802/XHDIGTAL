@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+<constant name="struts.multipart.maxSize" value="204857600"/> <!--支持上传100M文件-->
+<constant name="struts.i18n.encoding" value="utf-8"/>  
+
+<!--登录系统-->
+<package name="DATA" extends="json-default" namespace="/data">  
+   <action name="MemberGroup" class="data.action.MemberGroupAction" method="MemberGroup">  
+     <result type="json" name="success"></result>   
+   </action>
+   <action name="MemberGroupList" class="data.action.MemberGroupAction" method="GroupList">  
+     <result type="json" name="success"></result>   
+   </action>     
+   <action name="MemberGroupMenu" class="data.action.GroupMenu" method="GroupMenu">  
+     <result type="json" name="success"></result>   
+   </action>  
+   <action name="WebUsers" class="data.action.WebUser" method="WebUsers">  
+     <result type="json" name="success"></result>   
+   </action> 
+   <action name="userMenu" class="data.action.UserMenu" method="userMenu">  
+     <result type="json" name="success"></result>   
+   </action>   
+   <action name="radioUser" class="data.action.RadioUser" method="RadioUser">  
+     <result type="json" name="success"></result>   
+   </action>     
+   <action name="talkGroup" class="data.action.TalkGroup" method="TalkGroup">  
+     <result type="json" name="success"></result>   
+   </action> 
+    <action name="bsStation" class="data.action.BsStation" method="BsStation">  
+     <result type="json" name="success"></result>   
+   </action> 
+   
+    <action name="groupBs" class="data.action.GroupBs" method="GroupBs">  
+     <result type="json" name="success"></result>   
+   </action>   
+    <action name="bsGroupList" class="data.action.GroupBs" method="BsGroupList">  
+     <result type="json" name="success"></result>   
+   </action>  
+   
+    <action name="radioUserBs" class="data.action.RadioUserBs" method="RadioUserBs">  
+     <result type="json" name="success"></result>   
+   </action>
+    <action name="bsRadioUserList" class="data.action.RadioUserBs" method="BsRadioUserList">  
+     <result type="json" name="success"></result>   
+   </action>   
+   
+    <action name="msoConfig" class="data.action.MsoConfg" method="MsoConfig">  
+     <result type="json" name="success"></result>   
+   </action> 
+    <action name="recvSms" class="data.action.RecvSms" method="RecvSms">  
+     <result type="json" name="success"></result>   
+   </action> 
+    <action name="sendSms" class="data.action.SendSms" method="SendSms">  
+     <result type="json" name="success"></result>   
+   </action>   
+    <action name="sysLog" class="data.action.SysLog" method="SLog">  
+     <result type="json" name="success"></result>   
+   </action>   
+   
+     <action name="Gps" class="data.action.Gps" method="Gps">  
+     <result type="json" name="success"></result>   
+   </action>  
+   
+     <action name="GpsOperation" class="data.action.GpsOperation" method="GpsOperation">  
+     <result type="json" name="success"></result>   
+   </action> 
+   
+     <action name="callList" class="data.action.CallList" method="CallList">  
+     <result type="json" name="success"></result>   
+   </action>  
+     <action name="callListFromCallid" class="data.action.CallList" method="CallListFromCallid">  
+     <result type="json" name="success"></result>   
+   </action>  
+     <action name="callNow" class="data.action.CallList" method="CallNow">  
+     <result type="json" name="success"></result>   
+   </action>   
+     <action name="event" class="data.action.Event" method="event">  
+     <result type="json" name="success"></result>   
+   </action> 
+<action name="systemAlarm" class="com.action.BsStationAction" method="systemAlarm">  
+     <result type="json" name="success"></result>   
+ </action> 
+<action name="ignoreSystemAlarm" class="com.action.BsStationAction" method="ignoreSystemAlarm">  
+     <result type="json" name="success"></result>   
+</action>  
+<!--呼叫记录统计-->
+ <action name="callPro" class="data.action.CallList" method="callPro">  
+     <result type="json" name="success"></result>   
+ </action>     
+  <action name="callerInfo" class="data.action.CallList" method="CallerInfo">  
+     <result type="json" name="success"></result>   
+ </action>                
+<action name="loadXML" class="data.action.config" method="loadXML">  
+     <result type="json" name="success"></result>   
+ </action>
+ 
+ <action name="updateXML" class="data.action.config" method="updateXML">  
+     <result type="json" name="success"></result>   
+ </action>
+ <action name="netSave" class="data.action.config" method="netSave">  
+     <result type="json" name="success"></result>   
+ </action>
+ <!--基站状态信息-->
+ <action name="BSStatusREQ" class="com.action.BsStationAction" method="BSStatusREQ">  
+     <result type="json" name="success"></result>   
+ </action>
+  <!--基站视图-->
+ <action name="BsView" class="data.action.BsStation" method="BsView">  
+     <result type="json" name="success"></result>   
+ </action>
+   <!--基站遥测实时数据-->
+ <action name="BsControlData" class="data.action.BsStation" method="BsControl">  
+     <result type="json" name="success"></result>   
+ </action>
+    <!--基站遥测历史数据-->
+ <action name="bscontrollList" class="data.action.BsStation" method="bscontrollList">  
+     <result type="json" name="success"></result>   
+ </action>
+     <!--基站列表-->
+ <action name="bsList" class="data.action.BsStation" method="bsList">  
+     <result type="json" name="success"></result>   
+ </action>
+<!--调度台ID-->
+ <action name="dstId" class="com.action.SendSms" method="srcId">  
+     <result type="json" name="success"></result>   
+ </action>
+ <!--设备上下线-->
+<action name="offonline" class="data.action.DeviceOffOnline" method="OffOnline">  
+    <result type="json" name="success"></result>   
+</action> 
+<!--中心上下线-->
+<action name="dbcenter" class="data.action.DeviceOffOnline" method="DBCenter">  
+    <result type="json" name="success"></result>   
+</action> 
+<!--告警信息-->
+<action name="alarm" class="data.action.DeviceOffOnline" method="AlarmData">  
+    <result type="json" name="success"></result>   
+</action>   
+
+<action name="mapData" class="com.action.MapAction" method="MapData">  
+    <result type="json" name="success"></result>  
+</action> 
+<action name="MapRadioUser" class="com.action.MapAction" method="MapRadioUser">  
+    <result type="json" name="success"></result>  
+</action> 
+
+<action name="bsInfo" class="data.action.BsStation" method="Info">  
+    <result type="json" name="success"></result>  
+</action> 
+ <!--联系人-->
+ <action name="phoneList" class="com.action.SmsAlarm" method="poneList">  
+     <result type="json" name="success"></result>   
+ </action>
+ 
+ 
+ 
+
+<!--mscID-->
+ <action name="mscId" class="com.action.SendSms" method="mscId">  
+     <result type="json" name="success"></result>   
+ </action>
+ 
+<!--判断系统是否第一次使用-->
+ <action name="lockExists" class="com.sql.CreateDataBase" method="FileExists">  
+     <result type="json" name="success"></result>   
+ </action>
+ 
+ 
+<!-- 1-->
+ <action name="rf_transmit" class="data.action.BsStation" method="rf_transmit">  
+     <result type="json" name="success"></result>   
+ </action>
+ 
+  <action name="rf_receive" class="data.action.BsStation" method="rf_receive">  
+     <result type="json" name="success"></result>   
+ </action>
+ 
+   <action name="rf_updown" class="data.action.BsStation" method="rf_updown">  
+     <result type="json" name="success"></result>   
+ </action>
+ <!-- 限制基站短信告警列表-->
+<action name="smsNotAlarmList" class="data.action.BsStation" method="smsNotAlarmList">  
+     <result type="json" name="success"></result>   
+</action>
+ <!-- 基站短信告警筛选列表-->
+<action name="smsBsList" class="data.action.BsStation" method="smsBsList">  
+     <result type="json" name="success"></result>   
+</action>
+ <!-- 查询在线用户-->
+<action name="useronline" class="com.action.GpsAction" method="user">  
+     <result type="json" name="success"></result>   
+</action>
+ <!-- gps自动任务列表-->
+<action name="gpsTaskList" class="com.action.GpsAction" method="taskList">  
+     <result type="json" name="success"></result>   
+</action>
+ <!-- gps自动任务详细列表-->
+<action name="gpsTaskUserList" class="com.action.GpsAction" method="taskUserList">  
+     <result type="json" name="success"></result>   
+</action>
+
+ <!-- gps自动任务时间间隔获取-->
+<action name="loadGpsXML" class="com.action.GpsAction" method="loadGpsXML">  
+     <result type="json" name="success"></result>   
+</action>
+
+ <!-- 修改gps自动任务时间间隔-->
+<action name="updateGpsXML" class="com.action.GpsAction" method="updateGpsXML">  
+     <result type="json" name="success"></result>   
+</action>
+
+ <!-- gps定时自动任务列表-->
+<action name="gpsTimerktaskUserList" class="com.action.GpsAction" method="gpsTimerktaskUserList">  
+     <result type="json" name="success"></result>   
+</action>
+ <!-- gps定时自动任务时钟列表-->
+<action name="gpsTimerktaskClockList" class="com.action.GpsAction" method="gpsTimerktaskClockList">  
+     <result type="json" name="success"></result>   
+</action>
+ <!-- 添加gps定时自动任务-->
+<action name="addGpsTimerTask" class="com.action.GpsAction" method="addGpsTimerTask">  
+     <result type="json" name="success"></result>   
+</action>
+
+ <!-- 删除gps定时自动任务-->
+<action name="delTimerTask" class="com.action.GpsAction" method="delTimerTask">  
+     <result type="json" name="success"></result>   
+</action>
+ <!-- 添加gps定时时钟-->
+<action name="addGpsClock" class="com.action.GpsAction" method="addGpsClock">  
+     <result type="json" name="success"></result>   
+</action>
+ <!-- 删除gps定时时钟-->
+<action name="delGpsClock" class="com.action.GpsAction" method="delGpsClock">  
+     <result type="json" name="success"></result>   
+</action>
+ <!-- 开始执行gps任务-->
+<action name="taskOpen" class="com.action.GpsAction" method="taskOpen">  
+     <result type="json" name="success"></result>   
+</action>
+ <!-- 停止执行gps任务-->
+<action name="taskClose" class="com.action.GpsAction" method="taskClose">  
+     <result type="json" name="success"></result>   
+</action>
+ <!-- 开始执行时间段gps任务-->
+<action name="startDateTask" class="com.action.GpsAction" method="startDateTask">  
+     <result type="json" name="success"></result>   
+</action>
+ <!-- 停止时间段gps任务-->
+<action name="stopDateTask" class="com.action.GpsAction" method="stopDateTask">  
+     <result type="json" name="success"></result>   
+</action>
+ <!--开始执行定时gps任务-->
+<action name="startTimerTask" class="com.action.GpsAction" method="startTimerTask">  
+     <result type="json" name="success"></result>   
+</action>
+ <!-- 停止执行定时gps任务-->
+<action name="stopTimerTask" class="com.action.GpsAction" method="stopTimerTask">  
+     <result type="json" name="success"></result>   
+</action>
+
+ <!-- 博康限制手台列表-->
+<action name="bkMscIdList" class="com.action.GpsPushAction" method="bkMscIdList">  
+     <result type="json" name="success"></result>   
+</action>
+
+ <!-- 组列表-->
+<action name="groupList" class="data.action.config" method="groupList">  
+     <result type="json" name="success"></result>   
+</action>
+ <!-- 模数互联组-->
+<action name="HasAdGroup" class="data.action.config" method="HasAdGroup">  
+     <result type="json" name="success"></result>   
+</action>
+ <!--修改 模数互联组-->
+<action name="ChangeAdGroup" class="data.action.config" method="ChangeAdGroup">  
+     <result type="json" name="success"></result>   
+</action>
+
+ <!-- -->
+<action name="userGps" class="com.action.GpsAction" method="userGps">  
+     <result type="json" name="success"></result>   
+</action>
+
+ <!--在线用户 -->
+<action name="radioOffLine" class="data.action.RadioUser" method="useronline">  
+     <result type="json" name="success"></result>   
+</action>
+ <!--离线用户 -->
+<action name="useroffonline" class="data.action.RadioUser" method="useroffonline">  
+     <result type="json" name="success"></result>   
+</action>
+
+</package>                      
+ <!-- Add packages here -->
+</struts>

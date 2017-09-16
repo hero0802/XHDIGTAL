@@ -1,0 +1,515 @@
+package trunk_common;
+option java_package = "com.protobuf";
+option java_outer_classname = "TrunkCommon";
+
+//设备类型
+enum  DeviceType
+{
+	MSO			= 1;			//中心[Mobile Switching Office]
+	SW			= 2;			//交换[Switch]
+	BS			= 3;			//基站[BaseStation]
+	MS			= 4;			//移动台[Mobile Station]
+	TEL			= 5;			//有线电话[Telphone]
+	IAS			= 6;			//综合应用网关[Intergrated Application Server]
+	RECORD_SVR 	= 7;			//录音服务器
+	SMS_SVR		= 8;			//短信服务器
+	GPS_SVR		= 9;			//GPS服务器
+	DS			= 10;			//调度终端[Dispatch Server]
+	NM			= 11;			//网管终端[Network Management]
+}
+
+//呼叫类型
+enum CallType
+{
+	//F开头(forced)表明强制执行某项操作，为调度特有功能
+	//特殊呼叫
+	TS_CALL				= 0; 	//小区呼叫[号码：0xFFFFFC]
+	LOCAL_CALL			= 1;	//本地全呼[号码：0xFFFFFD]
+	AREA_CALL			= 2;	//地域全呼[号码：0xFFFFFE]
+	ALL_CALL			= 3;	//系统全呼[号码：0xFFFFFF]
+
+	//公共
+	CANCEL				= 10;	//主叫撤销
+	PTT_ON				= 11; 	//二次呼叫开始
+	PTT_OFF				= 12; 	//二次呼叫结束
+	END					= 13; 	//结束
+	PTT_TIMEOUT			= 14;	//PTTON语音超时
+	END_TIMEOUT			= 15;	//END语音超时
+	F_DISCONNECT 		= 16;	//强拆
+	F_CUTIN				= 17;   //强插
+	F_DISCONN_SETUP  	= 18;   //强拆同时并开始新会议[不重新分配信道，srcid和tarid为新主被叫ID]
+	WAIT				= 19;	//呼叫等待
+
+	//以下为单呼部分，后缀以I(Individual)结束，如果为紧急呼叫，则仅须开始呼叫时后缀带有E(emergency)
+	SETUP_I				= 30;	//单呼_建立
+	SETUP_EI			= 31;	//单呼_紧急呼叫建立
+	CHECK_I_FOACSU		= 32;	//单呼_FOACSU被叫查询[下行]
+	CHECK_I_OACSU		= 33;	//单呼_OACSU被叫查询[下行]
+	ACCEPT_I	 		= 34; 	//单呼_被叫接收[上行]
+	DENY_I	 			= 35; 	//单呼_被叫拒绝[上行]
+	INCLUDE_CALL_I		= 36;	//单呼_包容呼叫
+
+
+	//以下为组呼部分，后缀以G(group)结束，如果为紧急呼叫，则仅须开始呼叫时后缀带有E(emergency)
+	SETUP_G				= 50;	//组呼_建立
+	SETUP_EG			= 51;	//组呼_紧急呼叫建立
+	MERGE_G				= 52;	//组呼_并入
+	INCLUDE_CALL_G		= 53;	//组呼_包容呼叫
+
+	//环境监听
+	SETUP_DL			= 70;	//环境监听_建立
+	CHECK_DL			= 71;	//环境监听_MS查询[下行]
+	ACCEPT_DL			= 72;	//环境监听_MS接收[上行]
+	END_DL				= 73; 	//环境监听结束
+
+	//其他
+	CALL_SWITCH			= 80;	//呼叫切换
+}
+
+//返回类型
+enum Ack
+{
+	//信虹自定义类型
+	OK						= 300; 	//允许
+	AHOY					= 301; 	//鉴权请求[被鉴权方收到此命令后应该返回鉴权码]
+	ADV_AHOY				= 302;	//高级鉴权
+
+	//PDT协议  响应原因
+	//C_ACKD P_ACKD
+	TS_MA					= 96;	//基站接受
+	TS_SF					= 97;	//前向转移确认
+	TS_RA        			= 98;	//登记确认
+	TS_AP        			= 99;	//系统对MS鉴权成功
+
+	//C_NACKD P_NACKD
+	TS_NS					= 32;	//系统服务不支持
+	TS_PUR					= 33;	//服务未授权
+	TS_TUR					= 34;	//服务临时未被授权
+	TS_TSR					= 35;	//呼叫临时不支持
+	TS_NMR					= 36;	//被叫未登记
+	TS_MR					= 37;	//被叫无线不可达
+	TS_DCF					= 38;	//被叫已转移而拒绝业务
+	TS_SBR					= 39;	//系统过载而拒绝业务
+	TS_SNR					= 40;	//系统未准备好而临时拒绝业务
+	TS_CCR					= 41;	//取消呼叫拒绝
+	TS_RR					= 42;	//登记临时拒绝
+	TS_RD					= 43;	//登记永久拒绝
+	TS_ICF					= 44;	//IP激活失败
+	TS_NR					= 45;	//主叫未登记
+	TS_BSY					= 46;	//被叫忙
+	TS_NE					= 47;	//被叫用户不存在
+	TS_AFM					= 48;	//MS对系统鉴权失败，SADDR信息单元为网关号AUTHI/REGI
+	TS_AFT					= 49;	//系统对MS鉴权失败，SADDR信息单元为网关号AUTHI/REGI
+	TS_AS					= 50;	//MS对系统鉴权失败，系统将进行鉴权序列号同步操作，SADDR信息单元为网关号AUTHI
+	TS_ND					= 63;	//未定义或未名的原因
+
+	//C_QACKD P_QACKD
+	TS_QC					= 160;	//信道忙排队
+	TS_QB					= 161;	//系统忙排队
+
+	//C_WACKD P_WACKD
+	TS_WT					= 224;	//等待响应
+
+	//C_ACKU P_ACKU
+	MS_MA					= 68;	//MS确认
+	MS_CB					= 69;	//MS回叫确认
+	MS_ALT					= 70;	//MS振铃
+
+	//C_NACKU P_NACKU
+	MS_NS					= 0;	//MS服务不支持
+	MS_LNS					= 17;	//线路业务不支持
+	MS_SFR					= 18;	//存储空间已满拒绝
+	MS_EBR					= 19;	//设备忙拒绝
+	MS_RR					= 20;	//被叫拒绝接收
+	MS_CR					= 21;	//用户定义的原因拒绝[鉴权令牌无效]
+
+	//自定义扩展
+	DO_NOTHING				= 250;	//什么都不做
+	GP_MERGE				= 251;	//组呼并入
+	DUPLICATE_CALLID		= 252;	//重复的呼叫ID
+}
+
+//业务信道广播类型
+message Pbcast
+{
+	enum ATYPE
+	{
+		HANDOVER 			= 0x1D;		//越区切换
+	}
+	message Par
+	{
+		optional uint32		cc		= 1;	//临近基站色码
+		optional uint32		sic 	= 2;	//临近基站系统码[16位]
+		optional uint32		c_ch	= 3;	//临近基站控制信道信道号
+		optional uint32		p_ch	= 4;	//临近基站业务信道信道号
+		optional uint32		p_slot	= 5;	//临近基站业务信道时隙
+	}
+	required ATYPE			type	= 1;	//广播类型
+	repeated Par			par		= 2;	//广播参数[可重复]
+}
+
+//基站业务信道分配信息
+message BSPayLoad
+{
+	required uint32 bsid			= 1;		//基站id号
+	required uint32 slot			= 2;		//时隙号，取值[0-1]
+	optional Pbcast pbroadcast 		= 3;		//业务信道广播参数
+}
+
+//	呼叫请求
+message CallREQ
+{
+	optional CallType	type		= 1;		//呼叫类型，见CallType定义
+    optional uint32 	srcid 		= 2;     	//主叫ID号
+	optional uint32 	tarid 		= 3;    	//被叫ID号
+	optional uint32 	pttid 		= 4;    	//当前主叫ID号
+	repeated uint32		bsid		= 5;		//[基站id，CallType为TS_CALL时有用]
+	optional string		pstnid		= 6;		//PSTN id
+	optional uint32		slot		= 7;		//时隙
+	optional uint32		ig			= 8;		//0:单呼，1:组呼
+	optional uint32		endnum		= 9;		//呼叫结束时基站的GPS计数，用于呼叫结束时同步
+}
+
+//	呼叫应答
+message CallRES
+{
+	optional CallType		type	= 1;		//呼叫类型，见CallType定义
+    optional uint32 		srcid 	= 2;     	//主叫ID号
+	repeated uint32 		tarid 	= 3;     	//被叫ID号
+	optional uint32 		pttid 	= 4;    	//当前主叫ID号
+	optional Ack			ack		= 5;		//参照CallAck定义
+	repeated uint32			bsid 	= 6;		//基站id[会议建立有效]
+	repeated uint32			slot	= 7;		//时隙
+	optional uint32			ig		= 8;		//0:单呼，1:组呼
+	optional uint32			tempgroupid = 9;	//临时组地址，组派接时有效
+	optional string			pstnid		= 10;	//PSTN id
+	optional uint32			endnum		= 11;	//CallREQ中的数值
+}
+
+
+//短信内容
+message SMS
+{
+	//短信类型
+	enum Type
+	{
+		ESN				= 1;	//ESN
+		//以下为单发部分，后缀以I(Individual)结束，如果为紧急呼叫，则仅须开始呼叫时后缀带有E(emergency)
+		SETUP_I			= 10;	//单发_建立
+		SETUP_EI		= 11;	//单发_紧急呼叫建立
+		CHECK_I			= 12;	//单发_被叫查询[下行]
+		ACCEPT_I	 	= 13; 	//单发_被叫接收[上行]
+
+		//以下为组发部分，后缀以G(group)结束，如果为紧急呼叫，则仅须开始呼叫时后缀带有E(emergency)
+		SETUP_G			= 30 ;	//组发_建立
+		SETUP_EG		= 31;	//组发_紧急呼叫建立
+	}
+	enum UDTF
+	{
+		UDTF_BIN	= 0;	//2进制数据
+		UDTF_MSN	= 1;	//MS地址
+		UDTF_BCD	= 2;	//4比特BCD码
+		UDTF_ISO7	= 3;	//ISO 7比特字符集(ISO/IEC 646 [11])
+		UDTF_ISO8	= 4;	//ISO 8比特字符集(ISO/IEC 8859 [12]) ，支持汉字GB码
+		UDTF_NMEA	= 5;	//NMEA定位编码(IEC 61162-1 [8])
+		UDTF_IP		= 6;	//IP地址
+		UDTF_UNC	= 7;	//16比特Unicode字符
+		UDTF_BYTE	= 8;	//8比特字节
+		UDTF_USER	= 9;	//用户编码(厂家自定义)
+	}
+	required Type			type 	= 1;
+    optional uint32 		srcid 	= 2;
+    optional uint32 		tarid 	= 3;
+	optional bytes  		content = 4;
+	optional Ack			ack		= 5;     //中心返回
+	optional uint32			mark	= 6;	 //业务标志 0：状态信息  1：短信
+	optional UDTF			udtf	= 7;	 //短信编码方式
+	
+	optional uint32			slot 	= 8;	 //时隙号[0-1]
+	//以下摩托对讲机专用
+	optional uint32			sendseqnum 	= 9;
+	optional uint32			msgseqnum 	= 10;
+}
+
+//	GPS信息显示[单向，对讲机->基站->中心->GPS网关]
+message GPS
+{
+    required uint32 		msid = 1;
+    optional bytes  		content = 2;
+    optional uint32	 		ch_type	= 3;	//信道类型 0:控制信道 1:业务信道
+}
+//GPS时间和距离说明
+//距离索引
+//	Distance 	index Yd（米） 	Distance 	index Yd（米）
+//	0 			距离触发无效 		8 			500
+//	1 			5 				9 			700
+//	2 			10 				10 			1000
+//	3 			30 				11 			1300
+//	4 			60 				12 			1700
+//	5 			120				13 			2200
+//	6 			220				14 			2800
+//	7 			350				15 			3500
+
+//时间间隔
+//	数值n 		时间（s）
+//	0 			时间触发无效
+//	1-30 		*n s
+//	31-50 		*2s
+//	51-80 		*3s
+//	81-100 		*5s
+//	101-110 	*10s
+//	111-125 	*30s
+//	126 		7200s
+//	127 		10800s
+
+//	设置GPS触发器[单向，网管->中心->基站->对讲机]
+message SetGPSTrigger
+{
+    required uint32 		id			= 1;	//根据ig决定是单呼还是组呼号
+    required uint32 		ig			= 2;	//0：单 1:组
+    optional uint32			gpsen		= 3;	//0：不上报GPS，1：上报GPS
+	optional uint32  		type		= 4;   	//0：立即发送（查询）；
+												//1：开机触发；
+												//2：关机触发；
+												//3：开关机触发；
+												//4：时间或距离任一满足触发，具体参数见t_interval和d_index
+												//5：时间或距离同时满足触发，具体参数见t_interval和d_index
+
+
+	optional uint32			t_interval	= 5;	//GPS上传时间间隔[0-127]，为0无效，参看时间说明
+	optional uint32			d_index		= 6;	//GPS上传距离索引[0-15]，为0无效，参看距离说明
+	optional uint32			pool_ch		= 7;	//上拉信道 0:控制信道 1:业务信道
+	optional uint32			format		= 8;	//GPS格式：
+												//0:控制信道短格式
+												//1:控制信道长格式
+												//2:业务信道C_GPSU格式
+												//3:业务信道C_GPS2U格式
+												//4:业务信道C_GPS3U格式
+	optional uint32 		slot 		= 9;	//时隙号[0-1]
+}
+
+//设置GPS业务信道激活
+message GPSActive
+{
+	required uint32			id		= 1; //目标号码
+	required uint32			ig		= 2; //0:个人地址， 1:组地址
+	required uint32			active	= 3; //0:去激活， 1:激活
+	optional uint32			mask	= 4; //掩码,可以激活去激活多个MS或者Group
+	optional uint32			ack		= 5[default = 0];	//0:不需要应答 1:需要应答
+}
+
+//	设置动态重组 [单向，网管->中心->基站->对讲机]
+message DGNA
+{
+	required uint32 		groupid	= 1;  	//组号 [设置] groupid=dg [删除] groupid=0
+	optional uint32 		msid	= 2;	//MS
+	optional Ack			ack		= 3;	//
+}
+
+
+//	登记/去登记/遥晕/复活/遥毙  [应用于所有设备，包括对讲机、基站、调度台等]
+enum DataType
+{
+    REGISTER 		= 0;				//登记
+    DE_REGISTER 	= 1;				//去登记
+    STUN 			= 2;				//遥晕
+    REVIVE 			= 3;				//复活
+    KILL 			= 4;				//遥毙
+    ESN 			= 5;				//ESN获取/应答
+    GA_REG			= 6;				//组附着登记
+    AUTH_REGISTER 	= 7;				//带鉴权登记
+}
+//数据业务请求
+message DataREQ
+{
+	required DeviceType		device_type = 1;			//设备类型
+	required uint32			id = 2;						//设备ID
+	optional DataType		data_type = 3;				//请求类型
+	optional bytes  		content = 4;				//基站接入方式：字符串0:本地接入 1：互联网接入
+	optional uint32 		slot  = 5;					//时隙号
+}
+//数据业务应答
+message DataRES
+{
+	required DeviceType		device_type = 1;			//设备类型
+	required uint32			id = 2;						//设备ID
+	optional DataType		data_type = 3;				//请求类型
+	optional bytes  		content = 4;				//内容：
+														//[DataType为ESN时，为ESN响应码]
+														//[DataType为AUTH_REGISTER时，为基站确认鉴权TSConfCode响应码]
+	optional Ack			ack  = 5;					//
+	optional uint32 		slot  = 6;					//时隙号
+}
+
+//基站状态信息
+message BSControl
+{
+	required uint32		tsid		= 1;
+	required uint32 	bsid 		= 2;     	//基站内部ID [0-31]
+	enum TYPE
+	{
+		//获取状态
+		STATUS		= 0;		//获取状态
+		REBOOT		= 1;		//重启系统
+		INTERFERE	= 3;		//干扰
+		RSSI		= 4;		//获取RSSI
+		SLEEP		= 5;		//基站联网/脱网
+		GPSDATA		= 6;		//获取GPS
+		PWSET		= 7;		//功率设置(content为功率值,范围1-50)
+		PWRELOAD	= 8;		//功率标定
+	}
+	optional TYPE		type		= 3;
+	optional bytes  	content 	= 4;
+	optional Ack		ack			= 5;
+}
+
+message SystemInfo
+{
+	optional	uint32		max_meet_time 				= 1;		//最大通话时间[单位：S]
+	optional	uint32		max_ptton_time 				= 2;		//单次PTT按下时间[单位：S]
+	optional	uint32		max_pttoff_time 			= 3;		//PTT OFF 超时时间[单位：S]
+	optional	uint32		max_ptton_novoice_time		= 4;		//PTT ON 无语音超时时间[单位：MS]
+	optional	uint32		pttoff_slotdelay_time		= 5;	 	//通话结束延迟关闭PTT时间[单位：ms]
+	optional	uint32		deactive_slotdelay_time 	= 6;		//通话结束延迟关闭宏睿激活时间[单位：ms]
+	optional	uint32		bs_reconn_center_time 		= 7;		//基站断线重连中心时间间隔[单位：ms]
+	optional	uint32		voice_cache_num				= 8;		//缓冲语音帧数
+	optional	string		switchip					= 9;		//交换IP
+	optional	uint32		switchport					= 10;		//交换端口
+	optional	uint32		interfere_sampling_period 	= 11;		//干扰采用周期[单位：ms]
+	optional	uint32		issimulcast					= 12;		//0:单播，1：同播
+	optional	string		multicast_ip				= 13;		//组播IP
+	optional	uint32		multicast_port				= 14;		//组播端口
+}
+
+//不修改已分配业务信道情况下改变会议
+message ChangeMeet
+{
+	required 	string		oldmeetid	= 1;	//已存在会议号
+	required	CallRES		newmeet		= 2;	//新的会议结构
+}
+
+//越区切换请求
+message HandoverREQ
+{
+	required	uint32		msid					= 1;	//请求MS id
+	required	uint32		new_lai					= 2;	//新小区位置标示
+	optional	string		meetid					= 3;	//会议ID【若无此参数，则参考如下参数】
+	optional	uint32 		old_lai					= 4;	//旧小区位置标示
+	optional 	uint32 		chan					= 5;	//旧小区业务信道物理频率号
+	optional 	uint32 		slot					= 6;	//旧小区业务信道时隙
+}
+
+//越区切换应答
+message HandoverRES
+{
+	required	uint32		msid					= 1;	//请求MS id
+	required	uint32		new_lai					= 2;	//新小区位置标示
+	optional	string		meetid					= 3;	//会议ID
+	optional	Ack			ack						= 4;	//应答
+	optional	BSPayLoad	bspayload				= 5;	//新小区信道分配【ack=OK有效】
+}
+
+//	上下线通知[单向：中心->网管调度]
+message OnOffStatus
+{
+	required DeviceType					type	=  1;			//设备类型
+	required uint32						id	 	=  2;			//设备ID
+	optional bool						on_off	=  3;			//[true:上线 false:下线]
+}
+
+//信道机面板频率和物理频率号对应关系
+message ChannelPair
+{
+	required uint32		sequencenum				= 1;	//信道机面板频率序号
+	required uint32		channelnum				= 2;	//物理频率号(PDT规定)
+}
+
+//参与组附着通知
+message GroupAttach
+{
+	required uint32		id 						= 1;	//对讲机ID
+	required uint32		groupid					= 2;	//附着组ID
+}
+
+//基站侧高级鉴权[中心->基站->对讲机]
+message TSAdvancedAuth
+{
+	required uint32		msid 					= 1;	//对讲机ID
+	required bytes		rand					= 2;	//鉴权随机数[10byte]
+	required bytes		seq_l					= 3;	//鉴权序列号[低15bit]
+	required bytes		tsauthcode				= 4;	//基站鉴权码[24bit]
+}
+
+//MS侧高级鉴权[MS->基站->中心]
+//在基站发起鉴权挑战TSAdvancedAuth后由MS响应
+message MSAdvancedAuth
+{
+	enum AuthRslt
+	{
+		AR_PASS 	= 0;		//MS对系统鉴权成功
+		AR_FAIL		= 1;		//MS对系统鉴权失败
+		AR_RESYNC  	= 2;		//MS对系统鉴权失败超过规定次数，要求系统同步鉴权序列号
+	}
+	required uint32		msid 					= 1;	//MS ID
+	optional bytes		msauthcode				= 2;	//MS鉴权码[38bit]
+	required AuthRslt	authrslt 				= 3;	//对讲机对系统鉴权结果
+}
+
+//TS发起同步挑战[中心->基站->MS]
+//仅在MS多次鉴权失败后MS返回AR_RESYNC时发起
+message AuthSyncCD
+{
+	required uint32		msid 					= 1;	//MS ID
+	required bytes		syncrand				= 2;	//同步随机数[15bytes,低119位有效，最高位为0]
+}
+
+//MS返回同步令牌及鉴权序列号[中心->基站->MS]
+//对AuthSyncCD的响应
+message AuthSyncCU
+{
+	required uint32		msid 					= 1;	//MS ID
+	required bytes 		synctoken				= 2;	//同步令牌[8bytes，低71位有效]
+	required bytes 		seq						= 3;	//鉴权序列号[6bytes,共48位]
+}
+
+//带鉴权的遥晕遥毙复活
+message AuthStunKillRevive
+{
+	required uint32		msid 					= 1;	//MS ID
+	required DataType	cmdtype					= 2;	//数据类型[仅限：遥晕遥毙复活]
+	required bytes		token					= 3;	//令牌[6bytes,38位有效]
+}
+
+//GPS秒时钟
+message GpsSecond
+{
+	required uint32		second 					= 1;	//秒时钟[0-59]
+	optional uint32		gpsnum					= 2;	//60MS计数值[0-249]
+	optional uint32		bsid					= 3;	//基站id
+}
+
+//RSSI消息
+message RSSI
+{
+	optional string		meetid					= 1;	//会议ID
+	optional uint32		slot					= 2;	//时隙
+	optional uint32		bsid					= 3;	//基站ID
+	optional uint32		rssi					= 4;	//场强信息
+}
+
+
+//设置脱网信道
+message SetOffLineCh
+{
+	required int32		bsid					= 1;	//基站id [-1为所有基站]
+	required uint32 	offlinech 				= 2;	//脱网信道编号
+	optional Ack		ack						= 3;	//基站应答[调度台不须此参数]
+}
+
+//设置数模工作模式
+message SetADMode
+{
+	required int32		bsid					= 1;	//基站id [-1为所有基站]
+	required uint32 	admode  				= 2;	//脱网信道编号
+	optional Ack		ack						= 3;	//基站应答[调度台不须此参数]
+}

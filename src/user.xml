@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+<!--登录会员菜单-->
+   <package name="USERPOWER" extends="json-default" namespace="/UserPower">
+       <action name="usermenu" class="com.user.power.UserList" method="userMenu">
+           <result type="json" name="success"></result>
+       </action>
+   </package>
+</struts>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+<constant name="struts.multipart.maxSize" value="204857600"/> <!--支持上传100M文件-->
+<constant name="struts.i18n.encoding" value="utf-8"/>  
+
+<!--登录系统-->
+<package name="POWER" extends="json-default" namespace="/power">  
+   <action name="add" class="com.action.MemberGroupAction" method="add_MemberGroup">  
+     <result type="json" name="success"></result>   
+   </action>  
+   <action name="update" class="com.action.MemberGroupAction" method="update_MemberGroup">  
+     <result type="json" name="success"></result>   
+   </action>   
+   <action name="del" class="com.action.MemberGroupAction" method="delete_MemberGroup">  
+     <result type="json" name="success"></result>   
+   </action> 
+   <action name="updateShowMenu" class="data.action.MemberGroupAction" method="updateShowMenu">  
+     <result type="json" name="success"></result>   
+   </action>
+   <action name="updateUserMenu" class="com.action.WebUserAction" method="updateUserMenu">  
+     <result type="json" name="success"></result>   
+   </action>  
+   <action name="getGroupPower" class="com.action.PowerAction" method="GroupPower">  
+     <result type="json" name="success"></result>   
+   </action> 
+   <action name="getUserPower" class="com.action.PowerAction" method="UserPower">  
+     <result type="json" name="success"></result>   
+   </action>     
+   <action name="updateGroupPower" class="com.action.PowerAction" method="updateGroupPower">  
+     <result type="json" name="success"></result>   
+   </action>  
+   <action name="updateUserPower" class="com.action.PowerAction" method="updateUserPower">  
+     <result type="json" name="success"></result>   
+   </action>                        
+</package>                      
+ <!-- Add packages here -->
+</struts>

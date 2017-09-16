@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+<sysDataBase>
+    <sys_ip>localhost</sys_ip>
+    <sys_port>3306</sys_port>
+    <sys_root>root</sys_root>
+    <sys_password>xinhong12345</sys_password>
+    <sys_dbname>xhdigital</sys_dbname>
+</sysDataBase>
+
+<centerDataBase>
+    <xh_ip>127.0.0.1</xh_ip>
+    <xh_port>3306</xh_port>
+    <xh_root>root</xh_root>
+    <xh_password>xinhong12345</xh_password>
+    <xh_dbname>xh_pdt_simulcast</xh_dbname>
+</centerDataBase>
+
+<centerNet>
+    <center_ip>127.0.0.1</center_ip>
+    <center_port>12002</center_port>
+    <udp_port>12000</udp_port>
+</centerNet>
+
+<Multicast>
+    <multicast_ip>224.1.2.3</multicast_ip>
+    <multicast_port>5000</multicast_port>
+</Multicast>
+
+<sound>
+    <ip>127.0.0.1</ip>
+    <port>12010</port>
+</sound>
+
+<call>
+    <pptId>120</pptId>
+</call>
+
+<sms>
+    <ip>192.168.30.22</ip>
+    <port>4001</port>
+    <number>13800220500</number>
+    <bsofftime>10</bsofftime>
+    <msc>333336</msc>
+</sms>
+
+<Alarm>
+   <open>1</open>
+   <temp>50</temp>
+   <back_power>2</back_power>
+</Alarm>
+
+<option>
+  <net-stopsend-en>0</net-stopsend-en>
+  <monien>0</monien>
+  <gpssplit>1000</gpssplit>
+</option>
+<gps>
+    <eachTime>1000</eachTime>
+    <timerTime>1000</timerTime>
+    <gpsTaskOpen>0</gpsTaskOpen>
+</gps>
+
+<Listener>
+  <start>1</start>
+  <time>20</time>
+  <gpsTaskTime>5</gpsTaskTime>
+  <emergTaskTime>5</emergTaskTime>
+  <gpsTaskDate1></gpsTaskDate1>
+  <gpsTaskDate2>2018-02-01 00:00:00</gpsTaskDate2>
+  <gpsTimerTaskStart>0</gpsTimerTaskStart>
+  <gpsDateTaskStart>0</gpsDateTaskStart>
+</Listener>
+
+</config>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+<constant name="struts.multipart.maxSize" value="204857600"/> <!--支持上传100M文件-->
+<constant name="struts.i18n.encoding" value="utf-8"/>  
+<include file="struts-data.xml"></include> 
+<include file="struts-power.xml"></include> 
+<include file="struts-controller.xml"></include> 
+<include file="user.xml"></include> 
+
+<!--登录系统-->
+<package name="LOGIN" extends="json-default" namespace="/login">  
+   <action  name="login" class="com.action.LoginAction" method="Login">  
+     <result type="json" name="success"></result>   
+   </action> 
+   <action name="check" class="com.action.LoginAction" method="checkCard">  
+     <result type="json" name="success"></result>   
+   </action> 
+   <action name="register" class="com.action.LoginAction" method="register">  
+     <result type="json" name="success"></result>   
+   </action>                                  
+</package>                      
+ <!-- Add packages here -->
+</struts>

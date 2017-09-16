@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>dwr.html</title>
+	
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="../dwr/util.js"></script>    
+    <script type="text/javascript" src="../dwr/engine.js"></script> 
+    <script type="text/javascript" src="../resources/js/jquery-1.8.3.min.js"></script>  
+    <script type="text/javascript">  
+    $(function(){  
+        //这句话千万不能少 ，表示允许使用推送技术  
+        dwr.engine.setActiveReverseAjax(true);  
+    });  
+    //这个函数是提供给后台推送的时候  调用的    
+    function show(msg){  
+    alert(msg); 
+        $("#message").text(msg); 
+        
+    }  
+</script>  
+
+  </head>
+  
+  <body>
+      <div id="message" style="width: 200px;height: 200px;border: 1px solid red ; text-align: center; padding: 5px;"></div>  
+  </body>
+</html>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee   http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+ <filter>
+  <filter-name>struts2</filter-name>
+  <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+ </filter>
+ 
+ <!-- GZIPFilter压缩定义 设置此项时tk-filters.properties的GZIPFilter.Enabled=true才可用-->
+ <filter>
+  <filter-name>GZIPFilter</filter-name>
+  <filter-class>com.tacitknowledge.filters.gzipfilter.GZIPFilter</filter-class>
+ </filter>
+ 
+ <!-- CacheFilter缓存定义 设置此项时tk-filters.properties的CacheFilter.Enabled=true才可用 -->
+ <filter>
+  <filter-name>CacheFilter</filter-name>
+  <filter-class>com.tacitknowledge.filters.cache.CacheHeaderFilter</filter-class>
+ </filter>
+
+ <!--Extjs GZIP压缩
+ <filter>      
+      <filter-name>GzipJsFilter</filter-name>      
+      <filter-class>javaFilter.GzipJsFilter</filter-class>      
+      <init-param>      
+          <param-name>headers</param-name>      
+          <param-value>Content-Encoding=gzip</param-value>      
+      </init-param>      
+</filter>  -->
+ <filter-mapping>
+  <filter-name>struts2</filter-name>
+  <url-pattern>/*</url-pattern>
+ </filter-mapping>
+ 
+ <!-- GZIPFilter 设置自己想要压缩的文件类型-->
+ <filter-mapping>
+  <filter-name>GZIPFilter</filter-name>
+  <url-pattern>*.js</url-pattern>
+ </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>GZIPFilter</filter-name>
+  <url-pattern>*.png</url-pattern>
+ </filter-mapping>
+ 
+ <!-- CacheFilter 设置自己想要缓存的文件类型-->
+ <filter-mapping>
+  <filter-name>CacheFilter</filter-name>
+  <url-pattern>*.gif</url-pattern>
+ </filter-mapping>
+ <filter-mapping>
+  <filter-name>CacheFilter</filter-name>
+  <url-pattern>*.jpg</url-pattern>
+ </filter-mapping>
+ <filter-mapping>
+  <filter-name>CacheFilter</filter-name>
+  <url-pattern>*.png</url-pattern>
+ </filter-mapping>
+ <filter-mapping>
+  <filter-name>CacheFilter</filter-name>
+  <url-pattern>*.js</url-pattern>
+ </filter-mapping>
+ <filter-mapping>
+  <filter-name>CacheFilter</filter-name>
+  <url-pattern>*.css</url-pattern>
+ </filter-mapping>
+ 
+  <filter>
+  <filter-name>checkLogin</filter-name>
+  <filter-class>com.servlet.loginFilter</filter-class>
+ </filter>
+  <filter-mapping>
+  <filter-name>checkLogin</filter-name>
+  <url-pattern>/View/*</url-pattern>
+  <url-pattern>/Model/*</url-pattern>
+ </filter-mapping>
+ <!--gh-->
+
+
+
+<!-- socket客户端监听   start -->
+<!--listener>
+  <description>Socket服务随web服务启动而启动</description>
+  <listener-class>com.socket.SocketListener</listener-class>
+</listener-->
+<!-- socket监听   end -->
+
+
+<!-- 语音接收监听   -->
+<listener>
+  <description>语音接收服务随web服务启动而启动</description>
+  <listener-class>com.socket.VoiceUdpListener</listener-class>
+</listener>
+
+<!-- 语音接收监听   end -->
+
+<!-- TCP长连接   -->
+<listener>
+  <description>TCP长连接 </description>
+  <listener-class>com.socket.TCPListener</listener-class>
+</listener>
+
+<!-- TCP长连接    end -->
+
+ <welcome-file-list>
+  <welcome-file>index.jsp</welcome-file>
+ </welcome-file-list>
+ <login-config>
+  <auth-method>BASIC</auth-method>
+ </login-config>
+ 
+ <session-config> 
+<session-timeout>5</session-timeout> 
+</session-config>
+
+</web-app>
