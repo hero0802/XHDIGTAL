@@ -3,6 +3,8 @@ var map = null;
 var img=null;
 var markers = [];
 var mscMarker=[];
+var oneMarker=[];
+var oneRadioMakerFlag=null;
 var flightPath=null;
 var refreshMap=1;
 var nowMscId=0;
@@ -134,10 +136,10 @@ var usergrid=Ext.create('Ext.grid.Panel',{
 	             stripeRows: true,
 	             listeners: {
 	            	 itemdblclick:function(dataview, record, item, index, e){
-	            		 var refreshMap=2;
+	            		 refreshMap=2;
 	            		 clearMarkers();
-	            		 nowMscId=record.get(id);
-	            		 GetGPS(record.get(id));
+	            		 nowMscId=record.get("id");
+	            		 GetGPS(record.get("id"));
 	            		
 	            		 
 	            	 },
@@ -181,7 +183,7 @@ var usergrid=Ext.create('Ext.grid.Panel',{
             	 handler:gpsTask
              },{
             	 xtype:'panel',border:0,
-            	 html:'提示：只拉在线用户',
+            	 html:'<div id="showMessage"></div>',
             	 /*margin:'30 0 0 0',*/
             	 /*iconCls:'gpstask',*/
             	 /*handler:*/
@@ -319,7 +321,7 @@ usergrid.getSelectionModel().on({
 		var record = usergrid.getSelectionModel().getLastSelected(); 
 		form.getForm().findField("name").setValue(record.get("id"));
 		
-		var wgloc={};
+		/*var wgloc={};
 		wgloc.lat=record.get("lat");
 		wgloc.lng=record.get("lng");
 		var lat=transformFromWGSToGCJ(wgloc).lat;
@@ -328,7 +330,7 @@ usergrid.getSelectionModel().on({
 		setMapCenter(lat,lng);
 		changeMaker(record.get("id"),lat,lng)
 		
-		}
+		}*/
 
 	}
 }
@@ -384,11 +386,13 @@ function radiogps(str){
 		MapRadioUser();
 	}else{
 		if(nowMscId!=0){
+			clearMarkers();
 			OneMaker(str);
 		}
 	}
 }
 function OneMaker(str){
+	
 	var data=Ext.decode(str);
 	if(str==null){
 		return;
@@ -414,15 +418,18 @@ function OneMaker(str){
 	wgloc.lng=data.lng;
 	var lat=transformFromWGSToGCJ(wgloc).lat;
 	var lng=transformFromWGSToGCJ(wgloc).lng;	
-	var marker = new google.maps.Marker({
+	
+	
+	
+	oneRadioMakerFlag = new google.maps.Marker({
 		position :new google.maps.LatLng(lat,lng),	
 		map : map,
 		title : "ID:"+data.id+"名称："+data.name,
 		id : data.id,
 		data:data,
-		icon : 'mapfiles/marker5.png',
+		icon : 'mapfiles/phoneMarker2.png',
 	});
-	   (function (marker,data) {  
+	   (function (oneRadioMakerFlag,data) {  
 		
 		   var id=data.id;
 		   var alias=data.name;
@@ -458,12 +465,14 @@ function OneMaker(str){
 		   htmlStr+='<span>鉴权状态:<span style="color:#fff;background:green">'+status+'</span></span><br>';
 		   htmlStr+='<span>附着组:'+workgroupid+'</span><br>';
 		   htmlStr+='<span>漫游基站:'+visittsid+'</span>';
-        google.maps.event.addListener(marker, "click", function (e) {  
+        google.maps.event.addListener(oneRadioMakerFlag, "click", function (e) {  
             infoWindow.setContent("<div style = 'width:150px;'>"+htmlStr+"</div>");  
-            infoWindow.open(map, marker);  
+            infoWindow.open(map, oneRadioMakerFlag);  
         });  
-    })(marker, data);
+    })(oneRadioMakerFlag, data);
+	   setMapCenter(lat,lng);
 	}
+	
 	
 }
 function RadioMaker(str){
@@ -471,9 +480,6 @@ function RadioMaker(str){
 	if(str==null){
 		return;
 	}
-	console.log("data="+data.id);
-	console.log("data="+data.lng);
-	console.log("data="+data.lat);
 	for(var i=0;i<userStore.getCount();i++){
 		if(userStore.getAt(i).get("id")==data.id){
 			if(data.lat==0 || data.lng==0){
@@ -687,10 +693,27 @@ function gpsTask(){
 					var userId=userStore.getAt(j).get('id');
 					var online=userStore.getAt(j).get("onlinestatus");
 					if(userStore.getAt(j).get("result")!="无定位" && userStore.getAt(j).get("result")!="有定位")
+						{
 						userStore.getAt(j).set('result','无数据'); 
-					
 				}
 			
+		}
+			var a=0,b=0,c=0;
+			 for(var j=0;j<userStore.getCount();j++){
+				 if(userStore.getAt(j).get("result")=="无数据"){
+					 a++;
+				 }
+				 else if(userStore.getAt(j).get("result")=="有定位"){
+					 b++;
+				 }
+				 else if(userStore.getAt(j).get("result")=="无定位"){
+					 c++;
+				 }
+				 else{
+				 }
+			 }
+			 var html="统计： 有定位："+b+" &nbsp; &nbsp; 无定位:"+c+"&nbsp; &nbsp;无数据:"+a
+			 $("#showMessage").html(html);
 		}
 		
      }, 500);  //每隔 1秒钟  
@@ -954,15 +977,22 @@ function addMarker(location) {
 }
 
 // Sets the map on all markers in the array.
-function setMapOnAll(map) {
+function setMapOnAll(mapstr) {
 	for (var i = 0; i < markers.length; i++) {
-		markers[i].setMap(map);
+		markers[i].setMap(mapstr);
 	}
 	for (var i = 0; i < mscMarker.length; i++) {
-		mscMarker[i].setMap(map);
+		mscMarker[i].setMap(mapstr);
 	}
+	if(oneRadioMakerFlag!=null || oneRadioMakerFlag==""){
+		oneRadioMakerFlag.setMap(null)
+	}
+	for (var i = 0; i < oneMarker.length; i++) {
+		oneMarker[i].setMap(mapstr);
+	}
+	
 	/*if(flightPath!=null){
-		flightPath.setMap(map)
+		flightPath.setMap(map)oneMarker
 		
 	}*/
 }
@@ -988,8 +1018,8 @@ function deleteMarkers() {
 // set center
 function setMapCenter(lat,lng){
 	var myLatlng = new google.maps.LatLng(lat, lng);
-	map.setCenter(myLatlng,17);
-	map.setZoom(17);
+	map.setCenter(myLatlng,15);
+	map.setZoom(15);
 }
 function changeMaker(mscId,lat,lng){
 	clearMarkers();

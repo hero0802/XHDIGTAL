@@ -49,6 +49,7 @@ Ext.define('call',{
 	        {name: 'starttime'},
 	        {name: 'usetime'},
 	        {name: 'bsName'},
+	        {name: 'path'},
 	        {name: 'srcId'},
 	        {name: 'caller'},
 	        {name: 'called'},
@@ -370,6 +371,7 @@ var mapPanel=Ext.create('Ext.panel.Panel',{
 	}]
 });
 var grid;
+var markerWin;
 if(!grid)
 { grid=Ext.create('Ext.grid.Panel',{
 	region:'center',
@@ -382,7 +384,7 @@ if(!grid)
    	 editor : {  
    	 allowBlank : false  
     },renderer:function(v){
-    	return v.split("")[1];
+    	return v.split(" ")[1];
     }},
 	         {text: "主叫", width: 120, dataIndex: 'caller', sortable: false,
 	        	 editor : {  
@@ -402,14 +404,15 @@ if(!grid)
 	         },renderer:function(v){
 	        	 return v+" dB"
 	         }},
-	         {text: "通话时长", width: 90, dataIndex: 'usetime', sortable: false,
-	        	 editor : {  
-	        	 allowBlank : false  
-	         },renderer:function(v){if(v>0){return  getTime(v)}else{return "";}}},
 	         {text: "被叫组", width: 120, dataIndex: 'called', sortable: false,
 	        	 editor : {  
 	        	 allowBlank : false  
-	         }} 
+	         }} ,
+	         {text: "通话时长", width: 90, dataIndex: 'usetime', sortable: false,
+	        	 editor : {  
+	        	 allowBlank : false  
+	         },renderer:function(v){if(v>0){return  getTime(v)}else{return "";}}}
+	         
 	         ],
 	         frame:false,
 	         border:true,
@@ -424,40 +427,74 @@ if(!grid)
 	             forceFit: false,
 	             loadMask:false,
 	             listeners: {
+	            	 itemdblclick:function(dataview, record, item, index, e){  
+	            		 var usetime=parseInt(record.get("usetime"));
+                    	 var form="<div style='padding:10px;'>";
+                    	 form+="<p>主叫ID:"+record.get("srcId")+"</p>";
+                    	 form+="<p>名称:"+record.get("caller")+"</p>";
+                    	 form+="<p>被叫组:"+record.get("called")+"</p>";
+                    	 form+="</div>";
+                    	if(markerWin){
+                    		markerWin.hide();
+                    	}
+                    		
+                    		markerWin=Ext.create("Ext.Window",{
+                    			modal:false,
+                    			title:'操作手台',
+                    			x:document.documentElement.clientWidth-450,
+                    			width:450,
+                    			height:200,
+                    			closeAction:'hide',
+                    			items:[{
+                    				html:form
+                    			}],
+                    			buttons:[{
+                    				text:'强拆',
+                    				iconCls:'break',
+                    				handler:function(){
+                    					breakCall();
+                    					/*markerWin.hide();*/
+                    				}
+                    			},{
+                    				text:'遥晕',
+                    				iconCls:'ok',
+                    				handler:function(){
+                    					breakAndKill(record);
+                    					/*markerWin.hide();*/
+                    				}
+                    			},{
+                    				text:'播放',
+                    				iconCls:'play',
+                    				disabled:usetime<0,
+                    				handler:function(){
+                    					var path=record.get("path");
+                    					player(path);
+                    					/*markerWin.hide();*/
+                    				}
+                    			},{
+                    				text:'定位',
+                    				iconCls:'icon-location',
+                    				handler:function(){
+                    					OneGps(record.get("srcId"),record.get("starttime"));
+                    					/*markerWin.hide();*/
+                    				}
+                    			},{
+                    				text:'关闭',
+                    				iconCls:'cancel',
+                    				handler:function(){
+                    					markerWin.hide();
+                    				}
+                    				
+                    			}]
+                    	 })
+                    	 markerWin.show()
+                     }
 	                 /*itemcontextmenu: function(view, rec, node, index, e) {
 	                     e.stopEvent();
 	                     callMenu.showAt(e.getXY());
 	                     return false;
 	                 }
-                     ,*/itemdblclick:function(dataview, record, item, index, e){  
-                    	 var form="";
-                    	 var win=Ext.create("Ext.Window",{
-                    			modal:true,
-                    			width:300,
-                    			height:200,
-                    			closeAction:'hide',
-                    			items:[{
-                    				html:record.get("srcId")
-                    			}],
-                    			buttons:[{
-                    				text:'强拆',
-                    				iconCls:'ok'
-                    			},{
-                    				text:'遥晕',
-                    				iconCls:'ok'
-                    			},{
-                    				text:'播放',
-                    				iconCls:'ok'
-                    			},{
-                    				text:'定位',
-                    				iconCls:'ok'
-                    			},{
-                    				text:'关闭',
-                    				iconCls:'ok'
-                    			}]
-                    	 })
-                    	 win.show()
-                     }
+                     ,*/
 	             }
 	         },
 
@@ -786,42 +823,7 @@ var grid_controll=Ext.create('Ext.grid.Panel',{
 	         viewConfig: {
 	             stripeRows: true,
 	             listeners: {
-	            	 itemdblclick:function(dataview, record, item, index, e){  
-                    	 var form="<div style='padding:10px;'>";
-                    	 form+="<p>主叫ID:12121212</p>";
-                    	 form+="<p>名称:张三</p>";
-                    	 form+="<p>被叫组:123455</p>";
-                    	 form+="</div>";
-                    	 var win=Ext.create("Ext.Window",{
-                    			modal:false,
-                    			title:'操作手台',
-                    			width:450,
-                    			height:200,
-                    			closeAction:'hide',
-                    			items:[{
-                    				html:form
-                    			}],
-                    			buttons:[{
-                    				text:'强拆',
-                    				iconCls:'break'
-                    			},{
-                    				text:'遥晕',
-                    				iconCls:'ok'
-                    			},{
-                    				text:'播放',
-                    				iconCls:'play',
-                    				disabled:true,
-                    			},{
-                    				text:'定位',
-                    				iconCls:'icon-location'
-                    			},{
-                    				text:'关闭',
-                    				iconCls:'cancel'
-                    				
-                    			}]
-                    	 })
-                    	 win.show()
-                     },
+	            	
 	                 itemcontextmenu: function(view, rec, node, index, e) {
 	                     e.stopEvent();
 	                     contextMenu.showAt(e.getXY());
@@ -1290,19 +1292,7 @@ function BsOffLine(str){
 }
 var radioMakerWin= new google.maps.InfoWindow();
 //显示当前呼叫手台
-function radiogps(str){
-	
-	var data=Ext.decode(str);
-	if(str==null){
-		return;
-	}
-	var type=Ext.getCmp('type').getValue()['type'];
-	if(type!=0){
-		return;
-	}
-	console.log("data="+data.id);
-	console.log("data="+data.lng);
-	console.log("data="+data.lat);	
+/*function radiogps(str){
 
 	if(data.lat*1 > 38 && data.lat*1 < 40 && data.lng*1 > 116 && data.lng*1 < 119){
 	 //markers.push(marker);
@@ -1326,50 +1316,10 @@ function radiogps(str){
 	}
 	mscMarker.push(marker);
 
-	   (function (marker,data) {  
-		
-		   var id=data.id;
-		   var alias=data.name;
-		   var authoritystatus=data.authoritystatus;
-		   var status=0;
-		   var workgroupid=data.workgroupid;
-		   var visittsid=data.visittsid;
-		   var onlinestatus=data.onlinestatus
-		   if(authoritystatus==0){
-			   status="正常"
-		   }else if(authoritystatus==1){
-			   status="复活中"
-		   }else if(authoritystatus==2){
-			   status="摇晕"
-		   }else if(authoritystatus==3){
-			   status="摇晕中"
-		   } else if(authoritystatus==4){
-			   status="摇毙"
-		   }else if(authoritystatus==5){
-			   status="摇毙中"
-		   }else{
-			   status="未知"
-		   }
-		   if(onlinestatus==0){
-			   onlinestatus='<span style="color:#fff;background:red">不在线</span>';
-		   }else{
-			   onlinestatus='<span style="color:#fff;background:red">在线</span>';
-		   }
-		   
-		   var htmlStr='<span>ID:'+id+'</span><br>';
-		   htmlStr+='<span>名称:'+alias+'</span><br>';
-		   htmlStr+='<span>在线状态:'+onlinestatus+'</span><br>';
-		   htmlStr+='<span>鉴权状态:<span style="color:#fff;background:green">'+status+'</span></span><br>';
-		   htmlStr+='<span>附着组:'+workgroupid+'</span><br>';
-		   htmlStr+='<span>漫游基站:'+visittsid+'</span>';
-        google.maps.event.addListener(marker, "click", function (e) {  
-        	radioMakerWin.setContent("<div style = 'width:150px;'>"+htmlStr+"</div>");  
-        	radioMakerWin.open(map, marker);  
-        });  
-    })(marker, data);
+	   
 	}
 	
-}
+}*/
 function bsModel(str){
 	var type=Ext.getCmp('type').getValue()['type'];
 	var recvData=Ext.decode(str);
@@ -2862,7 +2812,7 @@ function bsPowOn(id){
 			      }
 			})	
 }
-// 关闭基站电源
+// 关闭基站电源OneGps
 function bsPowOff(id){
 		 var myMask = new Ext.LoadMask(Ext.getBody(), {  
              msg: '正在操作中。。。',  
@@ -2895,6 +2845,75 @@ function bsPowOff(id){
 			    	Ext.example.msg("提示","获取失败");  
 			      }
 			})	
+}
+//当前手台GPS
+function OneGps(msc,time){
+	var type=Ext.getCmp('type').getValue()['type'];
+	if(type!=0){
+		Ext.MessageBox.show({  
+			title : "提示",  
+			msg : "请先切换到地图模式" , 
+			icon: Ext.MessageBox.INFO  
+		}); 
+		return;
+	}
+	Ext.Ajax.request({
+			url : 'data/OneRadioMaker.action', 
+			params : {  
+			 msc:msc,
+			 endTime:time
+		},
+		method : 'POST',
+		    waitTitle : '请等待' ,  
+		    waitMsg: '正在提交中', 
+		    success : function(response,opts) { 
+		     var rs = Ext.decode(response.responseText)
+		     
+		     if(rs.total==0){
+		    	 Ext.MessageBox.show({  
+		 			title : "提示",  
+		 			msg : "无定位数据" , 
+		 			icon: Ext.MessageBox.INFO  
+		 		}); 
+		    	 
+		     }else{
+		    	 var data=rs.items[0];
+		    	 if(data.longitude==0 || data.latitude==0 ){
+		    		 Ext.MessageBox.show({  
+				 			title : "提示",  
+				 			msg : "数据无效" , 
+				 			icon: Ext.MessageBox.INFO  
+				 		}); 
+		    	 }else{
+		    		 var image = "";
+		    			var wgloc={};
+		    			wgloc.lat=data.latitude;
+		    			wgloc.lng=data.longitude;
+		    			var lat=transformFromWGSToGCJ(wgloc).lat;
+		    			var lng=transformFromWGSToGCJ(wgloc).lng;	
+		    			var marker = new google.maps.Marker({
+		    				position :new google.maps.LatLng(lat,lng),	
+		    				map : map,
+		    				title : "ID:"+data.srcId,
+		    				id : data.id,
+		    				data:data,
+		    				icon : 'mapfiles/phoneMarker2.png',
+		    			});
+		    			if(mscMarker.length>0){
+		    				clearMarker(mscMarker[0]);
+		    				mscMarker.splice(0,mscMarker.length);	
+		    			}
+		    			mscMarker.push(marker);
+		    			setMapCenter(lat,lng)
+		    	 }
+		     }
+			     
+		    },
+		    failure: function(response) {
+		    
+		    	Ext.example.msg("提示","获取失败");  
+		      }
+		})	
 }
 //更新4g基站
 function bsUpdate(id,linkModel){
@@ -3094,14 +3113,14 @@ function breakCall(){
 		})	
 }
 //强拆并遥晕
-function breakAndKill(){
+function breakAndKill(record){
 	
 	 var myMask = new Ext.LoadMask(Ext.getBody(), {  
         msg: '正在操作中。。。',  
         loadMask: true, 
         removeMask: true // 完成后移除
     });
-	 
+	/* 
 	 var data = grid.getSelectionModel().getSelection(); 
 	if (data.length == 0) {  
 			Ext.MessageBox.show({  
@@ -3121,7 +3140,7 @@ function breakAndKill(){
 			 icon: Ext.MessageBox.ERROR 
 		 });
 		 return;
-	 }
+	 }*/
 	/* 
 	 if(record.get("usetime")<=0){
 		 Ext.MessageBox.show({  
@@ -3541,6 +3560,41 @@ function CloseAllNetStopSend(){
 	}); 
 		}})
 }
+function player(path){	
+		    	
+		var playerPath=path	    	
+		playerPath=playerPath.substring(1,playerPath.length);
+
+		var index=playerPath.lastIndexOf("/");
+		var name=playerPath.substring(index+1,playerPath.length);		
+		win = Ext.getCmp("player");
+
+		if (!win) {
+			win =new Ext.Window({
+				id: 'player',
+				title: "....正在播放: &nbsp;",
+				width: 410,
+				height: 220,
+				resizable:false,
+				iconCls: 'play',
+				closable:true,
+				animCollapse: false,
+				maximizable : false,
+				border: false,
+				layout: 'fit',
+				plain: true, 
+
+				items: [{
+					header:false, 
+					html : '<iframe style="border-top-width: 0px; border-left-width: 0px; border-bottom-width: 0px; width: 728px; height: 455px; border-right-width: 0px" src="View/play.jsp?playerID='+playerPath+'" frameborder="0" width="100%" scrolling="no" height="100%"></iframe>', 
+					border:false 
+				}]
+			});
+		}
+
+		win.show();
+
+}
 function clearBtn(){
 	 var myMask = new Ext.LoadMask(Ext.getBody(), {  
          msg: '正在删除数据，请稍后！',  
@@ -3804,4 +3858,9 @@ function transformFromWGSToGCJ(wgLoc)
     mgLoc.lng = wgLoc.lng + dLon;
 
     return mgLoc;
+}
+function setMapCenter(lat,lng){
+	var myLatlng = new google.maps.LatLng(lat, lng);
+	map.setCenter(myLatlng,17);
+	map.setZoom(17);
 }

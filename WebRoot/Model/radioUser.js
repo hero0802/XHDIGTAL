@@ -900,6 +900,8 @@ function update_btn()
 		          iconCls:'save',
 		          disabled:updateRadioUser?false:true,
 		        	 handler: function() {
+		        		 Ext.Msg.confirm("请确认", "是否真的要修改数据？", function(button, text) {  
+		        				if (button == "yes") { 
 		        	 var form=updateForm.form; 
 		        	 var myMask = new Ext.LoadMask(Ext.getBody(), {  
 	                     msg: '正在验证数据，请稍后！',  
@@ -987,7 +989,7 @@ function update_btn()
 		        					 icon: Ext.MessageBox.INFO  
 		        				 }); 
 		        			 }  
-		        			 })); } 
+		        			 })); } }})
 		         } }/*
 					 * , {text:'取消', iconCls:'cancel', handler: function(){
 					 * updateWindow.hide(); }}

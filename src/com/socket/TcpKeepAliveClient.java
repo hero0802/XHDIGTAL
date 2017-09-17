@@ -422,8 +422,10 @@ public class TcpKeepAliveClient extends Thread {
 			callMap.put(callid, call);
 
 			HashMap callNowMap = new HashMap();
+			String wavStr = "/resources/wav/" + callMap.get(callid).get("fileName")+ ".wav";
 			callNowMap.put("time", time);
 			callNowMap.put("callid", callid);
+			callNowMap.put("path", wavStr);
 			callNowMap.put("srcId", res.getSrcid());
 			callNowMap.put("caller", Sql.radioPerson(res.getSrcid()).equals("")?res.getSrcid():Sql.radioPerson(res.getSrcid()));
 			callNowMap.put("called", res.getTarid(0));
@@ -560,6 +562,7 @@ public class TcpKeepAliveClient extends Thread {
 						HashMap callL = new HashMap();
 						callL.put("time", timeStart);
 						callL.put("callid", callid);
+						callL.put("path", map.get("path").toString());
 						callL.put("srcId", res.getSrcid());
 						callL.put("caller",map.get("caller").toString());
 						callL.put("called", res.getTarid(0));
@@ -1033,7 +1036,6 @@ public class TcpKeepAliveClient extends Thread {
 				result.put("lat",lat);
 				String jsonstr = json.Encode(result);
 				RadioDwr.RadioGps(jsonstr);
-				SocketDwr.RadioGps(jsonstr);
                 
 				
 			} catch (Exception e) {

@@ -294,7 +294,10 @@
 <action name="useroffonline" class="data.action.RadioUser" method="useroffonline">  
      <result type="json" name="success"></result>   
 </action>
-
+ <!--单次手台gps-->
+<action name="OneRadioMaker" class="data.action.RadioUser" method="OneRadioMaker">  
+     <result type="json" name="success"></result>   
+</action>
 </package>                      
  <!-- Add packages here -->
 </struts>

@@ -51,6 +51,18 @@ public class RadioUser extends ActionSupport{
 	
 	
 	
+	//手台基站下定位
+    public void OneRadioMaker()throws Exception{
+    	String sql="select * from xhdigital_gpsinfo where srcId='"+msc+"' and infoTime>'"+endTime+"' limit 1";
+    	
+    	ArrayList data = sysSql.DBList(sql);
+		HashMap result=new HashMap();
+		result.put("items", data);
+		result.put("total", data.size());
+		String jsonstr = json.Encode(result);
+		ServletActionContext.getResponse().setContentType("text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jsonstr);
+    }
 	
 	
 	public void RadioUser() throws Exception
