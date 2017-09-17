@@ -251,8 +251,6 @@ class AlarmSms extends TimerTask {
 					
 					for (int i=0;i<sysSql.bsAlarmList().size();i++) {
 						Map map=sysSql.bsAlarmList().get(i);
-						
-						
 						for (int j = 0; j < sysSql.personList().size(); j++) {
 							Sms sms=new Sms();
 							sms=sysSql.personList().get(j);
@@ -263,7 +261,7 @@ class AlarmSms extends TimerTask {
 							log.info("sms:"+sms.getMessage());
 							sendSms.sendMessage(sms);
 							try {
-								xhlog.writeLog(5, sms.getMessage(),sms.getPerson());
+								xhlog.writeLogNoSevlet(5, sms.getMessage(),sms.getPerson());
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -277,12 +275,7 @@ class AlarmSms extends TimerTask {
 				if (sysSql.bsgpslost().size()>0) {
 					for(int i=0;i<sysSql.bsgpslost().size();i++){
 						Map map=sysSql.bsgpslost().get(i);
-						try {
-							xhlog.writeLog(5, map.get("content").toString(),"网管");
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						
 						for (int j = 0; j < sysSql.personList().size(); j++) {
 							Sms sms=new Sms();
 							sms=sysSql.personList().get(j);
@@ -293,7 +286,7 @@ class AlarmSms extends TimerTask {
 							log.info("sms:"+sms.getMessage());
 							sendSms.sendMessage(sms);
 							try {
-								xhlog.writeLog(5, sms.getMessage(),sms.getPerson());
+								xhlog.writeLogNoSevlet(5, sms.getMessage(),sms.getPerson());
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -318,7 +311,7 @@ class AlarmSms extends TimerTask {
 						log.info("sms:"+sms.getMessage());
 						sendSms.sendMessage(sms);
 						try {
-							xhlog.writeLog(5, sms.getMessage(),sms.getPerson());
+							xhlog.writeLogNoSevlet(5, sms.getMessage(),sms.getPerson());
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

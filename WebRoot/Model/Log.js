@@ -111,7 +111,8 @@ if(!grid)
 	        	 if(v==1){return "<img src='../resources/images/btn/add.png'/>&nbsp;&nbsp;添加数据";}
 	        	 else if(v==2){return "<img src='../resources/images/btn/update.png'/>&nbsp;&nbsp;修改数据";}
 	        	 else if(v==3){return "<img src='../resources/images/btn/delete.png'/>&nbsp;&nbsp;删除数据";}
-	        	 	        	 else{return "<img src='../resources/images/picture/light.png'/>&nbsp;&nbsp;其他操作";}
+	        	 else if(v==5){return "短信告警";}
+	        	 else{return "<img src='../resources/images/picture/light.png'/>&nbsp;&nbsp;其他操作";}
 	         }}, 
 	         {text: "操作记录", flex:1, dataIndex: 'content', sortable: false,
 	        	 editor : {  

@@ -263,7 +263,7 @@ public class SysSql {
 	}
 	
 	public ArrayList<Sms> personList(){
-		String sql="select phoneNumber from xhdigital_phonebook";
+		String sql="select * from xhdigital_phonebook";
 		ArrayList<Sms> list=new ArrayList<Sms>();
 		
 		Connection conn=db.getConn();		

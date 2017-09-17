@@ -16,6 +16,7 @@ import com.sql.SysMysql;
 public class XhLog {
 	private SysMysql db=new SysMysql();
 	private Cookies cookie=new Cookies();
+	private WebFun fun=new WebFun();
 	//记录日志
 	public void writeLog(int type,String content,String user)throws Exception{
 		HttpServletRequest request =ServletActionContext.getRequest();
@@ -26,6 +27,19 @@ public class XhLog {
 		Statement stmt =conn.createStatement();
 		String sql="insert into xhdigital_log(operator,type,content,time,ip)VALUES('"+user+"'," +
 				""+type+",'"+content+"','"+time()+"','"+getIpAddr(request)+"')";
+		stmt.executeUpdate(sql);
+		conn.close();
+		stmt.close();
+	}
+	public void writeLogNoSevlet(int type,String content,String user)throws Exception{
+		
+		if(user.equals("")|| user.equals(null)){
+			user=cookie.getCookie("username");
+		}
+		Connection conn=db.getConn();
+		Statement stmt =conn.createStatement();
+		String sql="insert into xhdigital_log(operator,type,content,time,ip)VALUES('"+user+"'," +
+				""+type+",'"+content+"','"+time()+"','"+fun.readXml("sms", "ip")+"')";
 		stmt.executeUpdate(sql);
 		conn.close();
 		stmt.close();

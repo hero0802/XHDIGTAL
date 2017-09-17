@@ -503,7 +503,7 @@ if(!grid)
                     				handler:function(btn){
                     					gpsbtn=1;
                     					btn.disable();
-                    					OneGps(record.get("srcId"),record.get("starttime"));
+                    					OneGps(record.get("srcId"),record.get("starttime"),btn);
                     					
                     				}
                     			},{
@@ -2875,7 +2875,7 @@ function bsPowOff(id){
 			})	
 }
 //当前手台GPS
-function OneGps(msc,time){
+function OneGps(msc,time,btn){
 	var type=Ext.getCmp('type').getValue()['type'];
 	if(type!=0){
 		Ext.MessageBox.show({  
@@ -2883,7 +2883,7 @@ function OneGps(msc,time){
 			msg : "请先切换到地图模式" , 
 			icon: Ext.MessageBox.INFO  
 		}); 
-		Ext.getCmp('gpsBtn').enable();
+		btn.enable();
 		return;
 	}
 	Ext.Ajax.request({
@@ -2898,6 +2898,7 @@ function OneGps(msc,time){
 		    success : function(response,opts) { 
 		     var rs = Ext.decode(response.responseText)
 		     /*Ext.getCmp('gpsBtn').enable();*/
+		     btn.enable();
 		     if(rs.total==0){
 		    	 Ext.MessageBox.show({  
 		 			title : "提示",  
@@ -2941,6 +2942,7 @@ function OneGps(msc,time){
 		    failure: function(response) {
 		    
 		    	Ext.example.msg("提示","获取失败"); 
+		    	btn.enable();
 		    	/*Ext.getCmp('gpsBtn').enable();*/
 		      }
 		})	

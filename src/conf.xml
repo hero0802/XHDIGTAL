@@ -38,7 +38,7 @@
 </call>
 
 <sms>
-    <ip>192.168.30.22</ip>
+    <ip>127.0.0.1</ip>
     <port>4001</port>
     <number>13800220500</number>
     <bsofftime>10</bsofftime>
