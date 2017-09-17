@@ -146,8 +146,8 @@ if(!grid)
 	disableSelection: false,
 	loadMask: true,  
 	columns:[
-	         new Ext.grid.RowNumberer({width:50,text:'#'}), 
-	         {text: "ID", width: 100, dataIndex: 'id', sortable: true,hidden:true}, 
+	         /*new Ext.grid.RowNumberer({width:50,text:'#'}), */
+	         {text: "ID", width: 100, dataIndex: 'id', sortable: true,hidden:false}, 
 	         {text: "会员组", width: 250, dataIndex: 'groupname', sortable: true}, 
 	         {text: "会员组描述", flex: 1, dataIndex: 'groupinfo', sortable: true},
 	         /*{text: "会员组级别", width: 80, dataIndex: 'level', sortable: true},*/

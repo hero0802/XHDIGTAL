@@ -1,7 +1,12 @@
 package data.action;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -49,6 +54,14 @@ public class TalkGroup extends ActionSupport{
 		}
 		
 		ArrayList data = Sql.DBList(sql);
+		
+		for(int i=0;i<data.size();i++){
+			Map map=(Map) data.get(i);
+			map.put("count", count(map.get("id").toString()));
+			map.put("bs", bs(map.get("id").toString()));
+			data.remove(i);
+			data.add(i, map);
+		}
 
 		HashMap result=new HashMap();
 		result.put("items", data);
@@ -56,6 +69,45 @@ public class TalkGroup extends ActionSupport{
 		String jsonstr = json.Encode(result);
 		ServletActionContext.getResponse().setContentType("text/html;charset=UTF-8");
 		ServletActionContext.getResponse().getWriter().write(jsonstr);
+	}
+	public int count(String group){
+		String sql="select count(*) as num from group_basestation_static where homegroupid="+group;
+		Connection conn=db.getConn();
+		Statement stmt;
+		int  a=0;
+		try {
+			stmt = conn.createStatement();
+			ResultSet rst = stmt.executeQuery(sql);	
+			while(rst.next()){
+				a=rst.getInt("num");
+			}
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return a;
+	}
+	public String bs(String group){
+		String sql="select a.basestationid,b.name from group_basestation_static as a left join "
+				+ "basestation as b on a.basestationid=b.id where a.homegroupid="+group;
+		Connection conn=db.getConn();
+		Statement stmt;
+		String str="";
+		try {
+			stmt = conn.createStatement();
+			ResultSet rst = stmt.executeQuery(sql);	
+			while(rst.next()){
+				str+="["+rst.getString("basestationid")+"]:"+rst.getString("name")+" ;";
+			}
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return str;
 	}
 	
 	public boolean isSuccess() {

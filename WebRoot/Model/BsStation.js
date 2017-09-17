@@ -48,7 +48,8 @@ Ext.define('radiouser',{
 	        {name:'gpsunlock_worken'},
 	        {name:'mcsrcen'},
 	        {name:'msodisconn_worken'},
-	        {name:'bsdisconn_worken'}
+	        {name:'bsdisconn_worken'},
+	        {name:'rssi_ceiling'}
 	        ], 
 	        idProperty : 'id'
 })
@@ -197,15 +198,15 @@ if(!grid)
 				        	 if(v){return "数字";}else{return "模拟";}
 				         }
 				         },{text: "音频接收端口", width:110, dataIndex: 'aduiorecvport', sortable: false
-			},{text: "组播源", width:80, dataIndex: 'offlinerepeaten', sortable: false,
+			},{text: "组播源", width:80, dataIndex: 'mcsrcen', sortable: false,
 	        	 renderer:function(v){
 		        	 if(v){return "是";}else{return "<span style='color:red'>否</span>";}
 		      }}
-			,{text: "中心断网是否工作", width:140, dataIndex: 'offlinerepeaten', sortable: false,
+			,{text: "中心断网是否工作", width:140, dataIndex: 'msodisconn_worken', sortable: false,
 	        	 renderer:function(v){
 		        	 if(v){return "是";}else{return "<span style='color:red'>否</span>";}
 		      }}
-			,{text: "基站断网是否工作", width:140, dataIndex: 'offlinerepeaten', sortable: false,
+			,{text: "基站断网是否工作", width:140, dataIndex: 'bsdisconn_worken', sortable: false,
 	        	 renderer:function(v){
 		        	 if(v){return "是";}else{return "<span style='color:red'>否</span>";}
 		      }}
@@ -417,7 +418,7 @@ function update_btn()
 					labelWidth:80,margin:'0 30 0 0',width:170
 				},{
 					xtype:'textfield',fieldLabel:'IP',name:'ip',
-					labelWidth:80,margin:'0 30 0 0',width:170
+					labelWidth:80,margin:'0 30 0 0',width:190
 				}]
 			},{
 				xtype:'panel',
@@ -530,6 +531,7 @@ function update_btn()
 				},{
 					xtype:'panel',
 					layout:'column',
+					hidden:true,
 					border:false,
 					items:[{
 						xtype:'combobox',fieldLabel:'接入等待',name:'wt',
@@ -557,7 +559,10 @@ function update_btn()
 						xtype:'checkbox',fieldLabel:'状态',name:'sleepen',labelWidth:30,boxLabel:'工作',checked:true,
 						margin:'0 0 0 50'
 					},{
-						xtype:'checkbox',fieldLabel:'移动台激活是否需登记',name:'reg',labelWidth:150,boxLabel:'是',
+						xtype:'numberfield',fieldLabel:'截止场强',name:'rssi_ceiling',hidden:parseInt(getcookie("groupid"))!=10000,
+						labelWidth:80,minValue:0,maxValue:200,width:170,margin:'0 30 0 130'
+					},{
+						xtype:'checkbox',fieldLabel:'移动台激活是否需登记',name:'reg',labelWidth:150,boxLabel:'是',hidden:true,
 						margin:'0 0 0 50'
 					}]
 				},{
@@ -675,9 +680,8 @@ function update_btn()
 		        			    gpsunlock_worken:form.findField('gpsunlock_worken').getValue()?1:0,	
 		        			    mcsrcen:form.findField('mcsrcen').getValue()?1:0,
 		        			   msodisconn_worken:form.findField('msodisconn_worken').getValue()?1:0	,
-		        			   bsdisconn_worken:form.findField('bsdisconn_worken').getValue()?1:0	
-		        			    		
-		        			    		
+		        			   bsdisconn_worken:form.findField('bsdisconn_worken').getValue()?1:0,	
+		        			   rssi_ceiling	:form.findField('rssi_ceiling').getValue(), 		
 		        			    		
 		        			  
 		        						
@@ -789,7 +793,7 @@ var addForm=new Ext.FormPanel({
 				labelWidth:80,margin:'0 30 0 0',width:170
 			},{
 				xtype:'numberfield',fieldLabel:'联网信道',name:'channelno',
-				labelWidth:80,margin:'0 30 0 0',width:170,minValue:0
+				labelWidth:80,margin:'0 30 0 0',width:170,minValue:0,allowBlank: false
 			}]
 		},{
 			xtype:'panel',
@@ -797,7 +801,7 @@ var addForm=new Ext.FormPanel({
 			border:false,
 			items:[{
 				xtype:'numberfield',fieldLabel:'脱网信道',name:'offlinech',
-				labelWidth:80,width:170,margin:'0 30 0 0'
+				labelWidth:80,width:170,margin:'0 30 0 0',allowBlank: false
 			},{
 				xtype:'textfield',fieldLabel:'音频端口',name:'aduiorecvport',
 				labelWidth:80,margin:'0 30 0 0',width:170,value:'12000'
@@ -889,6 +893,7 @@ var addForm=new Ext.FormPanel({
 				xtype:'panel',
 				layout:'column',
 				border:false,
+				hidden:true,
 				items:[{
 					xtype:'combobox',fieldLabel:'接入等待',name:'wt',
 					labelWidth:80,
@@ -915,7 +920,10 @@ var addForm=new Ext.FormPanel({
 					xtype:'checkbox',fieldLabel:'状态',name:'sleepen',labelWidth:30,boxLabel:'单站工作',checked:true,
 					margin:'0 0 0 50'
 				},{
-					xtype:'checkbox',fieldLabel:'移动台激活是否需登记',name:'reg',labelWidth:150,boxLabel:'是',
+					xtype:'numberfield',fieldLabel:'截止场强',name:'rssi_ceiling',hidden:parseInt(getcookie("groupid"))!=10000,
+					labelWidth:80,minValue:0,maxValue:200,width:170,margin:'0 30 0 130'
+				},{
+					xtype:'checkbox',fieldLabel:'移动台激活是否需登记',name:'reg',labelWidth:150,boxLabel:'是',hidden:true,
 					margin:'0 0 0 50'
 				}]
 			},{
@@ -1163,7 +1171,8 @@ function addRun(form,mask){
 			    gpsunlock_worken:form.findField('gpsunlock_worken').getValue()?1:0	,
 			   mcsrcen:form.findField('mcsrcen').getValue()?1:0,
 			   msodisconn_worken:form.findField('msodisconn_worken').getValue()?1:0	,
-			 bsdisconn_worken:form.findField('bsdisconn_worken').getValue()?1:0				    	
+			 bsdisconn_worken:form.findField('bsdisconn_worken').getValue()?1:0	,
+					 rssi_ceiling:form.findField('rssi_ceiling').getValue()	
 				 
 			 },  
 			 method : 'POST',
@@ -1238,7 +1247,8 @@ function addRunMany(form,id){
 			    gpsunlock_worken:form.findField('gpsunlock_worken').getValue()?1:0,
 			    		  mcsrcen:form.findField('mcsrcen').getValue()?1:0,
 			        			   msodisconn_worken:form.findField('msodisconn_worken').getValue()?1:0	,
-			        			   bsdisconn_worken:form.findField('bsdisconn_worken').getValue()?1:0	
+			        			   bsdisconn_worken:form.findField('bsdisconn_worken').getValue()?1:0,
+			        					   rssi_ceiling	:form.findField('rssi_ceiling').getValue()
 
 				 
 			 },  
@@ -1288,6 +1298,16 @@ function tellCenter(){
 	}  
 	}); 
 }
+function getcookie(name) {
+	var strcookie = document.cookie;
+	var arrcookie = strcookie.split(";");
+	for (var i = 0; i < arrcookie.length; i++) {
+		var arr = arrcookie[i].split("=");
+		if (arr[0].match(name) == name)
+			return arr[1];
+	}
+	return "";
+};
 // 设置radiogroup的值
 function setRadioChecked(record){
 	/*

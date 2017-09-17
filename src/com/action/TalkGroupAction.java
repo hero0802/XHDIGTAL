@@ -1,5 +1,10 @@
 package com.action;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import com.func.Cookies;
 import com.func.XhLog;
 import com.func.MD5;
@@ -59,6 +64,26 @@ public class TalkGroupAction extends ActionSupport{
 		}
 		return SUCCESS;
 	}
+	//获取通话组时隙
+	public int slot(String msc){
+		String sql="select slot from homegroup where id="+msc;
+		Connection conn=db.getConn();
+		Statement stmt;
+		int  a=0;
+		try {
+			stmt = conn.createStatement();
+			ResultSet rst = stmt.executeQuery(sql);	
+			while(rst.next()){
+				a=rst.getInt("slot");
+			}
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return a;
+	}
 	//添加归属基站
 	public String addTGBS() throws Exception{
 		String[] groupid=homegroupids.split(",");
@@ -73,8 +98,11 @@ public class TalkGroupAction extends ActionSupport{
 			    String sql2 = "insert into group_basestation_static(homegroupid,basestationid)VALUES("
 					+ groupid[i] + "," + tsId[j] + ")";
 			    if (!Sql.exists(sql)) {
+			    	
+			    	String sql3="delete from  group_basestation_static where "
+			    			+ "basestationid ='"+tsId[j]+"' and homegroupid in(select id from homegroup where slot='"+slot(groupid[i])+"')";
+			    	Sql.Update(sql3);
 			    	Sql.Update(sql2);
-					
 					this.message = "归属基站添加成功";
 					log.writeLog(1, "组归属基站添加成功：" + tsId[j], "");
 					

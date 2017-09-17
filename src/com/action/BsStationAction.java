@@ -87,6 +87,7 @@ public class BsStationAction extends ActionSupport {
 	private String gpsunlock_worken;
 	private String msodisconn_worken;
 	private String bsdisconn_worken;
+	private String rssi_ceiling;
 	
 
 	private int number;
@@ -254,7 +255,8 @@ public class BsStationAction extends ActionSupport {
 		String sql2 = "insert into basestation(id,sysidcode,colorcode,sleepen,ip,startwatchdog,channelno,"
 				+ "slot0authority,slot1authority,aietype,up,mask,sf,wt,reg,backoff,name,rf_transmit_en,"
 				+ "rf_receive_en,offlinech,offlinerepeaten,admode,aduiorecvport,wan_en,wan_centerip,wan_centerport,"
-				+ "wan_switchip,wan_switchport,gpsnum_delay,issimulcast,gpsunlock_worken,mcsrcen,msodisconn_worken,bsdisconn_worken)VALUES("
+				+ "wan_switchip,wan_switchport,gpsnum_delay,issimulcast,gpsunlock_worken,"
+				+ "mcsrcen,msodisconn_worken,bsdisconn_worken,rssi_ceiling)VALUES("
 				+ id+ ",'"+ sysidcode+ "','"+ colorcode+ "','"+ sleepen
 				+ "','"+ ip+ "',"+ "'"+ startwatchdog
 				+ "','"+ (Integer.parseInt(channelno)-1)
@@ -264,7 +266,7 @@ public class BsStationAction extends ActionSupport {
 				+ "','"+ rf_transmit_en + "','" + rf_receive_en + "','"+(Integer.parseInt(offlinech)-1)+"','"+offlinerepeaten+"','"+admode+"','"+aduiorecvport+"',"
 				+ "'"+wan_en+"','"+wan_centerip+"','"+wan_centerport+"','"+wan_switchip+"',"
 				+ "'"+wan_switchport+"','"+gpsnum_delay+"','"+issimulcast+"','"+gpsunlock_worken+"',"
-				+ "'"+mcsrcen+"','"+msodisconn_worken+"','"+bsdisconn_worken+"')";
+				+ "'"+mcsrcen+"','"+msodisconn_worken+"','"+bsdisconn_worken+"','"+rssi_ceiling+"')";
 		if (Sql.exists(sql)) {
 			this.message = "该ID已经存在";
 			this.success = false;
@@ -302,7 +304,7 @@ public class BsStationAction extends ActionSupport {
 				+ "wan_centerport='"+wan_centerport+"',wan_switchip='"+wan_switchip+"',wan_switchport='"
 				+wan_switchport+"',issimulcast='"+issimulcast+"',gpsnum_delay='"+gpsnum_delay+"',"
 				+ "gpsunlock_worken='"+gpsunlock_worken+"',mcsrcen='"+mcsrcen+"',"
-				+ "msodisconn_worken='"+msodisconn_worken+"',bsdisconn_worken='"+bsdisconn_worken+"'  where id=" + id;
+				+ "msodisconn_worken='"+msodisconn_worken+"',bsdisconn_worken='"+bsdisconn_worken+"',rssi_ceiling='"+rssi_ceiling+"'  where id=" + id;
 		//String sql2="update";
 		Sql.Update(sql);
 
@@ -1552,6 +1554,12 @@ public class BsStationAction extends ActionSupport {
 	}
 	public void setBsdisconn_worken(String bsdisconn_worken) {
 		this.bsdisconn_worken = bsdisconn_worken;
+	}
+	public String getRssi_ceiling() {
+		return rssi_ceiling;
+	}
+	public void setRssi_ceiling(String rssi_ceiling) {
+		this.rssi_ceiling = rssi_ceiling;
 	}
 
 

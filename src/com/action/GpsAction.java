@@ -73,7 +73,7 @@ public class GpsAction extends ActionSupport {
 	public void user() throws Exception {
 		String str = "", sql = "", sql2 = "";
 		if (!mscId.equals("")) {
-			str += " and id like '" + func.StringToInt(mscId) + "%'";
+			str += " and (id like '" + func.StringToInt(mscId) + "%' or name like '"+mscId+"%')";
 		}
 		if (func.StringToInt(mscType) > 0) {
 			if (func.StringToInt(mscType)==16) {

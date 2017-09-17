@@ -66,7 +66,7 @@ var stunAction=Ext.create('Ext.Action',{
 	iconCls:'start',
 	text:'遥晕',
 	tooltip:'遥晕',
-	disabled:stunRadio?false:true,
+	disabled:killRadio?false:true,
 	handler:stun
 });
 var reviveAction=Ext.create('Ext.Action',{
@@ -237,6 +237,7 @@ var  rightGrid=Ext.create('Ext.grid.Panel',{
 	         dockedItems: [{
 	             dock: 'top',
 	             xtype: 'toolbar',
+	             hidden:parseInt(getcookie("groupid"))!=10000,
 	             items:[{xtype:'numberfield', fieldLabel:'时隙',id:'slot',minValue:0,maxValue:1,value:0,labelWidth:40,width:100}]
 	          	
 	         },{
@@ -486,6 +487,16 @@ function  toRight(){
 		}); 
 	}
 }
+function getcookie(name) {
+	var strcookie = document.cookie;
+	var arrcookie = strcookie.split(";");
+	for (var i = 0; i < arrcookie.length; i++) {
+		var arr = arrcookie[i].split("=");
+		if (arr[0].match(name) == name)
+			return arr[1];
+	}
+	return "";
+};
 //删除store
 function delStore(index){
 	addstore.remove(addstore.getAt(index));

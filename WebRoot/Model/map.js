@@ -139,6 +139,13 @@ var usergrid=Ext.create('Ext.grid.Panel',{
 	            		 refreshMap=2;
 	            		 clearMarkers();
 	            		 nowMscId=record.get("id");
+	            		 var record = usergrid.getSelectionModel().getLastSelected(); 
+	            			form.getForm().findField("name").setValue(record.get("id"));
+	            			for(var i=0;i<userStore.getCount();i++){
+	            				if(userStore.getAt(i).get("id")==record.get("id")){
+	            					userStore.getAt(i).set('result','获取数据中');
+	            				}
+	            			}
 	            		 GetGPS(record.get("id"));
 	            		
 	            		 
@@ -205,7 +212,7 @@ var usergrid=Ext.create('Ext.grid.Panel',{
 		    		       [2,"不限制"],[0,"离线"],[1,"在线"]],
 		    		queryMode:'local',value:1,width:110
 				},{
-					xtype:'numberfield',name:'mscId',id:'mscId',fieldLabel:'号码',labelWidth:30,width:130
+					xtype:'textfield',name:'mscId',id:'mscId',fieldLabel:'号码',labelWidth:30,width:130
 				},{
 	            	 xtype:'button',
 	            	 text:'查询',
@@ -313,7 +320,7 @@ userStore.on('beforeload', function (store, options) {
 
 });
 //表格行选择
-usergrid.getSelectionModel().on({
+/*usergrid.getSelectionModel().on({
 	selectionchange:function(sm,selections){
 	var data=usergrid.getSelectionModel().getSelection();
 	if(data.length !=1){return;}
@@ -326,7 +333,7 @@ usergrid.getSelectionModel().on({
 			}
 		}
 		
-		/*var wgloc={};
+		var wgloc={};
 		wgloc.lat=record.get("lat");
 		wgloc.lng=record.get("lng");
 		var lat=transformFromWGSToGCJ(wgloc).lat;
@@ -335,12 +342,12 @@ usergrid.getSelectionModel().on({
 		setMapCenter(lat,lng);
 		changeMaker(record.get("id"),lat,lng)
 		
-		}*/
+		}
 
 	}
 }
 	
-});
+});*/
 // 显示表格
 Ext.QuickTips.init(); 
 // 禁止整个页面的右键
@@ -415,7 +422,6 @@ function OneMaker(str){
 			}
 		}
 	}
-	return ;
 	/*if(data.lat==0 || data.lng==0){
 		Ext.MessageBox.show({  
 			title : "提示",  
@@ -1034,8 +1040,8 @@ function deleteMarkers() {
 // set center
 function setMapCenter(lat,lng){
 	var myLatlng = new google.maps.LatLng(lat, lng);
-	map.setCenter(myLatlng,15);
-	map.setZoom(15);
+	map.setCenter(myLatlng,12);
+	map.setZoom(12);
 }
 function changeMaker(mscId,lat,lng){
 	clearMarkers();

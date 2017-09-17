@@ -20,6 +20,8 @@ Ext.define('radiouser',{
 	        {name: 'callmode'},
 	        {name: 'priority'},
 	        {name: 'slot'},
+	        {name: 'count'},
+	        {name: 'bs'},
 	        {name: 'maxcalltime'},
 	        {name: 'roamen'},
 	        {name: 'name'}
@@ -232,8 +234,8 @@ if(!grid)
 	        	 return"<a href='#' onclick=update_btn() title='详细信息' style='color:blue'>"+v+"</a>";
 	         }
 	         },{text: "名称", width:150, dataIndex: 'name', sortable: false
-	         },{text: "类型", width:80, dataIndex: 'type', sortable: false
-	         },/*{text: "漫游使能", flex:2, dataIndex: 'roamen', sortable: false,
+	         },/*{text: "类型", width:80, dataIndex: 'type', sortable: false
+	         },*//*{text: "漫游使能", flex:2, dataIndex: 'roamen', sortable: false,
 	        	 renderer:function(v){
 	        	 if(v){return "<span><img src='../resources/images/picture/true.png'/></span>"}
 	        	 else{return "<span><img src='../resources/images/picture/false.png'/></span>"}
@@ -246,7 +248,8 @@ if(!grid)
 	         {text: "通话时长", width:80, dataIndex: 'maxcalltime', sortable: false,
 	        	 renderer:function(v){
 	        	 return v+"s"
-	         }},{text: "", flex:1, dataIndex: '', sortable: false
+	         }},{text: "基站总数", width:80, dataIndex: 'count', sortable: false
+	         },{text: "备注", flex:1, dataIndex: 'bs', sortable: false
 	         }
 	         
 	         ],
@@ -370,13 +373,76 @@ var bs_Grid=Ext.create('Ext.grid.Panel',{
 	         frame:false,
 	         border:false,
 	         forceFit: true,
-	         columnLines : true, /*
-									 * height:document.documentElement.clientHeight,
-									 */
-	         
+	         columnLines : true, 
 	         selModel: Ext.create('Ext.selection.CheckboxModel'),
 	         viewConfig: {
-	             stripeRows: true
+	             stripeRows: true,
+	             listeners: {
+	            	 itemdblclick:function(dataview, record, item, index, e){
+	            		 var data_bs = bs_Grid.getSelectionModel().getSelection();
+	            		 var data = grid.getSelectionModel().getSelection();
+	     				if (data_bs.length ==0) {  
+	     					Ext.MessageBox.show({  
+	     						title : "提示",  
+	     						msg : "请至少选择一个基站!" , 
+	     						icon: Ext.MessageBox.ERROR  
+	     					});  
+	     					return;  
+	     				};
+	     			var myMask = new Ext.LoadMask(Ext.getBody(), { 
+	     		        msg: '正在验证数据，请稍后！',  
+	     		        //loadMask: true, 
+	     		        removeMask: true //完成后移除  
+	     		    });
+	     			myMask.show();
+	     			var homegroupids = [],bsids=[];  
+	     			Ext.Array.each(data, function(record) {  
+	     				var homegroupid=record.get('id');  
+	     				// 如果删除的是幻影数据，则id就不传递到后台了，直接在前台删除即可
+	     				if(homegroupid){homegroupids.push(homegroupid);}  
+
+	     			}); 
+	     			
+	     			Ext.Array.each(data_bs,function(record){
+	     				var bsid=record.get('id');
+	     				if(bsid){bsids.push(bsid);}
+	     			});
+	     			 Ext.Ajax.request({  
+	     				 url : '../controller/addTGBS.action',  
+	     				 params : {
+	     					 homegroupids:homegroupids.join(','),
+	     					 bsids:bsids.join(',')
+	     			 },  
+	     			 method : 'POST',
+	     			 success : function(response) { 
+	     				 var rs=Ext.decode(response.responseText);
+	     				 myMask.hide();
+	     				 if(rs.success)
+	     				 {
+	     					 groupBsStore.reload();
+	     					groupOtherBsStore.reload();
+	     				 Ext.example.msg("提示",rs.message);
+	     				 /*win.hide();*/
+	     				 }
+	     				 else
+	     				 {
+	     					 Ext.MessageBox.show({  
+	     						 title : "提示",  
+	     						 msg : rs.message , 
+	     						 icon: Ext.MessageBox.ERROR  
+	     					 }); 
+	     				 }
+	     			 },
+
+	     			 failure: function(response) {
+
+	     				 myMask.hide();
+	     				
+	     			 }  
+	     			 });
+	            		 
+	            	 }
+	             }
 	         },
 
 	         emptyText:'<span>没有查询到数据</span>'
@@ -583,6 +649,7 @@ function update_btn()
 				},{
 					xtype:'combobox',fieldLabel:'组类型',name:'type',
 					labelWidth:150,
+					hidden:true,
 	        		store:[[0,'0'],[1,'1']],
 	        		queryMode:'local',value:0
 				}]},{
@@ -597,7 +664,7 @@ function update_btn()
 				            { boxLabel: '否', name:'roamen', inputValue: '0'}
 				        ]
 				},*/{
-					xtype:'numberfield',fieldLabel:'优先级',name:'priority',
+					xtype:'numberfield',fieldLabel:'优先级',name:'priority',hidden:true,
 					labelWidth:150
 				},{
 					xtype:'numberfield',fieldLabel:'通话时长',name:'maxcalltime',
@@ -785,6 +852,7 @@ var addForm=new Ext.FormPanel({
 			},{
 				xtype:'combobox',fieldLabel:'组类型',name:'type',
 				labelWidth:150,
+				hidden:true,
         		store:[[0,'0'],[1,'1']],
         		queryMode:'local',value:0
 			}]},{
@@ -799,7 +867,7 @@ var addForm=new Ext.FormPanel({
 			            { boxLabel: '否', name:'roamen', inputValue: '0'}
 			        ]
 			},*/{
-				xtype:'numberfield',fieldLabel:'优先级',name:'priority',
+				xtype:'numberfield',fieldLabel:'优先级',name:'priority',hidden:true,
 				labelWidth:150,value:0
 			},{
 				xtype:'numberfield',fieldLabel:'通话时长(s)',name:'maxcalltime',
@@ -1217,6 +1285,7 @@ function editTGBS(){
 		         /*selModel: selModel,*/
 		         viewConfig: {
 		             stripeRows: true
+		           
 		         },
 
 		         emptyText:'<h1 align="center" style="color:red"><span>对不起，没有查询到数据</span></h1>',
@@ -1365,6 +1434,7 @@ function addTGBS(){
 				 if(rs.success)
 				 {
 					 groupBsStore.reload();
+					 store.reload();
 				 Ext.example.msg("提示",rs.message);
 				 /*win.hide();*/
 				 }

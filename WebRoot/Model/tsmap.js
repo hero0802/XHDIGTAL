@@ -373,6 +373,7 @@ var mapPanel=Ext.create('Ext.panel.Panel',{
 var grid;
 var markerWin;
 var voicePanel;
+var gpsbtn=0;
 if(!grid)
 { grid=Ext.create('Ext.grid.Panel',{
 	region:'center',
@@ -430,6 +431,7 @@ if(!grid)
 	             listeners: {
 	            	 itemdblclick:function(dataview, record, item, index, e){  
 	            		 var usetime=parseInt(record.get("usetime"));
+	            		 gpsbtn=0;
                     	 var form="<div style='padding:10px;'>";
                     	 form+="<p>主叫ID:"+record.get("srcId")+"</p>";
                     	 form+="<p>名称:"+record.get("caller")+"</p>";
@@ -447,6 +449,7 @@ if(!grid)
                     	 
                     	if(markerWin){
                     		markerWin.hide();
+                    		
                     	}
                     		
                     		markerWin=Ext.create("Ext.Window",{
@@ -496,9 +499,12 @@ if(!grid)
                     			},{
                     				text:'定位',
                     				iconCls:'icon-location',
-                    				handler:function(){
+                    				disabled:gpsbtn==1,
+                    				handler:function(btn){
+                    					gpsbtn=1;
+                    					btn.disable();
                     					OneGps(record.get("srcId"),record.get("starttime"));
-                    					/*markerWin.hide();*/
+                    					
                     				}
                     			},{
                     				text:'关闭',
@@ -2877,6 +2883,7 @@ function OneGps(msc,time){
 			msg : "请先切换到地图模式" , 
 			icon: Ext.MessageBox.INFO  
 		}); 
+		Ext.getCmp('gpsBtn').enable();
 		return;
 	}
 	Ext.Ajax.request({
@@ -2890,7 +2897,7 @@ function OneGps(msc,time){
 		    waitMsg: '正在提交中', 
 		    success : function(response,opts) { 
 		     var rs = Ext.decode(response.responseText)
-		     
+		     /*Ext.getCmp('gpsBtn').enable();*/
 		     if(rs.total==0){
 		    	 Ext.MessageBox.show({  
 		 			title : "提示",  
@@ -2933,7 +2940,8 @@ function OneGps(msc,time){
 		    },
 		    failure: function(response) {
 		    
-		    	Ext.example.msg("提示","获取失败");  
+		    	Ext.example.msg("提示","获取失败"); 
+		    	/*Ext.getCmp('gpsBtn').enable();*/
 		      }
 		})	
 }
@@ -3884,6 +3892,6 @@ function transformFromWGSToGCJ(wgLoc)
 }
 function setMapCenter(lat,lng){
 	var myLatlng = new google.maps.LatLng(lat, lng);
-	map.setCenter(myLatlng,17);
-	map.setZoom(17);
+	map.setCenter(myLatlng,9);
+	map.setZoom(9);
 }

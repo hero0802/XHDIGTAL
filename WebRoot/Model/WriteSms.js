@@ -78,6 +78,7 @@ var Form=Ext.create('Ext.form.Panel',{
 		xtype:'radiogroup',
 		fieldLabel:'<span style="color:#FF1493;font-weight:700">选择时隙</span>',
 		name:'slot',
+		hidden:parseInt(getcookie("groupid"))!=10000,
 		border:0,
 		height:30,
 		allowBlank:false,
@@ -342,6 +343,16 @@ function loadConfig(){
 		 });} 
 	});
 }
+function getcookie(name) {
+	var strcookie = document.cookie;
+	var arrcookie = strcookie.split(";");
+	for (var i = 0; i < arrcookie.length; i++) {
+		var arr = arrcookie[i].split("=");
+		if (arr[0].match(name) == name)
+			return arr[1];
+	}
+	return "";
+};
 function CurentTime(time)
 { 
     var now =time;

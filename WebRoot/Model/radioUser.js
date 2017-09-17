@@ -283,12 +283,12 @@ if(!grid)
 	
 	columns:[
 	        /* new Ext.grid.RowNumberer({width:50,text:'#'}), */
-	         {text: "用户ID", width:80, dataIndex: 'id', sortable: true,
+	         {text: "用户ID", width:100, dataIndex: 'id', sortable: true,
 	        	 renderer : function(v){
 	        	 return"<a href='#' onclick=update_btn() title='详细信息' style='color:blue'>"+v+"</a>";
 	         }
 	         },{text: "名称", width:150, dataIndex: 'name', sortable: false
-	         },{text: "类型", width:60, dataIndex: 'type', sortable: false,
+	         },{text: "类型", width:100, dataIndex: 'type', sortable: false,
 	        	 renderer:function(v){
 	        	 if(v==0){return "手台";}
 	        	 else if(v==1){return "车载台";}
@@ -296,7 +296,7 @@ if(!grid)
 	        	 else if(v==3){return "固定台";}
 	        	 else{return "未知";}
 	         }
-	         },{text: "鉴权状态", width:70, dataIndex: 'authoritystatus', sortable: false,
+	         },{text: "鉴权状态", width:100, dataIndex: 'authoritystatus', sortable: false,
 	        	 renderer:function(v){
 	        	 if(v==0){return "<span class='badge' style='background:green'>正常</span>"}
 	        	 else if(v==1){return "<span class='badge' >复活中</span>"}
@@ -306,7 +306,7 @@ if(!grid)
 	        	 else if(v==5){return "<span class='badge' >摇毙中</span>"}
 	        	 else{return "<span>未知</span>"}
 	         }
-	         },{text: "用户激活", width:70, dataIndex: 'regstatus', sortable: false,
+	         },/*{text: "用户激活", width:70, dataIndex: 'regstatus', sortable: false,
 	        	 renderer:function(v){
 	        	 if(v){return "<span><img src='../resources/images/picture/true.png'/></span>"}
 	        	 else{return "<span><img src='../resources/images/picture/false.png'/></span>"}
@@ -316,12 +316,12 @@ if(!grid)
 	        	 if(v){return "<span><img src='../resources/images/picture/true.png'/></span>"}
 	        	 else{return "<span><img src='../resources/images/picture/false.png'/></span>"}
 	         }
-	         },{text: "短信组发", width:70, dataIndex: 'g_smsen', sortable: false,
+	         },*/{text: "短信组发", width:100, dataIndex: 'g_smsen', sortable: false,
 	        	 renderer:function(v){
 	        	 if(v){return "<span><img src='../resources/images/picture/true.png'/></span>"}
 	        	 else{return "<span><img src='../resources/images/picture/false.png'/></span>"}
 	         }
-	         },{text: "短信单发", width:70, dataIndex: 'i_smsen', sortable: false,
+	         },{text: "短信单发", width:100, dataIndex: 'i_smsen', sortable: false,
 	        	 renderer:function(v){
 	        	 if(v){return "<span><img src='../resources/images/picture/true.png'/></span>"}
 	        	 else{return "<span><img src='../resources/images/picture/false.png'/></span>"}
@@ -331,12 +331,12 @@ if(!grid)
 	        	 if(v){return "<span><img src='../resources/images/picture/true.png'/></span>"}
 	        	 else{return "<span><img src='../resources/images/picture/false.png'/></span>"}
 	         }
-	         },{text: "单呼", flex:2, dataIndex: 'i_callen', sortable: false,
+	         }/*,{text: "单呼", flex:2, dataIndex: 'i_callen', sortable: false,
 	        	 renderer:function(v){
 	        	 if(v){return "<span><img src='../resources/images/picture/true.png'/></span>"}
 	        	 else{return "<span><img src='../resources/images/picture/false.png'/></span>"}
 	         }
-	         }
+	         }*/
 	         ],
 	         plugins : [cellEditing],
 	         frame:false,
@@ -705,10 +705,12 @@ function update_btn()
 				items:[{
 					xtype:'numberfield',fieldLabel:'<span style="color:red">终端ID</span>',name:'id',allowBlank: true,
 					labelWidth:80,width:170,margin:'0 30 0 0',disabled:true,minValue:0
-				},/*{
-					xtype:'textfield',fieldLabel:'别名',name:'alias',
-					labelWidth:80,width:170,margin:'0 30 0 0'
-				},*/{
+				},{
+					xtype:'combobox',fieldLabel:'类型',name:'type',
+					labelWidth:80,
+	        		store:[[0,'手台'],[1,'车载台'],[2,'调度台'],[3,'固定台']],
+	        		queryMode:'local',value:0,width:170,margin:'0 30 0 0'
+				},{
 					xtype:'textfield',fieldLabel:'名称',name:'name',
 					labelWidth:80,width:170,margin:'0 30 0 0'
 				}]
@@ -717,30 +719,26 @@ function update_btn()
 				layout:"column",
 				border:false,
 				items:[{
-					xtype:'combobox',fieldLabel:'类型',name:'type',
-					labelWidth:80,
-	        		store:[[0,'手台'],[1,'车载台'],[2,'调度台'],[3,'固定台']],
-	        		queryMode:'local',value:0,width:170,margin:'0 30 0 0'
-				},{
 					xtype:'numberfield',fieldLabel:'通话时长(s)',name:'maxcalltime',tooltip:'123',
-					labelWidth:80,width:170,margin:'0 30 0 0',minValue:0
+					labelWidth:80,width:170,margin:'0 30 0 0',minValue:0,value:10,hidden:true
 				},/*
 					 * { xtype:'numberfield',fieldLabel:'全网区域码',name:'np',
 					 * labelWidth:80,width:170,margin:'0 30 0 0' },
 					 */{
 					xtype:'numberfield',fieldLabel:'优先级',name:'priority',
 					labelWidth:80,width:170,margin:'0 30 0 0',minValue:0
+				},{
+					xtype:'numberfield',fieldLabel:'对讲机上行加密键值',name:'key1',
+					labelWidth:130,width:250,margin:'0 30 0 0',minValue:0
 				}]
 			},{
 				xtype:'panel',
 				layout:"column",
 				border:false,
+				hidden:true,
 				items:[{
 					xtype:'numberfield',fieldLabel:'鉴权码',name:'esn',
 					labelWidth:80,width:170,margin:'0 30 0 0',minValue:0
-				},{
-					xtype:'numberfield',fieldLabel:'对讲机上行加密键值',name:'key1',
-					labelWidth:130,width:250,margin:'0 30 0 0',minValue:0
 				}]
 			}]},{
 				xtype:"fieldset",
@@ -752,17 +750,21 @@ function update_btn()
 					layout:"column",
 					border:false,
 					items:[{
-						xtype:'checkbox',fieldLabel:'鉴权使能',name:'authen',checked:true,labelWidth:60,margin:'0 30 0 0'
+						xtype:'checkbox',fieldLabel:'鉴权使能',name:'authen',hidden:true,checked:true,labelWidth:60,margin:'0 30 0 0'
 					},{
-						xtype:'checkbox',fieldLabel:'用户使能',name:'regstatus',checked:true,labelWidth:60,margin:'0 30 0 0'
+						xtype:'checkbox',fieldLabel:'用户使能',name:'regstatus',hidden:true,checked:true,labelWidth:60,margin:'0 30 0 0'
 					},{
-						xtype:'checkbox',fieldLabel:'GPS使能',name:'gpsen',checked:true,labelWidth:60,margin:'0 30 0 0'
+						xtype:'checkbox',fieldLabel:'GPS使能',name:'gpsen',hidden:true,checked:true,labelWidth:60,margin:'0 30 0 0'
 					},{
-						xtype:'checkbox',fieldLabel:'高级鉴权',name:'adv_authen',checked:true,labelWidth:60,margin:'0 30 0 0'
+						xtype:'checkbox',fieldLabel:'高级鉴权',name:'adv_authen',hidden:true,checked:true,labelWidth:60,margin:'0 30 0 0'
 					},{
 						xtype:'checkbox',fieldLabel:'短信组发',name:'g_smsen',checked:true,labelWidth:60,margin:'0 30 0 0'
 					},{
 						xtype:'checkbox',fieldLabel:'短信单发',name:'i_smsen',checked:true,labelWidth:60,margin:'0 30 0 0'
+					},{
+						xtype:'checkbox',fieldLabel:'组呼',name:'g_callen',checked:true,labelWidth:60,margin:'0 30 0 0'
+					},{
+						xtype:'checkbox',fieldLabel:'遥晕遥毙复活',name:'stun_kill_revive_en',hidden:true,checked:true,labelWidth:90,margin:'0 30 0 0'
 					}/*
 						 * ,{
 						 * xtype:'radiogroup',fieldLabel:'鉴权状态',name:'authoritystatus',id:'authoritystatus',checked:true,
@@ -782,14 +784,14 @@ function update_btn()
 				xtype:"fieldset",
 				style:'margin: 5 10 5 10',
 				title:'呼叫配置',
+				
+				hidden:true,
 				layout:'form',
 				items:[{
 					xtype:'panel',
 					layout:"column",
 					border:false,
 					items:[{
-						xtype:'checkbox',fieldLabel:'组呼',name:'g_callen',checked:true,labelWidth:60,margin:'0 30 0 0'
-					},{
 						xtype:'checkbox',fieldLabel:'单呼',name:'i_callen',checked:true,labelWidth:60,margin:'0 30 0 0'
 					},{
 						xtype:'checkbox',fieldLabel:'紧急呼叫',name:'emergencyen',checked:true,labelWidth:60,margin:'0 30 0 0'
@@ -811,6 +813,7 @@ function update_btn()
 				xtype:"fieldset",
 				style:'margin: 5 10 5 10',
 				title:'其他设置',
+				hidden:true,
 				layout:'form',
 				items:[{
 					xtype:'panel',
@@ -824,8 +827,6 @@ function update_btn()
 						xtype:'checkbox',fieldLabel:'呼叫转移',name:'diverting_call_num',checked:true,labelWidth:60,margin:'0 30 0 0'
 					},{
 						xtype:'checkbox',fieldLabel:'PSTN接入',name:'pstnen',checked:true,labelWidth:80,margin:'0 30 0 0'
-					},{
-						xtype:'checkbox',fieldLabel:'遥晕遥毙复活',name:'stun_kill_revive_en',checked:true,labelWidth:90,margin:'0 30 0 0'
 					}]
 				}]
 			},{
@@ -1170,7 +1171,7 @@ var addForm=new Ext.FormPanel({
 				xtype:'textfield',fieldLabel:'别名',name:'alias',
 				labelWidth:80,width:170,margin:'0 30 0 0'
 			},*/{
-				xtype:'numberfield',fieldLabel:'鉴权码',name:'esn',
+				xtype:'numberfield',fieldLabel:'鉴权码',name:'esn',hidden:true,
 				labelWidth:80,width:170,margin:'0 30 0 0',minValue:0
 			},{
 				xtype:'combobox',fieldLabel:'类型',name:'type',
@@ -1178,8 +1179,8 @@ var addForm=new Ext.FormPanel({
 				store:[[0,'手台'],[1,'车载台'],[2,'调度台'],[3,'固定台']],
         		queryMode:'local',value:0,width:170,margin:'0 30 0 0'
 			},{
-				xtype:'numberfield',fieldLabel:'通话时长(s)',name:'maxcalltime',tooltip:'123',
-				labelWidth:80,width:170,margin:'0 30 0 0',minValue:0
+				xtype:'numberfield',fieldLabel:'通话时长(s)',name:'maxcalltime',hidden:true,
+				labelWidth:80,width:170,margin:'0 30 0 0',minValue:0,value:10
 			},/*
 				 * { xtype:'numberfield',fieldLabel:'全网区域码',name:'np',
 				 * labelWidth:80,width:170,margin:'0 30 0 0' },
@@ -1205,19 +1206,19 @@ var addForm=new Ext.FormPanel({
 				layout:"column",
 				border:false,
 				items:[{
-					xtype:'checkbox',fieldLabel:'鉴权使能',name:'authen',checked:true,labelWidth:60,margin:'0 30 0 0'
+					xtype:'checkbox',fieldLabel:'鉴权使能',name:'authen',hidden:true,checked:true,labelWidth:60,margin:'0 30 0 0'
 				},{
-					xtype:'checkbox',fieldLabel:'用户使能',name:'regstatus',checked:true,labelWidth:60,margin:'0 30 0 0'
+					xtype:'checkbox',fieldLabel:'用户使能',name:'regstatus',hidden:true,checked:true,labelWidth:60,margin:'0 30 0 0'
 				},{
-					xtype:'checkbox',fieldLabel:'GPS使能',name:'gpsen',checked:true,labelWidth:60,margin:'0 30 0 0'
+					xtype:'checkbox',fieldLabel:'GPS使能',name:'gpsen',hidden:true,checked:true,labelWidth:60,margin:'0 30 0 0'
 				},{
-					xtype:'checkbox',fieldLabel:'高级鉴权',name:'adv_authen',checked:true,labelWidth:60,margin:'0 30 0 0'
+					xtype:'checkbox',fieldLabel:'高级鉴权',name:'adv_authen',hidden:true,checked:true,labelWidth:60,margin:'0 30 0 0'
 				},{
 					xtype:'checkbox',fieldLabel:'短信组发',name:'g_smsen',checked:true,labelWidth:60,margin:'0 30 0 0'
 				},{
 					xtype:'checkbox',fieldLabel:'短信单发',name:'i_smsen',checked:true,labelWidth:60,margin:'0 30 0 0'
 				},{
-					xtype:'radiogroup',fieldLabel:'鉴权状态',name:'authoritystatus',checked:true,labelWidth:60,layout:'column',margin:'0 30 0 0',
+					xtype:'radiogroup',fieldLabel:'鉴权状态',name:'authoritystatus',hidden:true,checked:true,labelWidth:60,layout:'column',margin:'0 30 0 0',
 					items: [
 				            { boxLabel: '正常', name:'authoritystatus', inputValue: '0',checked: true },
 				            { boxLabel: '复活中', name:'authoritystatus', inputValue: '1'},
@@ -1226,6 +1227,8 @@ var addForm=new Ext.FormPanel({
 				            { boxLabel: '遥毙', name:'authoritystatus', inputValue: '3'},
 				            { boxLabel: '遥毙中', name:'authoritystatus', inputValue: '3'}
 				        ]
+				},{
+					xtype:'checkbox',fieldLabel:'组呼',name:'g_callen',checked:true,labelWidth:60,margin:'0 30 0 0'
 				}]
 			}]
 		},{
@@ -1233,13 +1236,12 @@ var addForm=new Ext.FormPanel({
 			style:'margin: 5 10 5 10',
 			title:'呼叫配置',
 			layout:'form',
+			hidden:true,
 			items:[{
 				xtype:'panel',
 				layout:"column",
 				border:false,
 				items:[{
-					xtype:'checkbox',fieldLabel:'组呼',name:'g_callen',checked:true,labelWidth:60,margin:'0 30 0 0'
-				},{
 					xtype:'checkbox',fieldLabel:'单呼',name:'i_callen',checked:true,labelWidth:60,margin:'0 30 0 0'
 				},{
 					xtype:'checkbox',fieldLabel:'紧急呼叫',name:'emergencyen',checked:true,labelWidth:60,margin:'0 30 0 0'
@@ -1262,6 +1264,7 @@ var addForm=new Ext.FormPanel({
 			style:'margin: 5 10 5 10',
 			title:'其他设置',
 			layout:'form',
+			hidden:true,
 			items:[{
 				xtype:'panel',
 				layout:"column",
