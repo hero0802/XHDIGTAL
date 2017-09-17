@@ -129,6 +129,21 @@ public class CallList {
 
 	// 呼叫实时信息
 	public void CallNow() throws Exception {
+		/*HashMap callNowMap = new HashMap();
+		String wavStr = "/resources/wav/Ring.wav";
+		callNowMap.put("time", time);
+		callNowMap.put("callid", callid);
+		callNowMap.put("path", wavStr);
+		callNowMap.put("srcId", "12345");
+		callNowMap.put("caller", "12345");
+		callNowMap.put("called", "12345");
+		callNowMap.put("ig", 1);
+		callNowMap.put("bsid", 1);
+		callNowMap.put("bsName", 1);
+		callNowMap.put("rssi", "");
+		callNowMap.put("starttime", "2017-09-08 12:00:00");
+		callNowMap.put("usetime", 10);
+		TcpKeepAliveClient.getCallList().add(callNowMap);*/
 
 		dataNow=TcpKeepAliveClient.getCallList();
 		//Collections.reverse(dataNow);

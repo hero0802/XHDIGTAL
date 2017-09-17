@@ -46,7 +46,8 @@ var typeStore=Ext.create('Ext.data.Store',{
 	      {id:'1',value:'添加数据'},
 	      {id:'2',value:'修改数据'},
 	      {id:'3',value:'删除数据'},
-	      {id:'4',value:'其他操作'}
+	      {id:'4',value:'其他操作'},
+	      {id:'5',value:'告警短信'}
 	      ]
 	      
 })

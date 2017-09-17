@@ -611,9 +611,19 @@ function update_btn()
 		width : 400,
 		buttonAlign:'center',
 		//autoHeight : true,
-		height:150,
+		height:180,
 		items : //元素
-			[
+			[{
+				 xtype:'numberfield',
+				 fieldLabel:'组ID',
+				 name: 'id',
+				 minValue:1000,
+				 maxValue:10000,
+				 readOnly:true,
+				 allowBlank: false,
+				 blankText: '不能为空',
+				 msgTarget : 'side'
+			 },
 			 {
 				 xtype:'textfield',
 				 fieldLabel:'会员组名',
@@ -747,10 +757,19 @@ function add(){
 		labelStyle: 'font-weight:bold' ,		
 		width : 400,
 		buttonAlign:'center',
-		height : 150,
+		height : 180,
 		items : //元素
 			[
 			 {
+				 xtype:'numberfield',
+				 fieldLabel:'组ID',
+				 name: 'id',
+				 minValue:1000,
+				 maxValue:10000,
+				 allowBlank: false,
+				 blankText: '不能为空',
+				 msgTarget : 'side'
+			 },{
 				 xtype:'textfield',
 				 fieldLabel:'会员组名称',
 				 name: 'groupname',
@@ -803,7 +822,8 @@ function add(){
 		        	 form.submit(									
 		        			 Ext.Ajax.request({  
 		        				 url : '../power/add.action',  
-		        				 params : {  
+		        				 params : {
+		        			     id:form.findField('id').getValue(),
 		        				 groupname:form.findField('groupname').getValue(),
 		        				 groupinfo:form.findField('groupinfo').getValue()
 		        			 },  

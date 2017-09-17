@@ -153,14 +153,14 @@ if(!grid)
 	        	 renderer : function(v){
 	        	 return"<a href='#' onclick=update_btn() title='详细信息' style='color:blue'>"+v+"</a>";
 	         }
-	         },{text: "名称", width:150, dataIndex: 'name', sortable: false
-	         },{text: "IP", width:100, dataIndex: 'ip', sortable: false
+	         },{text: "名称", width:130, dataIndex: 'name', sortable: false
+	         },{text: "IP", width:130, dataIndex: 'ip', sortable: false
 	         },{text: "色码", width:80, dataIndex: 'colorcode', sortable: false
-	         },{text: "看门狗", width:80, dataIndex: 'startwatchdog', sortable: false,
+	         },/*{text: "看门狗", width:80, dataIndex: 'startwatchdog', sortable: false,
 	        	 renderer:function(v){
 	        	 if(v==0){return "关闭";}else{return "开启";}
 	         }
-	         },{text: "状态", width:80, dataIndex: 'sleepen', sortable: false,
+	         },*/{text: "状态", width:80, dataIndex: 'sleepen', sortable: false,
 	        	 renderer:function(v){
 	        	 if(v==0){return "休眠";}else{return "工作";}
 	         }
@@ -196,10 +196,19 @@ if(!grid)
 			        	 renderer:function(v){
 				        	 if(v){return "数字";}else{return "模拟";}
 				         }
-				         },{text: "音频接收端口", width:90, dataIndex: 'aduiorecvport', sortable: false
-					         },{text: "", flex:1, dataIndex: '', sortable: false
-	         }
-	         
+				         },{text: "音频接收端口", width:110, dataIndex: 'aduiorecvport', sortable: false
+			},{text: "组播源", width:80, dataIndex: 'offlinerepeaten', sortable: false,
+	        	 renderer:function(v){
+		        	 if(v){return "是";}else{return "<span style='color:red'>否</span>";}
+		      }}
+			,{text: "中心断网是否工作", width:140, dataIndex: 'offlinerepeaten', sortable: false,
+	        	 renderer:function(v){
+		        	 if(v){return "是";}else{return "<span style='color:red'>否</span>";}
+		      }}
+			,{text: "基站断网是否工作", width:140, dataIndex: 'offlinerepeaten', sortable: false,
+	        	 renderer:function(v){
+		        	 if(v){return "是";}else{return "<span style='color:red'>否</span>";}
+		      }}
 	         ],
 	         plugins : [cellEditing],
 	         frame:false,
@@ -502,6 +511,7 @@ function update_btn()
 				},{
 					xtype:'panel',
 					layout:'column',
+					hidden:true,
 					border:false,
 					items:[{
 						xtype:'numberfield',fieldLabel:'地址掩码',name:'mask',
@@ -860,6 +870,7 @@ var addForm=new Ext.FormPanel({
 				xtype:'panel',
 				layout:'column',
 				border:false,
+				hidden:true,
 				items:[{
 					xtype:'numberfield',fieldLabel:'地址掩码',name:'mask',
 					labelWidth:80,minValue:0,maxValue:24,width:170,margin:'0 30 0 0'

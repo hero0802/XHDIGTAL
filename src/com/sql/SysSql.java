@@ -274,6 +274,7 @@ public class SysSql {
 			while (rst.next()) {
 				Sms sms=new Sms();
 				sms.setPhoneNumber(rst.getString("phoneNumber"));
+				sms.setPerson(rst.getString("person"));
 				list.add(sms);
 				
 			}

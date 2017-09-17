@@ -93,12 +93,12 @@ var refreshAction=Ext.create('Ext.Action',{
     handler:function(){store.reload()}
 });
 var searchAction=Ext.create('Ext.Action',{
-	text:'查询',
+	text:'在线状态查询',
 	iconCls:'search',
     handler:function(){store.loadPage(1);}
 });
 var offonlineAction=Ext.create('Ext.Action',{
-	text:'统计不在线电台',
+	text:'未上线手台查询',
 	iconCls:'search',
     handler:function(){searchOffonline()}
 });
@@ -118,7 +118,7 @@ var contextMenu = Ext.create('Ext.menu.Menu', {
 var grid
 if(!grid)
 { grid=Ext.create('Ext.grid.Panel',{
-	title:'终端>>电台历史在线电台',
+	title:'终端>>手台历史上下线记录',
 	iconCls:'icon-location',
 	region:'center',
 	store:store,
@@ -128,7 +128,7 @@ if(!grid)
 	loadMask: true,  
 	columns:[
 	         /*new Ext.grid.RowNumberer({width:50,text:'#'}), */
-	         {text: "电台ID", width: 100, dataIndex: 'mscid', sortable: true},
+	         {text: "手台ID", width: 100, dataIndex: 'mscid', sortable: true},
 	         {text: "在线状态", width: 100, dataIndex: 'online', sortable: true,
 	        	 editor : {  
 	        	 allowBlank : false  
@@ -168,7 +168,7 @@ if(!grid)
 	         dockedItems: [{
 	             xtype: 'toolbar',
 	             dock: 'top',
-	             items: [ {fieldLabel:'电台ID',xtype:'textfield',name:'mscid',id:'mscid',labelWidth: 50,width:130,emptyText:'操作员' },
+	             items: [ {fieldLabel:'手台ID',xtype:'textfield',name:'mscid',id:'mscid',labelWidth: 50,width:130,emptyText:'操作员' },
 		        	         {fieldLabel:'起始时间',
 		        	        	 xtype:'datetimefield',
 		        	        	 id:'Ftime',
@@ -207,7 +207,7 @@ if(!grid)
 })
 }
 var offonlineGrid=Ext.create('Ext.grid.Panel',{
-	title:'终端>>电台历史未上线手台>>未上线电台列表',
+	title:'终端>>手台历史未上线列表',
 	iconCls:'icon-location',
 	region:'east',
 	width:600,
@@ -219,7 +219,7 @@ var offonlineGrid=Ext.create('Ext.grid.Panel',{
 	loadMask: true,  
 	columns:[
 	         /*new Ext.grid.RowNumberer({width:50,text:'#'}), */
-	         {text: "电台ID", width: 100, dataIndex: 'id', sortable: true},
+	         {text: "手台ID", width: 100, dataIndex: 'id', sortable: true},
 	         {text: "名称", width: 100, dataIndex: 'name', sortable: true,
 	        	 editor : {  
 	        	 allowBlank : false  

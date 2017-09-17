@@ -767,6 +767,7 @@ public class TcpKeepAliveClient extends Thread {
 					HashMap callL = new HashMap();
 					callL.put("time", timeStart);
 					callL.put("callid", callid);
+					callL.put("path", map.get("path").toString());
 					callL.put("caller", callMap.get(callid).get("caller").toString());
 					callL.put("called",callMap.get(callid).get("called").toString());
 					callL.put("ig", callMap.get(callid).get("ig").toString());

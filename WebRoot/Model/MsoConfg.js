@@ -120,6 +120,7 @@ var updateForm=new Ext.FormPanel({
 		margin: '5',
 		bodyPadding:'10',
 		width:300,height:180,
+		hidden:parseInt(getcookie("groupid"))!=10000,
 		/*collapsible : true, // 设置可折叠,
 */		frame:false,
 		/*baseCls:'x-fieldset',*/
@@ -157,6 +158,7 @@ var updateForm=new Ext.FormPanel({
 			frame:false,
 			width:300,height:180,
 			margin: '5',
+			hidden:parseInt(getcookie("groupid"))!=10000,
 			/*collapsible : true, */// 设置可折叠,
 			bodyPadding:'10',
 			layout:'form',
@@ -172,6 +174,7 @@ var updateForm=new Ext.FormPanel({
 			}]},{
 				xtype:"panel",
 				title:'音频设置',
+				hidden:parseInt(getcookie("groupid"))!=10000,
 				width:300,height:180,
 				/*collapsible : true, */// 设置可折叠,
 				frame:false,
@@ -200,6 +203,7 @@ var updateForm=new Ext.FormPanel({
 			    xtype:"panel",
 				title:'联网设置',
 				frame:false,
+				hidden:parseInt(getcookie("groupid"))!=10000,
 				width:300,height:180,
 				margin: '5',
 				/*collapsible : true,*/ // 设置可折叠,
@@ -224,6 +228,7 @@ var updateForm=new Ext.FormPanel({
 				    xtype:"panel",
 					title:'PTT设置',
 					frame:false,
+					hidden:parseInt(getcookie("groupid"))!=10000,
 					width:300,height:180,
 					margin: '5',
 					/*collapsible : true, */// 设置可折叠,
@@ -245,6 +250,7 @@ var updateForm=new Ext.FormPanel({
 					    xtype:"panel",
 						title:'呼叫限制',
 						frame:false,
+						hidden:parseInt(getcookie("groupid"))!=10000,
 						width:300,height:180,
 						margin: '5',
 						/*collapsible : true, */// 设置可折叠,
@@ -270,6 +276,7 @@ var updateForm=new Ext.FormPanel({
 							title:'场强设置',
 							frame:false,
 							width:300,height:180,
+							hidden:parseInt(getcookie("groupid"))!=10000,
 							margin: '5',
 							/*collapsible : true,*/ // 设置可折叠,
 							bodyPadding:'10',
@@ -299,6 +306,7 @@ var updateForm=new Ext.FormPanel({
 								xtype:"panel",
 								title:'时间限制参数',
 								margin: '5',
+								hidden:parseInt(getcookie("groupid"))!=10000,
 								bodyPadding:'10',
 								/*collapsible : true,*/ // 设置可折叠,
 								frame:false,
@@ -328,6 +336,7 @@ var updateForm=new Ext.FormPanel({
 								title:'其他参数',
 								margin: '5',
 								bodyPadding:'10',
+								hidden:parseInt(getcookie("groupid"))!=10000,
 								/*collapsible : true,*/ // 设置可折叠,
 								frame:false,
 								width:300,height:180,
@@ -369,6 +378,7 @@ var updateForm=new Ext.FormPanel({
 									title:'呼叫配置',
 									margin: '5',
 									bodyPadding:'10',
+									hidden:parseInt(getcookie("groupid"))!=10000,
 									/*collapsible : true,*/ // 设置可折叠,
 									frame:false,
 									width:300,height:180,
@@ -388,6 +398,7 @@ var updateForm=new Ext.FormPanel({
 			            ]},{
 							xtype:"panel",
 							title:'加密网管',
+							hidden:parseInt(getcookie("groupid"))!=10000,
 							margin: '5',
 							bodyPadding:'10',
 							/*collapsible : true,*/ // 设置可折叠,
@@ -615,4 +626,13 @@ function key2(){
 	}  
 	}); 
 }
-
+function getcookie(name) {
+	var strcookie = document.cookie;
+	var arrcookie = strcookie.split(";");
+	for (var i = 0; i < arrcookie.length; i++) {
+		var arr = arrcookie[i].split("=");
+		if (arr[0].match(name) == name)
+			return arr[1];
+	}
+	return "";
+};

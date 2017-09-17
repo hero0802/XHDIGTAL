@@ -57,16 +57,24 @@ public class MemberGroupAction extends ActionSupport{
 	}
 	//显示会员组
 	public void GroupList() throws Exception{
-		String sqlCount="select count(*) from xhdigital_web_membergroup";
+		String sqlCount="";
 		String sqlData="",str="";
-		if(Level()==10){
+	/*	if(Level()==10){
 			str+=" where level <=" +
 				"(select level from webuser_view where username='"+cookie.getCookie("username")+"')";
 		}else {
 			str+=" where level <" +
 			"(select level from webuser_view where username='"+cookie.getCookie("username")+"')";
+		}*/
+		
+		if(Integer.parseInt(cookie.getCookie("groupid"))>=10000){
+			sqlData="select * from xhdigital_web_membergroup order by id asc limit "+start+","+limit;
+			sqlCount="select count(*) from xhdigital_web_membergroup";
+		}else{
+			sqlData="select * from xhdigital_web_membergroup where id<='"+Integer.parseInt(cookie.getCookie("groupid"))+"' order by id asc limit "+start+","+limit;
+			sqlCount="select count(*) from xhdigital_web_membergroup where id<='"+Integer.parseInt(cookie.getCookie("groupid"))+"'";
 		}
-		sqlData ="select * from xhdigital_web_membergroup "+str+" order by level asc limit "+start+","+limit; 
+		
 		
 		
 		ArrayList data = Sql.DBList(sqlData);

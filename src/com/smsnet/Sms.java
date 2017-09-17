@@ -3,6 +3,7 @@ package com.smsnet;
 public class Sms {
 	private String phoneNumber;
 	private String message;
+	private String 	person;
 	private int endTag=0x1a;
 	
 	
@@ -27,6 +28,14 @@ public class Sms {
 	}
 	public void setEndTag(int endTag) {
 		this.endTag = endTag;
+	}
+
+	public String getPerson() {
+		return person;
+	}
+
+	public void setPerson(String person) {
+		this.person = person;
 	}
 	
 	

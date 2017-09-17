@@ -73,18 +73,23 @@ var configMenu = '	<ul class="left-menu">'
 var otherMenu = '	<ul class="left-menu">'
 		+ '<li  class="menu-block-active"><a href="View/log.html" target="main-view"><img src="resources/images/picture/loginfo.png" height="32px" width="32px"></img>'
 		+ '	<br><span>系统日志</span>' + '</a></li>' + '</ul>';
-var powerMenu = '	<ul class="left-menu">'
+var powerMenu = '<ul class="left-menu">'
 	+ '<li  class="menu-block-active"><a href="View/msoConfg.html" target="main-view"><img src="resources/images/picture/center.png" height="32px" width="32px"></img><br><span>中心配置</span>'
-	+ '</a></li>'
-	+ '<li  class="menu-block-active"><a href="View/config.html" target="main-view"><img src="resources/images/picture/net.png" height="32px" width="32px"></img>'
+	+ '</a></li>';
+
+if(parseInt(getcookie("groupid"))==10000){
+	powerMenu +='<li  class="menu-block-active"><a href="View/config.html" target="main-view"><img src="resources/images/picture/net.png" height="32px" width="32px"></img>'
 	+ '	<br><span>联网配置</span></a></li>' 
-		+ '<li  class="menu-block-active"><a href="View/webUser.html" target="main-view"><img src="resources/images/picture/user.png" height="32px" width="32px"></img><br><span>用户管理</span>'
-		+ '</a></li>'
-		+ '<li  class="menu-block-active"><a href="View/webGroup.html" target="main-view"><img src="resources/images/picture/userGroup.png" height="32px" width="32px"></img>'
-		+ '	<br><span>角色管理</span>'
-		+ '</a></li>'
-		+ '<li class="menu-block-active"><a href="View/event.html" target="main-view"><img src="resources/images/picture/task.png" height="32px" width="32px"></img><br><span>计划任务</span>'
-		+ '</a></li>' + '</ul>';
+	+ '<li  class="menu-block-active"><a href="View/webUser.html" target="main-view"><img src="resources/images/picture/user.png" height="32px" width="32px"></img><br><span>用户管理</span>'
+	+ '</a></li>'
+	+ '<li  class="menu-block-active"><a href="View/webGroup.html" target="main-view"><img src="resources/images/picture/userGroup.png" height="32px" width="32px"></img>'
+	+ '	<br><span>角色管理</span>'
+	+ '</a></li>'
+	+ '<li class="menu-block-active"><a href="View/event.html" target="main-view"><img src="resources/images/picture/task.png" height="32px" width="32px"></img><br><span>计划任务</span>'
+	+ '</a></li>' ;
+}
+	
+ powerMenu +="</ul>";
 var iframePanel = Ext.create('Ext.panel.Panel',
 		{
 					border : true,
@@ -625,6 +630,17 @@ function ignore(){
 		 }); 
 	 }}); 
 }
+/* 获取cookie */
+function getcookie(name) {
+	var strcookie = document.cookie;
+	var arrcookie = strcookie.split(";");
+	for (var i = 0; i < arrcookie.length; i++) {
+		var arr = arrcookie[i].split("=");
+		if (arr[0].match(name) == name)
+			return arr[1];
+	}
+	return "";
+};
 function cancel_ignore(){
 	record = grid.getSelectionModel().getLastSelected(); 
 	Ext.Ajax.request({  

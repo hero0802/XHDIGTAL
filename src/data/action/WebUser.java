@@ -40,11 +40,11 @@ public class WebUser extends ActionSupport{
 	private FlexJSON json=new FlexJSON();
 	private StringUtil stru=new StringUtil();
 	
-	//获取会员菜单
+	//获取会员
 	public void WebUsers() throws Exception
 	{
 		String sql ="",sql2="";  
-		if (Level()<10) {
+		if (Integer.parseInt(cookie.getCookie("groupid"))<10000) {
 			sql2="select * from xhdigital_web_user where username like'%"+username+"%' and groupid ='"+cookie.getCookie("groupid")+"'";
 			if (StringUtil.isNullOrEmpty(dir) == false)
 			{

@@ -42,17 +42,18 @@ public class MemberGroupAction  extends ActionSupport{
 	{
 		SimpleDateFormat dd=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String date=dd.format(new Date());
-		String sql1="select * from xhdigital_web_membergroup where groupname='"+this.groupname+"' ";
-		String sql2="insert into xhdigital_web_membergroup (groupname,groupinfo,createtime)values "
-			+"('"+this.groupname+"','"+this.groupinfo+"','"+date+"')";
+		String sql1="select * from xhdigital_web_membergroup where groupname='"+this.groupname+"' or id='"+id+"' ";
+		String sql2="insert into xhdigital_web_membergroup (id,groupname,groupinfo,createtime)values "
+			+"('"+id+"','"+this.groupname+"','"+this.groupinfo+"','"+date+"')";
 		if(Sql.exists(sql1)){
 			this.message="会员组已经存在";
 			this.success=false;
 		}
 		else
 		{
-			if (false) {
-				this.message="会员组级别不能高于或者等于自己的级别";
+			int groupID=Integer.parseInt(cookie.getCookie("groupid"));
+			if (Integer.parseInt(id)>=groupID) {
+				this.message="会员组ID不能高于或者等于登录账号所在的组ID";
 				this.success=false;
 			}else {
 				Sql.Update(sql2);
@@ -78,14 +79,15 @@ public class MemberGroupAction  extends ActionSupport{
 		}
 		else
 		{
-			if (false) {
-				this.message="会员组级别不能高于或者等于自己的级别";
+			int groupID=Integer.parseInt(cookie.getCookie("groupid"));
+			if (Integer.parseInt(id)>groupID) {
+				this.message="不能修改高于或者等于登录账号所在的组";
 				this.success=false;
-			}else {
-				Sql.Update(sql);
-				log.writeLog(1, log.time()+" 修改了会员组："+groupname, "");
-				this.success=true;
+				return SUCCESS;
 			}
+			Sql.Update(sql);
+			log.writeLog(1, log.time()+" 修改了会员组："+groupname, "");
+			this.success=true;
 		}
 		
 		return SUCCESS;
@@ -94,13 +96,19 @@ public class MemberGroupAction  extends ActionSupport{
 	public String delete_MemberGroup() throws Exception
 	{
 		String[] ids=this.deleteIds.split(",");
-		for(int i=0,l=ids.length;i<l;i++)
+		for(int i=0;i<ids.length;i++)
 		{
 			if (ids[i].equals(cookie.getCookie("groupid"))) {
 				this.success=false;
 				this.message="不能删除自己的账号所在会员组";
 				
 			}else{
+				int groupID=Integer.parseInt(cookie.getCookie("groupid"));
+				if (Integer.parseInt(ids[i])>=groupID) {
+					this.message="不能删除高于或者等于登录账号所在的组ID";
+					this.success=false;
+					return SUCCESS;
+				}
 				String sql="delete from xhdigital_web_membergroup where id="+ids[i];
 				Sql.Update(sql);
 				delGroupPower(ids[i]);

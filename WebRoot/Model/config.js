@@ -213,13 +213,13 @@ var Panel=Ext.create('Ext.Panel',{
 			save();
 		}
 		}]
-	},{
+	}/*,{
 		xtype:'panel',
 		title:'模数互联配置',
 		border:true,
 		frame:false,
-		/*collapsed: false , 
-		collapsible: true,*/
+		collapsed: false , 
+		collapsible: true,
 		width:300,
 		height:250,
 		margin:'10 10 0 10',
@@ -232,7 +232,7 @@ var Panel=Ext.create('Ext.Panel',{
 			saveAdGroup();
 		}
 		}]
-	}]
+	}*/]
 })
 Ext.QuickTips.init(); 
 Ext.onReady(function(){

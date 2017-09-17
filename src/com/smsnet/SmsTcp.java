@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.dwr.IndexDwr;
 import com.func.WebFun;
+import com.func.XhLog;
 import com.protobuf.TrunkMsoBs;
 import com.socket.MessageStruct;
 import com.socket.NetDataTypeTransform;
@@ -39,7 +40,7 @@ public class SmsTcp extends Thread {
 	private boolean connected = false;
 	private static String recvStr="";
 	private SendSms sendSms=new SendSms();
-	private Sms sms=new Sms();
+	private Sms sms=new Sms();	
 	
 	private SysSql sysSql=new SysSql();
 	private static Timer timer = null;
@@ -225,6 +226,8 @@ class AlarmSms extends TimerTask {
 	protected final Log log = LogFactory.getLog(AlarmSms.class);
 	private WebFun func = new WebFun();
 	private SysSql sysSql=new SysSql();
+
+	private XhLog xhlog=new XhLog();
 	public AlarmSms(){
 
 	}
@@ -245,8 +248,11 @@ class AlarmSms extends TimerTask {
 				
 				//基站断站告警
 				if (sysSql.bsAlarmList().size()>0) {
+					
 					for (int i=0;i<sysSql.bsAlarmList().size();i++) {
 						Map map=sysSql.bsAlarmList().get(i);
+						
+						
 						for (int j = 0; j < sysSql.personList().size(); j++) {
 							Sms sms=new Sms();
 							sms=sysSql.personList().get(j);
@@ -256,6 +262,12 @@ class AlarmSms extends TimerTask {
 							log.info("phone:"+sms.getPhoneNumber());
 							log.info("sms:"+sms.getMessage());
 							sendSms.sendMessage(sms);
+							try {
+								xhlog.writeLog(5, sms.getMessage(),sms.getPerson());
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 							Thread.sleep(5000);
 						}
 						updateAlarmInfo(1, map.get("bsId").toString());
@@ -265,6 +277,12 @@ class AlarmSms extends TimerTask {
 				if (sysSql.bsgpslost().size()>0) {
 					for(int i=0;i<sysSql.bsgpslost().size();i++){
 						Map map=sysSql.bsgpslost().get(i);
+						try {
+							xhlog.writeLog(5, map.get("content").toString(),"网管");
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						for (int j = 0; j < sysSql.personList().size(); j++) {
 							Sms sms=new Sms();
 							sms=sysSql.personList().get(j);
@@ -274,6 +292,12 @@ class AlarmSms extends TimerTask {
 							log.info("phone:"+sms.getPhoneNumber());
 							log.info("sms:"+sms.getMessage());
 							sendSms.sendMessage(sms);
+							try {
+								xhlog.writeLog(5, sms.getMessage(),sms.getPerson());
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 							Thread.sleep(5000);
 						}
 						updateGpsLostInfo(map.get("bsId").toString());
@@ -283,6 +307,7 @@ class AlarmSms extends TimerTask {
 			if(sysSql.sysAlarmList().size()>0){
 				for(int i=0;i<sysSql.sysAlarmList().size();i++){
 					Map map=sysSql.sysAlarmList().get(i);
+				
 					for (int j = 0; j < sysSql.personList().size(); j++) {
 						Sms sms=new Sms();
 						sms=sysSql.personList().get(j);
@@ -292,6 +317,12 @@ class AlarmSms extends TimerTask {
 						log.info("phone:"+sms.getPhoneNumber());
 						log.info("sms:"+sms.getMessage());
 						sendSms.sendMessage(sms);
+						try {
+							xhlog.writeLog(5, sms.getMessage(),sms.getPerson());
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						Thread.sleep(5000);
 					}
 					updateAlarmInfo(Integer.parseInt(map.get("type").toString()), map.get("bsId").toString());

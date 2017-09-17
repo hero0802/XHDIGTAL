@@ -315,7 +315,7 @@ var mapPanel=Ext.create('Ext.panel.Panel',{
             	text:'<span style="color:#fff">开启全网禁发</span>',
             	id:'stopNet',
             	iconCls:'netstopsend-btn',
-            	style:'background:red',
+            	style:'background:green',
             	handler:function(){
             		// voice();
             		AllNetStopSendBtn();
@@ -324,7 +324,7 @@ var mapPanel=Ext.create('Ext.panel.Panel',{
             	text:'<span style="color:#fff">允许模拟接入</span>',
             	id:'moni_on',
             	iconCls:'netstopsend-btn',
-            	style:'background:red',
+            	style:'background:green',
             	handler:function(){
             		// voice();
             		moniBtn();
@@ -372,6 +372,7 @@ var mapPanel=Ext.create('Ext.panel.Panel',{
 });
 var grid;
 var markerWin;
+var voicePanel;
 if(!grid)
 { grid=Ext.create('Ext.grid.Panel',{
 	region:'center',
@@ -380,7 +381,7 @@ if(!grid)
 	autoScroll:true,
 
 	columns:[
-	         {text: "通话时间", width: 70, dataIndex: 'starttime', sortable: false,
+	         {text: "通话时间", width: 100, dataIndex: 'starttime', sortable: false,
    	 editor : {  
    	 allowBlank : false  
     },renderer:function(v){
@@ -434,6 +435,16 @@ if(!grid)
                     	 form+="<p>名称:"+record.get("caller")+"</p>";
                     	 form+="<p>被叫组:"+record.get("called")+"</p>";
                     	 form+="</div>";
+                    	 if(!voicePanel){
+                    		 voicePanel=Ext.create('Ext.Panel',{
+                     			/*title:'播放器',*/
+                     			height:200,
+                     			html : '<iframe id="wav" style="" src="" frameborder="0" width="350px" scrolling="no" height="200px"></iframe>', 
+                     		})
+                    	 }else{
+                    		 Ext.get("wav").dom.src = ""
+                    	 }
+                    	 
                     	if(markerWin){
                     		markerWin.hide();
                     	}
@@ -441,21 +452,32 @@ if(!grid)
                     		markerWin=Ext.create("Ext.Window",{
                     			modal:false,
                     			title:'操作手台',
-                    			x:document.documentElement.clientWidth-450,
-                    			width:450,
+                    			x:document.documentElement.clientWidth-500,
+                    			/*y:document.documentElement.clientHeight-500,*/
+                    			width:500,
                     			height:200,
+                    			layout:'border',
                     			closeAction:'hide',
                     			items:[{
-                    				html:form
-                    			}],
-                    			buttons:[{
+                					xtype:'panel',
+                					region:'west',
+                					width:150,
+                					border:0,
+                					html:form
+                				},{
+                					xtype:'panel',
+                					region:'center',
+                					border:0,
+                					items:voicePanel
+                				}],
+                    			buttons:[/*{
                     				text:'强拆',
                     				iconCls:'break',
                     				handler:function(){
                     					breakCall();
-                    					/*markerWin.hide();*/
+                    					markerWin.hide();
                     				}
-                    			},{
+                    			},*/{
                     				text:'遥晕',
                     				iconCls:'ok',
                     				handler:function(){
@@ -465,7 +487,7 @@ if(!grid)
                     			},{
                     				text:'播放',
                     				iconCls:'play',
-                    				disabled:usetime<0,
+                    				disabled:usetime==-1,
                     				handler:function(){
                     					var path=record.get("path");
                     					player(path);
@@ -3566,8 +3588,9 @@ function player(path){
 		playerPath=playerPath.substring(1,playerPath.length);
 
 		var index=playerPath.lastIndexOf("/");
-		var name=playerPath.substring(index+1,playerPath.length);		
-		win = Ext.getCmp("player");
+		var name=playerPath.substring(index+1,playerPath.length);	
+		Ext.get("wav").dom.src = "View/play.jsp?playerID="+playerPath
+		/*win = Ext.getCmp("player");
 
 		if (!win) {
 			win =new Ext.Window({
@@ -3592,7 +3615,7 @@ function player(path){
 			});
 		}
 
-		win.show();
+		win.show();*/
 
 }
 function clearBtn(){

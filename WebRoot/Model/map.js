@@ -320,6 +320,11 @@ usergrid.getSelectionModel().on({
 	else{
 		var record = usergrid.getSelectionModel().getLastSelected(); 
 		form.getForm().findField("name").setValue(record.get("id"));
+		for(var i=0;i<userStore.getCount();i++){
+			if(userStore.getAt(i).get("id")==record.get("id")){
+				userStore.getAt(i).set('result','获取数据中');
+			}
+		}
 		
 		/*var wgloc={};
 		wgloc.lat=record.get("lat");
@@ -388,6 +393,7 @@ function radiogps(str){
 		if(nowMscId!=0){
 			clearMarkers();
 			OneMaker(str);
+			
 		}
 	}
 }
@@ -400,14 +406,24 @@ function OneMaker(str){
 	if(nowMscId!=data.id){
 		return;
 	}
-	if(data.lat==0 || data.lng==0){
+	for(var i=0;i<userStore.getCount();i++){
+		if(userStore.getAt(i).get("id")==data.id){
+			if(data.lat==0 || data.lng==0){
+				userStore.getAt(i).set('result','无定位');	
+			}else{
+				userStore.getAt(i).set('result','有定位');
+			}
+		}
+	}
+	return ;
+	/*if(data.lat==0 || data.lng==0){
 		Ext.MessageBox.show({  
 			title : "提示",  
 			msg : "数据无效，或者没有定位" , 
 			icon: Ext.MessageBox.INFO  
 		}); 
-		return ;
-	}
+		
+	}*/
 		
 
 	if(data.lat*1 > 38 && data.lat*1 < 40 && data.lng*1 > 116 && data.lng*1 < 119){
