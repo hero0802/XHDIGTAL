@@ -254,14 +254,14 @@ class AlarmSms extends TimerTask {
 						for (int j = 0; j < sysSql.personList().size(); j++) {
 							Sms sms=new Sms();
 							sms=sysSql.personList().get(j);
-							sms.setMessage(map.get("content").toString());
+							sms.setMessage("[数字系统告警]"+map.get("content").toString());
 							sendSms.smsModel();
 							Thread.sleep(500);
 							log.info("phone:"+sms.getPhoneNumber());
 							log.info("sms:"+sms.getMessage());
 							sendSms.sendMessage(sms);
 							try {
-								xhlog.writeLogNoSevlet(5, sms.getMessage(),sms.getPerson());
+								xhlog.writeLogNoSevlet(5, "[数字系统告警]"+sms.getMessage(),sms.getPerson());
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -279,14 +279,14 @@ class AlarmSms extends TimerTask {
 						for (int j = 0; j < sysSql.personList().size(); j++) {
 							Sms sms=new Sms();
 							sms=sysSql.personList().get(j);
-							sms.setMessage(map.get("bsId").toString()+"号"+map.get("bsName")+"基站GPS失锁！");
+							sms.setMessage("[数字系统告警]"+map.get("bsId").toString()+"号"+map.get("bsName")+"基站GPS失锁！");
 							sendSms.smsModel();
 							Thread.sleep(500);
 							log.info("phone:"+sms.getPhoneNumber());
 							log.info("sms:"+sms.getMessage());
 							sendSms.sendMessage(sms);
 							try {
-								xhlog.writeLogNoSevlet(5, sms.getMessage(),sms.getPerson());
+								xhlog.writeLogNoSevlet(5, "[数字系统告警]"+sms.getMessage(),sms.getPerson());
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -304,14 +304,14 @@ class AlarmSms extends TimerTask {
 					for (int j = 0; j < sysSql.personList().size(); j++) {
 						Sms sms=new Sms();
 						sms=sysSql.personList().get(j);
-						sms.setMessage(map.get("content").toString());
+						sms.setMessage("[数字系统告警]"+map.get("content").toString());
 						sendSms.smsModel();
 						Thread.sleep(500);
 						log.info("phone:"+sms.getPhoneNumber());
 						log.info("sms:"+sms.getMessage());
 						sendSms.sendMessage(sms);
 						try {
-							xhlog.writeLogNoSevlet(5, sms.getMessage(),sms.getPerson());
+							xhlog.writeLogNoSevlet(5, "[数字系统告警]"+sms.getMessage(),sms.getPerson());
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

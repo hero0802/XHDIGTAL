@@ -234,7 +234,7 @@ public class SysSql {
 		return list;
 	}
 	public ArrayList<Map> sysAlarmList(){
-		String sql="select * from xhdigital_alarm where type!=1 and type!=5 and flag=0 and alarmId"
+		String sql="select * from xhdigital_alarm where (type=2 or type=3 or type=7) and flag=0 and alarmId"
 				+ " not in (select bsId from xhdigital_smsbsnotalarm)";
 		ArrayList<Map> list=new ArrayList<Map>();
 		

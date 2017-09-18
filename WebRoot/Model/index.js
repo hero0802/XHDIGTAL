@@ -1,4 +1,4 @@
-﻿var button = '	<div class="top">'
+﻿var button = '<div class="top">'
 		+ '<div class=" index-icon"><img src="resources/images/picture/log.gif" height="50px" width="50px"/></div>'
 		+ '<div class="index-title"><h1>数字同播网管系统V1.0</h1></div>'
 		+ '<div class="index-btn"><ul class="menu-block">'
@@ -20,7 +20,9 @@
 		+ '<li  class="menu-block-active" onclick="loginOut()"><a href="#" ><img src="resources/images/picture/loginout1.png" height="32px" width="32px"></img>'
 		+ '	<br><span>退出系统</span></a></li>' 
 		
-		+ '</ul></div></div>';
+		+ '</ul></div>'
+		+ '<div><span>欢迎你！</span>&nbsp;&nbsp;<span id="loginUser"></span>&nbsp;&nbsp;<span>当前登录组:</span><span id="loginGroup"></span></div>'
+		+'</div>';
 
 		//+'<div><a href="#" style="color:#fff;" onclick="downFile()">下载语音监听插件</a></div>'
 		
@@ -386,6 +388,9 @@ Ext.onReady(function() {
 		$(this).addClass("active");
 		$(".left-menu>li:first-child").addClass("active");
 	});
+	$("#loginUser").html(getcookie("username"));
+	$("#loginGroup").html(decodeURIComponent(getcookie("groupname")));
+	
 	
 	dwr.engine.setActiveReverseAjax(true);
 	dwr.engine.setAsync(false);// 同步步

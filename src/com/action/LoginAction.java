@@ -59,7 +59,7 @@ public class LoginAction extends ActionSupport{
 		if(rs!=null && rs.next()) {
 			
 		String user=URLEncoder.encode(this.username,"UTF-8");
-		String groupname=URLEncoder.encode(rs.getString("groupname"),"gbk");
+		String groupname=URLEncoder.encode(rs.getString("groupname"),"UTF-8");
 		cookie.addCookie("username", user);
 		cookie.addCookie("xhgmpass", pass);
 		cookie.addCookie("groupname",groupname);
