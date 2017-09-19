@@ -7,6 +7,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -139,27 +141,22 @@ public class RadioUser extends ActionSupport{
 			str1=" and mscid="+msc;
 			str2=" and id="+msc;
 		}
-		String sql1="select mscid from xhdigital_offonline where " +
-			    " time between '"+startTime+"' and '"+endTime+"' "+str1+" group by mscid"; 
-		String sql2="select id,name from hometerminal where type=0 "+str2; 
+		String sql1="select distinct(mscid)  from xhdigital_offonline where " +
+			    " time between '"+startTime+"' and '"+endTime+"' "+str1+" "; 
+		String sql2="select id,name from hometerminal where  type=0 "+str2; 
 		try {
-			ArrayList list1=sysSql.DBList(sql1);
 			ArrayList list2=Sql.DBList(sql2);
-			System.out.println(Arrays.toString(list1.toArray()));
 			
-			for (int i = 0; i < list2.size(); i++) {
-				HashMap rowData = new HashMap();
-				rowData=(HashMap) list2.get(i);
-				String userid=rowData.get("id").toString();
-				for (int j = 0; j < list1.size(); j++) {
-					HashMap rowData2 = new HashMap();
-					rowData=(HashMap) list1.get(j);
-					String userid2=rowData.get("mscid").toString();
-					if (userid.equals(userid2)) {
-						list2.remove(i);
+			Map map=usermap(sql1);
+			
+			 Iterator<Map> list = list2.iterator();
+			    while (list.hasNext()) {
+			    	Map map1=list.next();
+			    	if(map.get(map1.get("id").toString())!=null){
+						list.remove();
 					}
-				}
-			}
+			    }
+			
 			
 			HashMap result=new HashMap();
 			result.put("items", list2);
@@ -174,6 +171,21 @@ public class RadioUser extends ActionSupport{
 			e.printStackTrace();
 		}
 		
+	}
+	public Map usermap(String sql)throws Exception{
+		Connection conn=db2.getConn();
+		Statement stmt=conn.createStatement();
+		ResultSet rst = stmt.executeQuery(sql);
+		Map map=new HashMap();
+		while(rst.next())
+		{
+			map.put(rst.getString("mscid"), 0);
+		}
+		rst.close();
+		stmt.close();
+		conn.close();
+		
+		return map;
 	}
 	public void radioOnline(){
 		String sql="select mscid from xhdigital_offonline where " +

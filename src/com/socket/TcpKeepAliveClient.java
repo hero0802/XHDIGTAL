@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -934,6 +933,7 @@ public class TcpKeepAliveClient extends Thread {
 					lon = m_lon + ((double) lon_1 + (double) lon_2 / 1000) / 60;
 					lat = Double.parseDouble(df.format(lat));
 					lon = Double.parseDouble(df.format(lon));
+					
 				}
 
 				// sysFun.saveTsLonLat(gps.getTsid(), m_lon, m_lat);
