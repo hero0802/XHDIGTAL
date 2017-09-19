@@ -21,7 +21,7 @@
 		+ '	<br><span>退出系统</span></a></li>' 
 		
 		+ '</ul></div>'
-		+ '<div><span>欢迎你！</span>&nbsp;&nbsp;<span id="loginUser"></span>&nbsp;&nbsp;<span>当前登录组:</span><span id="loginGroup"></span></div>'
+		+ '<div id="header-user" style=""><span style="color:#000;">欢迎你！</span>&nbsp;&nbsp;<span id="loginUser"></span>&nbsp;&nbsp;<span style="color:#000;">角色:</span><span id="loginGroup"></span></div>'
 		+'</div>';
 
 		//+'<div><a href="#" style="color:#fff;" onclick="downFile()">下载语音监听插件</a></div>'
@@ -218,6 +218,7 @@ if(!grid)
 	        	 else if(v==6){return "反向功率过大";}
 	        	 else if(v==7){return "交流";}
 	        	 else if(v==8){return "功率";}
+	        	 else if(v==9){return "基站闪断";}
 	        	 else{
 	        		 return "未知";
 	        	 }
@@ -242,16 +243,20 @@ if(!grid)
 		         }},{
 		        	 text:'<span style="color:green">操作</span>',
 		        	 align : 'center',
-		        	 width:70,
+		        	 width:140,
 		        	 dataIndex:'username',
 		        	 renderer:function(value,metaData,record){
+		        		 var str="";
 		        	 if(record.get("ignore")==0){
-		        		 var str="<a href='#' onclick=ignore()>忽略</a>";
-		        		 return str
+		        		 str="<a href='#' onclick=ignore()>忽略</a>";
+		        		
 		        	 }else{
-		        		 var str="<a href='#' onclick=cancel_ignore()>取消忽略</a>";
-		        		 return str
+		        		 str="<a href='#' onclick=cancel_ignore()>取消忽略</a>";
+		        		
 		        	 }
+		        	 str+="| <a href='#' onclick=delAlarm()>删除</a>";
+		        	 return str
+		        	 
 		        	 
 		         }
 		         }],
@@ -646,6 +651,31 @@ function getcookie(name) {
 	}
 	return "";
 };
+
+function delAlarm(){
+	record = grid.getSelectionModel().getLastSelected(); 
+	Ext.Ajax.request({  
+		 url : 'controller/delAlarmBtn.action',  
+		 params : {
+		 bsId:record.get("alarmId")
+	 },  
+	 method : 'POST',
+	 waitTitle : '请等待' ,  
+	 waitMsg: '正在提交中', 
+	 success : function(response) { 
+		 ignorealarmstore.reload();
+		 alarmstore.reload();
+	 },
+
+	 failure: function(response) {
+
+		 Ext.MessageBox.show({  
+			 title : "提示",  
+			 msg : "数据修改失败!" , 
+			 icon: Ext.MessageBox.INFO  
+		 }); 
+	 }}); 
+}
 function cancel_ignore(){
 	record = grid.getSelectionModel().getLastSelected(); 
 	Ext.Ajax.request({  

@@ -93,7 +93,10 @@
     <description>GPS自动任务</description>
     <listener-class>com.listener.GpsTaskListener</listener-class>
   </listener>
-  
+  <listener>
+    <description>基站闪断</description>
+    <listener-class>com.listener.BsBreakMoreCountListener</listener-class>
+  </listener>  
   
   <!--  <listener>
     <description>GPS定时自动任务</description>

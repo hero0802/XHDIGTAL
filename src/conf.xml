@@ -42,6 +42,8 @@
     <port>4001</port>
     <number>13800220500</number>
     <bsofftime>10</bsofftime>
+    <bsoffnum>10</bsoffnum>
+    <bsoffnumtime>60</bsoffnumtime>
     <msc>333336</msc>
 </sms>
 

@@ -87,7 +87,7 @@ public class TcpKeepAliveClient extends Thread {
 	private boolean connected = false;
 	private NetDataTypeTransform dd = new NetDataTypeTransform();
 	private FlexJSON json = new FlexJSON();
-	private WavHeaderStruct wavHeaderStruct = new WavHeaderStruct(0);
+	private WavHeaderStruct wavHeaderStruct = new WavHeaderStruct(0);	
 
 	public enum BsControlType {
 		STATUS, // 获取状态
@@ -1113,10 +1113,10 @@ public class TcpKeepAliveClient extends Thread {
 		}
 		if (onOffStatus.getType().toString().toLowerCase().equals("bs")) {
 			HashMap info = new HashMap();
+			String bsName=Sql.bsId_bsName(onOffStatus.getId());
 			info.put(
 					"content",
-					onOffStatus.getId() + "号基站["
-							+ Sql.bsId_bsName(onOffStatus.getId()) + "]"
+					onOffStatus.getId() + "号基站["+ bsName+ "]"
 							+ (onOffStatus.getOnOff() ? "连接成功!" : "连接中断！"));
 			info.put("status", onOffStatus.getOnOff() ? 1 : 0);
 			info.put("time", func.nowDate());
@@ -1125,6 +1125,15 @@ public class TcpKeepAliveClient extends Thread {
 			//告警类型：1：断站；2：中心；3：交换；4：温度;5:gps失锁；6：反向功率过大；7：交流；8：功率
 			alarm(1, onOffStatus.getOnOff() ? 1 : 0, onOffStatus.getId());
 			IndexDwr.alarmDwr();
+			try {
+				xhlog.writeLogNoSevlet(6, info.get("content").toString(), bsName);
+				String sql="insert into xhdigital_bs_offonline(bsId,online)"
+						+ "values('"+onOffStatus.getId()+"','"+(onOffStatus.getOnOff() ? 1 : 0)+"')";
+				Sql.Update(sql);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		}
 		if (onOffStatus.getType().toString().toLowerCase().equals("sw")) {

@@ -473,14 +473,13 @@ if(!grid)
                 					border:0,
                 					items:voicePanel
                 				}],
-                    			buttons:[/*{
+                    			buttons:[{
                     				text:'强拆',
                     				iconCls:'break',
                     				handler:function(){
-                    					breakCall();
-                    					markerWin.hide();
+                    					breakOtherCall(record)
                     				}
-                    			},*/{
+                    			},{
                     				text:'遥晕',
                     				iconCls:'ok',
                     				handler:function(){
@@ -511,6 +510,10 @@ if(!grid)
                     				iconCls:'cancel',
                     				handler:function(){
                     					markerWin.hide();
+                    					if(mscMarker.length>0){
+                		    				clearMarker(mscMarker[0]);
+                		    				mscMarker.splice(0,mscMarker.length);	
+                		    			}
                     				}
                     				
                     			}]
@@ -2927,7 +2930,7 @@ function OneGps(msc,time,btn){
 		    				title : "ID:"+data.srcId,
 		    				id : data.id,
 		    				data:data,
-		    				icon : 'mapfiles/phoneMarker2.png',
+		    				icon : 'mapfiles/marker5.png',
 		    			});
 		    			if(mscMarker.length>0){
 		    				clearMarker(mscMarker[0]);
@@ -3119,6 +3122,47 @@ function breakCall(){
 /*	 console.log("caller:"+record.get("caller"));
 	 console.log("called:"+record.get("called"));
 	 console.log("callid:"+record.get("callid"));*/
+	Ext.Ajax.request({
+			url : 'controller/breakCall.action', 
+			params : {  
+				srcid:record.get("srcId"),
+				callid:record.get("callid"),
+				tarid:record.get("called"),
+		},
+		method : 'POST',
+		    waitTitle : '请等待' ,  
+		    waitMsg: '正在提交中', 
+		    success : function(response,opts) { 
+			//myMask.hide(); 
+		    var rs = Ext.decode(response.responseText)
+			
+			  if(rs.success){ Ext.example.msg("提示","强拆已经执行");
+			 
+			 }else{ Ext.example.msg("提示","强拆失败"); }
+
+		    },
+		    failure: function(response) {
+		    	// myMask.hide();
+		    	// Ext.example.msg("提示","获取失败");
+		      }
+		})	
+}
+//强拆2
+function breakOtherCall(record){
+	
+	 var myMask = new Ext.LoadMask(Ext.getBody(), {  
+       msg: '正在操作中。。。',  
+       loadMask: true, 
+       removeMask: true // 完成后移除
+      });	 
+	 if(record.get("usetime")>0){
+		 Ext.MessageBox.show({  
+			 title : "提示",  
+			 msg : "通话已经结束，不允许强拆" , 
+			 icon: Ext.MessageBox.INFO  
+		 });
+		 return;
+	 }
 	Ext.Ajax.request({
 			url : 'controller/breakCall.action', 
 			params : {  

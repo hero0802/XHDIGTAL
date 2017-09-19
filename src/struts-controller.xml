@@ -170,6 +170,10 @@
 <action name="ignoreBtn" class="com.action.BsStationAction" method="ignoreBtn">  
      <result type="json" name="success"></result> 
 </action> 
+<!--删除告警-->   
+<action name="delAlarmBtn" class="com.action.BsStationAction" method="delAlarmBtn">  
+     <result type="json" name="success"></result> 
+</action> 
 <!--遥测所有基站-->        
 <action name="bsStatusAll" class="com.action.BsStationAction" method="bs_status_all">  
      <result type="json" name="success"></result> 

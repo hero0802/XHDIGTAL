@@ -1281,7 +1281,7 @@ function editTGBS(){
 		         forceFit: true,
 		         columnLines : true, 
 		         height:document.documentElement.clientHeight,
-		         
+		        
 		         /*selModel: selModel,*/
 		         viewConfig: {
 		             stripeRows: true
@@ -1402,6 +1402,8 @@ function addTGBS(){
 					});  
 					return;  
 				};
+				Ext.Msg.confirm("请确认", "是否真的要添加基站到选中的组里？", function(button, text) {  
+					if (button == "yes") {  
 			var myMask = new Ext.LoadMask(Ext.getBody(), { 
 		        msg: '正在验证数据，请稍后！',  
 		        //loadMask: true, 
@@ -1457,7 +1459,7 @@ function addTGBS(){
 					 icon: Ext.MessageBox.ERROR 
 				 }); 
 			 }  
-			 });
+			 });}})
 		}}]
 	})
 	record = grid.getSelectionModel().getLastSelected();
@@ -1500,6 +1502,7 @@ function delGroupBs(homegroupid,basestationid){
 		 if(rs.success)
 		 {
 			 groupBsStore.reload();
+			 store.reload();
 		 Ext.example.msg("提示",rs.message);
 		 }
 		 else

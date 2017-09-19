@@ -46,8 +46,10 @@ var typeStore=Ext.create('Ext.data.Store',{
 	      {id:'1',value:'添加数据'},
 	      {id:'2',value:'修改数据'},
 	      {id:'3',value:'删除数据'},
-	      {id:'4',value:'其他操作'},
-	      {id:'5',value:'告警短信'}
+	      {id:'5',value:'告警短信'},
+	      {id:'6',value:'基站上下线'},
+	      {id:'4',value:'其他操作'}
+	     
 	      ]
 	      
 })
@@ -108,11 +110,12 @@ if(!grid)
 	        	 allowBlank : false  
 	         },align:'center',
 	         renderer:function(v,b){
-	        	 if(v==1){return "<img src='../resources/images/btn/add.png'/>&nbsp;&nbsp;添加数据";}
-	        	 else if(v==2){return "<img src='../resources/images/btn/update.png'/>&nbsp;&nbsp;修改数据";}
-	        	 else if(v==3){return "<img src='../resources/images/btn/delete.png'/>&nbsp;&nbsp;删除数据";}
+	        	 if(v==1){return "添加数据";}
+	        	 else if(v==2){return "修改数据";}
+	        	 else if(v==3){return "删除数据";}
 	        	 else if(v==5){return "短信告警";}
-	        	 else{return "<img src='../resources/images/picture/light.png'/>&nbsp;&nbsp;其他操作";}
+	        	 else if(v==6){return "基站上下线";}
+	        	 else{return "其他操作";}
 	         }}, 
 	         {text: "操作记录", flex:1, dataIndex: 'content', sortable: false,
 	        	 editor : {  

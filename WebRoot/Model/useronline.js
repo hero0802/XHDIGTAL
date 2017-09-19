@@ -144,14 +144,14 @@ if(!grid)
 	        	 allowBlank : false  
 	         }}                  
 	         ],
-	         plugins : [cellEditing],
+	         /*plugins : [cellEditing],*/
 	         frame:false,
 	         border:true,
 	         forceFit: true,
 	         columnLines : true, 
 	         height:document.documentElement.clientHeight,
 	         emptyText:'<span>对不起，没有查询到数据</span>',
-	         selModel: selModel,
+	         /*selModel: selModel,*/
 	         viewConfig: {
 	             stripeRows: true,
 	             listeners: {

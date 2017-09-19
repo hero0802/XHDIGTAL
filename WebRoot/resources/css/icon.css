@@ -8,6 +8,19 @@
 	font-weight: bold;
 	background-color: LightGreen;
 	background-image: none;
+	
+}
+#header-user{
+	position: fixed;
+	right:5px;
+	top:5px;
+	height:30px;
+	color:green;
+	padding:5px;
+	border-radius:10px;
+	box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.2);
+	font-weight:bold;
+	background: #fff;
 }
 .add {
 	background-image: url(../images/btn/add.png) !important;
@@ -19,6 +32,7 @@
 .delete {
 	background-image: url(../images/btn/delete.gif)
 		!important;
+		
 }
 .cancel {
 	background-image: url(../images/btn/cancel.png)

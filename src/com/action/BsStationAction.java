@@ -166,6 +166,13 @@ public class BsStationAction extends ActionSupport {
 		this.success=true;
 		return SUCCESS;
 	}
+	//删除告警
+	public String delAlarmBtn() throws Exception{
+		String sql="delete from xhdigital_alarm where alarmId='"+bsId+"'";
+		Sql_sys.Update(sql);
+		this.success=true;
+		return SUCCESS;
+	}	
 	//强拆
 	public String breakCall(){
 		header.setCallID(callid);

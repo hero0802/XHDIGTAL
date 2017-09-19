@@ -8,6 +8,7 @@ var oneRadioMakerFlag=null;
 var flightPath=null;
 var refreshMap=1;
 var nowMscId=0;
+var startFlag=0;
 var userStore = Ext.create('Ext.data.Store', {
 	fields : [ {name : 'id'},{name : 'mscId'},
 	           {name:'name'},{name:'onlinestatus'},{name:'lat'},{name:'lng'},{name:'result'}],
@@ -162,38 +163,46 @@ var usergrid=Ext.create('Ext.grid.Panel',{
             	 xtype:'button',
             	 text:'<span style="color:red">手动上拉GPS</span>',
             	 margin:'30 0 0 0',
-            	 iconCls:'gpstask',
-            	 handler:gpsTask
+            	 iconCls:'gpstask'
              },{
             	 xtype:'button',
             	 text:'<span style="color:green">添加时间段任务</span>',
             	 margin:'20 0 0 0',
-            	 iconCls:'selfgpstask',
-            	 handler:addTask
-             },{
-            	 xtype:'button',
-            	 text:'<span style="color:blue">添加定时任务</span>',
-            	 margin:'20 0 0 0',
-            	 iconCls:'selfgpstask',
-            	 handler:addTimerTask
+            	 iconCls:'selfgpstask'
              }],*/
 	         
 	         dockedItems: [{
 	        	 xtype:'toolbar',
 	        	 dock:'top',
-	        	 id:'handlerTask',
 	        	 items:[{
-            	 xtype:'button',
-            	 text:'<span style="color:red">手动上拉GPS</span>',
-            	 /*margin:'30 0 0 0',*/
-            	 /*iconCls:'gpstask',*/
-            	 handler:gpsTask
-             },{
+	            	 xtype:'button',
+	            	 id:'handlerTask',
+	            	 text:'<span>上拉GPS</span>',
+	            	 icon:"resources/images/btn/play.png",
+	            	 handler:function(){
+	            		 gpsTask();
+	            		 
+	            		 
+	            	 }
+	             },{
+	            	 xtype:'button',
+	            	 id:'handlerTask_stop',
+	            	 text:'<span>停止</span>',
+	            	 icon:"resources/images/btn/stop.png",
+	            	 handler:stop
+	             },{
+	            	 xtype:'panel',border:0,
+	            	 html:'<div id="showMessageInfo"></div>',
+	            	
+	             }]
+	         },{
+	        	 xtype:'toolbar',
+	        	 dock:'top',
+	        	
+	        	 items:[{
             	 xtype:'panel',border:0,
             	 html:'<div id="showMessage"></div>',
-            	 /*margin:'30 0 0 0',*/
-            	 /*iconCls:'gpstask',*/
-            	 /*handler:*/
+            	
              }]
 	         },{
 	             xtype: 'toolbar',
@@ -398,7 +407,7 @@ function radiogps(str){
 		MapRadioUser();
 	}else{
 		if(nowMscId!=0){
-			clearMarkers();
+		
 			OneMaker(str);
 			
 		}
@@ -422,6 +431,7 @@ function OneMaker(str){
 			}
 		}
 	}
+	
 	/*if(data.lat==0 || data.lng==0){
 		Ext.MessageBox.show({  
 			title : "提示",  
@@ -434,6 +444,7 @@ function OneMaker(str){
 
 	if(data.lat*1 > 38 && data.lat*1 < 40 && data.lng*1 > 116 && data.lng*1 < 119){
 	 //markers.push(marker);
+	clearMarkers();
 	var image = "";
 	var wgloc={};
 	wgloc.lat=data.lat;
@@ -449,7 +460,7 @@ function OneMaker(str){
 		title : "ID:"+data.id+"名称："+data.name,
 		id : data.id,
 		data:data,
-		icon : 'mapfiles/phoneMarker2.png',
+		icon : 'mapfiles/marker5.png',
 	});
 	   (function (oneRadioMakerFlag,data) {  
 		
@@ -681,24 +692,29 @@ function MapRadioUser(){
 }
 //手动上拉
 var i=0;
+var timeout=null;
 function gpsTask(){
 	clearMarkers();
 	refreshMap=1;
 	var ids = []; 
+	
 	Ext.getCmp('handlerTask').disable();
-	/*for(var j=0;j<userStore.getCount();j++){
+	for(var j=0;j<userStore.getCount();j++){
 		var userId=userStore.getAt(j).get('id');
 		var online=userStore.getAt(j).get("onlinestatus");
 		if(online==1){
 			ids.push(userId);
-			userStore.getAt(j).set('result','等待处理..');
+			userStore.getAt(j).set('result','');
 		} 
 		
-	}*/
-    var timeout=setInterval(function(){
+	}
+/*	$("#showMessage").html("");*/
+    timeout=setInterval(function(){
 		if(i<userStore.getCount()){			
 			gpsSet(i);
 			userStore.getAt(i).set('result','正在拉取GPS');
+			var html="总数："+userStore.getCount()+"个"+"正在拉取第"+(i+1)+"个";
+			$("#showMessageInfo").html(html);
 			/*i++;*/
 			
 		}else{
@@ -735,6 +751,8 @@ function gpsTask(){
 				 }
 			 }
 			 var html="统计： 有定位："+b+" &nbsp; &nbsp; 无定位:"+c+"&nbsp; &nbsp;无数据:"+a
+			 var html2="gps拉取结束";
+				$("#showMessageInfo").html(html2);
 			 $("#showMessage").html(html);
 		}
 		
@@ -759,6 +777,39 @@ function gpsTask(){
 	}*/
 	
 	
+}
+
+function stop(){
+	clearInterval(timeout);
+	 Ext.getCmp('handlerTask').enable();
+	 for(var j=0;j<=i;j++){
+			var userId=userStore.getAt(j).get('id');
+			var online=userStore.getAt(j).get("onlinestatus");
+			if(userStore.getAt(j).get("result")!="无定位" && userStore.getAt(j).get("result")!="有定位")
+				{
+				userStore.getAt(j).set('result','无数据'); 
+		}
+	
+     }
+	var a=0,b=0,c=0;
+	 for(var j=0;j<=i;j++){
+		 if(userStore.getAt(j).get("result")=="无数据"){
+			 a++;
+		 }
+		 else if(userStore.getAt(j).get("result")=="有定位"){
+			 b++;
+		 }
+		 else if(userStore.getAt(j).get("result")=="无定位"){
+			 c++;
+		 }
+		 else{
+		 }
+	 }
+	 var html="统计： 有定位："+b+" &nbsp; &nbsp; 无定位:"+c+"&nbsp; &nbsp;无数据:"+a
+	 var html2="gps拉取结束";
+	 $("#showMessageInfo").html(html2);
+	 $("#showMessage").html(html);
+	 i=0;
 }
 function GetGPS(id){
 	Ext.Ajax.request({
@@ -1013,10 +1064,10 @@ function setMapOnAll(mapstr) {
 		oneMarker[i].setMap(mapstr);
 	}
 	
-	/*if(flightPath!=null){
-		flightPath.setMap(map)oneMarker
+	if(flightPath!=null){
+		flightPath.setMap(mapstr)
 		
-	}*/
+	}
 }
 
 // Removes the markers from the map, but keeps them in the array.
