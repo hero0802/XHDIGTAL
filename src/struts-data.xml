@@ -77,7 +77,16 @@
    </action>  
      <action name="callNow" class="data.action.CallList" method="CallNow">  
      <result type="json" name="success"></result>   
-   </action>   
+   </action>  
+     <action name="channelPro" class="data.action.CallList" method="channelPro">  
+     <result type="json" name="success"></result>   
+   </action> 
+     <action name="callerror" class="data.action.CallList" method="callerror">  
+     <result type="json" name="success"></result>   
+   </action>    
+     <action name="nowBs" class="com.action.ChannelCountAction" method="nowBs">  
+     <result type="json" name="success"></result>   
+   </action>      
      <action name="event" class="data.action.Event" method="event">  
      <result type="json" name="success"></result>   
    </action> 

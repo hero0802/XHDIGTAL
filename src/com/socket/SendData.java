@@ -38,7 +38,7 @@ public class SendData {
 
 	private int CLIENT_PORT = Integer.parseInt(INI.ReadConfig("center_port")); // 端口号12002
 	private String IP = INI.ReadConfig("center_ip"); // IP192.168.30.12
-	protected final Log log = LogFactory.getLog(SendData.class);
+	protected final static Log log = LogFactory.getLog(SendData.class);
 	private static WebFun func = new WebFun();
 	private static UdpMulticast uml;
 	private static bsStatusStruct bsStruct = new bsStatusStruct();
@@ -51,6 +51,7 @@ public class SendData {
 	private SysMysql db_sys = new SysMysql();
 	private static int srcId = 0;
 	Socket socket = TcpKeepAliveClient.getSocket();
+
 	public void connection() {
 		InetAddress addr = null;
 		try {
@@ -88,21 +89,22 @@ public class SendData {
 			System.out.print(message);
 			// e.printStackTrace();
 		}// 开启保持活动状态的套接字
-		// socket.setSoTimeout(10000);
+			// socket.setSoTimeout(10000);
 	}
-	//70)设置模拟到数字通道使能开关
-	public String SetA2DEnable(MessageStruct getHeader,int enable)
+
+	// 70)设置模拟到数字通道使能开关
+	public String SetA2DEnable(MessageStruct getHeader, int enable)
 			throws IOException {
-		/*message SetA2DEnable
-		{
-			required uint32 		enable 	  	= 1;	//0:切断模拟到数字  1:允许模拟到数字
-		}*/
+		/*
+		 * message SetA2DEnable { required uint32 enable = 1; //0:切断模拟到数字
+		 * 1:允许模拟到数字 }
+		 */
 		// 创建客户端的Socket服务，指定目的主机和端口。
 		NetDataTypeTransform dd = new NetDataTypeTransform();
-		TrunkMsoDs.SetA2DEnable.Builder builder=TrunkMsoDs.SetA2DEnable.newBuilder();
+		TrunkMsoDs.SetA2DEnable.Builder builder = TrunkMsoDs.SetA2DEnable
+				.newBuilder();
 		builder.setEnable(enable);
-		
-		
+
 		TrunkMsoDs.SetA2DEnable dsReq = builder.build();
 		byte[] buffer = dsReq.toByteArray();
 		// 发送数据，应该获取Socket流中的输出流。
@@ -125,27 +127,30 @@ public class SendData {
 
 		byte[] info = bos.toByteArray();
 		if (TcpKeepAliveClient.getSocket().isConnected()) {
-			log.debug("-->center:"+TcpKeepAliveClient.getSocket().getInetAddress()+":SetA2DEnable:"
-					+"callid="+getHeader.getCallID()+"; seqNum="+(getHeader.getSeqNum()<<8)+
-					"; enable="+enable);
+			log.debug("-->center:"
+					+ TcpKeepAliveClient.getSocket().getInetAddress()
+					+ ":SetA2DEnable:" + "callid=" + getHeader.getCallID()
+					+ "; seqNum=" + (getHeader.getSeqNum() << 8) + "; enable="
+					+ enable);
 			out.write(info);
-		}else {
+		} else {
 			return "NO";
 		}
 		return "OK";
 	}
-	public String SetA2DEnable2(MessageStruct getHeader,int enable)
+
+	public String SetA2DEnable2(MessageStruct getHeader, int enable)
 			throws IOException {
-		/*message SetA2DEnable
-		{
-			required uint32 		enable 	  	= 1;	//0:切断模拟到数字  1:允许模拟到数字
-		}*/
+		/*
+		 * message SetA2DEnable { required uint32 enable = 1; //0:切断模拟到数字
+		 * 1:允许模拟到数字 }
+		 */
 		// 创建客户端的Socket服务，指定目的主机和端口。
 		NetDataTypeTransform dd = new NetDataTypeTransform();
-		TrunkMsoDs.SetA2DEnable.Builder builder=TrunkMsoDs.SetA2DEnable.newBuilder();
+		TrunkMsoDs.SetA2DEnable.Builder builder = TrunkMsoDs.SetA2DEnable
+				.newBuilder();
 		builder.setEnable(enable);
-		
-		
+
 		TrunkMsoDs.SetA2DEnable dsReq = builder.build();
 		byte[] buffer = dsReq.toByteArray();
 		// 发送数据，应该获取Socket流中的输出流。
@@ -168,22 +173,24 @@ public class SendData {
 
 		byte[] info = bos.toByteArray();
 		if (TcpKeepAliveClient.getSocket().isConnected()) {
-			log.debug("-->center:"+TcpKeepAliveClient.getSocket().getInetAddress()+":SetA2DEnable:"
-					+"callid="+getHeader.getCallID()+"; seqNum="+(getHeader.getSeqNum()<<8)+
-					"; enable="+enable);
+			log.debug("-->center:"
+					+ TcpKeepAliveClient.getSocket().getInetAddress()
+					+ ":SetA2DEnable:" + "callid=" + getHeader.getCallID()
+					+ "; seqNum=" + (getHeader.getSeqNum() << 8) + "; enable="
+					+ enable);
 			out.write(info);
-		}else {
+		} else {
 			return "NO";
 		}
 		return "OK";
 	}
-	//70)设置模拟到数字通道使能开关
-	public String A2DEnableREQ(MessageStruct getHeader)
-			throws IOException {
-		/*message SetA2DEnable
-		{
-			required uint32 		enable 	  	= 1;	//0:切断模拟到数字  1:允许模拟到数字
-		}*/
+
+	// 70)设置模拟到数字通道使能开关
+	public String A2DEnableREQ(MessageStruct getHeader) throws IOException {
+		/*
+		 * message SetA2DEnable { required uint32 enable = 1; //0:切断模拟到数字
+		 * 1:允许模拟到数字 }
+		 */
 		// 创建客户端的Socket服务，指定目的主机和端口。
 		NetDataTypeTransform dd = new NetDataTypeTransform();
 
@@ -199,29 +206,113 @@ public class SendData {
 		;// segNum 2 分片总数
 		dos.write(dd.LongData(getHeader.getReserved(), 8));
 		/**************** content ***********************/
-			/**************** content ***********************/
+		
+		/**************** content ***********************/
 		dos.writeShort(getHeader.getCheckSum());
 
 		byte[] info = bos.toByteArray();
 		if (TcpKeepAliveClient.getSocket().isConnected()) {
-			log.debug("-->center:"+TcpKeepAliveClient.getSocket().getInetAddress()+":A2DEnableREQ:"
-					+"callid="+getHeader.getCallID()+"; seqNum="+(getHeader.getSeqNum()<<8)+
-					"");
+			log.debug("-->center:"
+					+ TcpKeepAliveClient.getSocket().getInetAddress()
+					+ ":A2DEnableREQ:" + "callid=" + getHeader.getCallID()
+					+ "; seqNum=" + (getHeader.getSeqNum() << 8) + "");
 			out.write(info);
-		}else {
+		} else {
 			return "NO";
 		}
 		return "OK";
 	}
 
-	//62)更改基站参数通知中心
-	public String UpdateBSREQ(MessageStruct getHeader,String bsIds,int action)
+	// 设置PTT统计基站
+	public static String SetPTTStatsBS(MessageStruct getHeader, int bsId)
+			throws IOException {
+		/*
+		 * message SetA2DEnable { required uint32 enable = 1; //0:切断模拟到数字
+		 * 1:允许模拟到数字 }
+		 */
+		// 创建客户端的Socket服务，指定目的主机和端口。
+		NetDataTypeTransform dd = new NetDataTypeTransform();
+		TrunkMsoDs.SetPTTStatsBS.Builder builder = TrunkMsoDs.SetPTTStatsBS
+				.newBuilder();
+		builder.setBsid(bsId);
+
+		TrunkMsoDs.SetPTTStatsBS dsReq = builder.build();
+		byte[] buffer = dsReq.toByteArray();
+
+		OutputStream out = TcpKeepAliveClient.getSocket().getOutputStream();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		DataOutputStream dos = new DataOutputStream(bos);
+
+		dos.writeShort(getHeader.getCMDHeader()); // commandHeader 2 命令开始字段
+		dos.writeShort(getHeader.getLength()+buffer.length);// length 2 后接数据长度
+		dos.writeShort((short) 546);// commandId 2 命令ID
+		dos.write(dd.LongData(getHeader.getCallID(), 8));// businessSN 8 业务流水号
+		dos.writeShort(getHeader.getSeqNum());// segNum 2 分片总数
+		dos.write(dd.LongData(getHeader.getReserved(), 8));
+		/**************** content ***********************/
+		dos.write(buffer);
+		/**************** content ***********************/
+		dos.writeShort(getHeader.getCheckSum());
+
+		byte[] info = bos.toByteArray();
+		if (TcpKeepAliveClient.getSocket().isConnected()) {
+			log.debug("-->center:"
+					+ TcpKeepAliveClient.getSocket().getInetAddress()
+					+ ":SetPTTStatsBS: bsId=" + bsId);
+			out.write(info);
+		} else {
+			return "NO";
+		}
+		return "OK";
+	}
+
+	// 获取PTT统计基站
+	public static String PTTStatsBSREQ()
+			throws IOException {
+		/*
+		 * message SetA2DEnable { required uint32 enable = 1; //0:切断模拟到数字
+		 * 1:允许模拟到数字 }
+		 */
+		// 创建客户端的Socket服务，指定目的主机和端口。
+		NetDataTypeTransform dd = new NetDataTypeTransform();
+
+		OutputStream out = TcpKeepAliveClient.getSocket().getOutputStream();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		DataOutputStream dos = new DataOutputStream(bos);
+		MessageStruct getHeader=new MessageStruct();
+
+		dos.writeShort(getHeader.getCMDHeader()); // commandHeader 2 命令开始字段
+		dos.writeShort(getHeader.getLength());// length 2 后接数据长度
+		dos.writeShort((short) 547);// commandId 2 命令ID
+		dos.write(dd.LongData(getHeader.getCallID(), 8));// businessSN 8 业务流水号
+		dos.writeShort(getHeader.getSeqNum());
+		;// segNum 2 分片总数
+		dos.write(dd.LongData(getHeader.getReserved(), 8));
+		/**************** content ***********************/
+		/**************** content ***********************/
+		dos.writeShort(getHeader.getCheckSum());
+
+		byte[] info = bos.toByteArray();
+		if (TcpKeepAliveClient.getSocket().isConnected()) {
+			log.debug("-->center:"
+					+ TcpKeepAliveClient.getSocket().getInetAddress()
+					+ ":PTTStatsBSREQ:");
+			out.write(info);
+		} else {
+			return "NO";
+		}
+		return "OK";
+	}
+
+	// 62)更改基站参数通知中心
+	public String UpdateBSREQ(MessageStruct getHeader, String bsIds, int action)
 			throws IOException {
 		// 创建客户端的Socket服务，指定目的主机和端口。
 		NetDataTypeTransform dd = new NetDataTypeTransform();
-		TrunkMsoDs.UpdateBSREQ.Builder builder=TrunkMsoDs.UpdateBSREQ.newBuilder();
-		
-		String[] str=bsIds.split(",");
+		TrunkMsoDs.UpdateBSREQ.Builder builder = TrunkMsoDs.UpdateBSREQ
+				.newBuilder();
+
+		String[] str = bsIds.split(",");
 		try {
 			for (String string : str) {
 				builder.addBsid(Integer.parseInt(string));
@@ -230,8 +321,7 @@ public class SendData {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		
-		
+
 		TrunkMsoDs.UpdateBSREQ dsReq = builder.build();
 		byte[] buffer = dsReq.toByteArray();
 		// 发送数据，应该获取Socket流中的输出流。
@@ -254,19 +344,23 @@ public class SendData {
 
 		byte[] info = bos.toByteArray();
 		if (TcpKeepAliveClient.getSocket().isConnected()) {
-			TrunkMsoDs.UpdateBSREQ gps=TrunkMsoDs.UpdateBSREQ.parseFrom(buffer);
-			log.debug("-->center:"+TcpKeepAliveClient.getSocket().getInetAddress()+":UpdateBSREQ:"
-					+"callid="+getHeader.getCallID()+"; seqNum="+(getHeader.getSeqNum()<<8)+
-					"; bsIds="+gps.getBsidList().toString());
+			TrunkMsoDs.UpdateBSREQ gps = TrunkMsoDs.UpdateBSREQ
+					.parseFrom(buffer);
+			log.debug("-->center:"
+					+ TcpKeepAliveClient.getSocket().getInetAddress()
+					+ ":UpdateBSREQ:" + "callid=" + getHeader.getCallID()
+					+ "; seqNum=" + (getHeader.getSeqNum() << 8) + "; bsIds="
+					+ gps.getBsidList().toString());
 			out.write(info);
-		}else {
+		} else {
 			return "NO";
 		}
 		return "OK";
 	}
+
 	// 过滤Gps
-	public String UpdateGPSFileterTable(MessageStruct getHeader, String[] msc,int flag)
-			throws IOException {
+	public String UpdateGPSFileterTable(MessageStruct getHeader, String[] msc,
+			int flag) throws IOException {
 		// 创建客户端的Socket服务，指定目的主机和端口。
 		NetDataTypeTransform dd = new NetDataTypeTransform();
 		/* connection(); */
@@ -298,12 +392,14 @@ public class SendData {
 
 		byte[] info = bos.toByteArray();
 		if (TcpKeepAliveClient.getSocket().isConnected()) {
-			TrunkMsoDs.ReadDBREQ db=TrunkMsoDs.ReadDBREQ.parseFrom(buffer);
-			log.debug("-->center:"+TcpKeepAliveClient.getSocket().getInetAddress()+":UpdateGPSFileterTable:"
-					+"mscId="+Arrays.toString(msc)+";action="+flag);
+			TrunkMsoDs.ReadDBREQ db = TrunkMsoDs.ReadDBREQ.parseFrom(buffer);
+			log.debug("-->center:"
+					+ TcpKeepAliveClient.getSocket().getInetAddress()
+					+ ":UpdateGPSFileterTable:" + "mscId="
+					+ Arrays.toString(msc) + ";action=" + flag);
 			out.write(info);
 		}
-		//log.info("send->同步数据："+Arrays.toString(info));
+		// log.info("send->同步数据："+Arrays.toString(info));
 		return "OK";
 	}
 
@@ -338,22 +434,25 @@ public class SendData {
 
 		byte[] info = bos.toByteArray();
 		if (TcpKeepAliveClient.getSocket().isConnected()) {
-			TrunkMsoDs.ReadDBREQ db=TrunkMsoDs.ReadDBREQ.parseFrom(buffer);
-			log.debug("-->center:"+TcpKeepAliveClient.getSocket().getInetAddress()+":ReadDBREQ:"
-					+"callid="+getHeader.getCallID()+"; seqNum="+(getHeader.getSeqNum()<<8)+
-					"; tableName="+db.getTablenameList().toString());
+			TrunkMsoDs.ReadDBREQ db = TrunkMsoDs.ReadDBREQ.parseFrom(buffer);
+			log.debug("-->center:"
+					+ TcpKeepAliveClient.getSocket().getInetAddress()
+					+ ":ReadDBREQ:" + "callid=" + getHeader.getCallID()
+					+ "; seqNum=" + (getHeader.getSeqNum() << 8)
+					+ "; tableName=" + db.getTablenameList().toString());
 			out.write(info);
 		}
-		//log.info("send->同步数据："+Arrays.toString(info));
+		// log.info("send->同步数据："+Arrays.toString(info));
 		return "OK";
 	}
-	
-	//// 强拆
-	public String CallREQ(MessageStruct getHeader,TrunkCommon.CallType callType,BreakCallStruct callStruct)
+
+	// // 强拆
+	public String CallREQ(MessageStruct getHeader,
+			TrunkCommon.CallType callType, BreakCallStruct callStruct)
 			throws IOException {
 		// 创建客户端的Socket服务，指定目的主机和端口。
 		NetDataTypeTransform dd = new NetDataTypeTransform();
-		TrunkCommon.CallREQ.Builder builder=TrunkCommon.CallREQ.newBuilder();
+		TrunkCommon.CallREQ.Builder builder = TrunkCommon.CallREQ.newBuilder();
 		builder.setType(callType);
 		builder.setSrcid(callStruct.getSrcid());
 		builder.setTarid(callStruct.getTarid());
@@ -380,16 +479,18 @@ public class SendData {
 
 		byte[] info = bos.toByteArray();
 		if (TcpKeepAliveClient.getSocket().isConnected()) {
-			TrunkMsoDs.ReadDBREQ db=TrunkMsoDs.ReadDBREQ.parseFrom(buffer);
-			log.debug("-->center:"+TcpKeepAliveClient.getSocket().getInetAddress()+":CallREQ:"
-					+"callid="+getHeader.getCallID()+"; type="+callType+
-					"; srcid="+callStruct.getSrcid()+";tarid="+callStruct.getTarid());
+			TrunkMsoDs.ReadDBREQ db = TrunkMsoDs.ReadDBREQ.parseFrom(buffer);
+			log.debug("-->center:"
+					+ TcpKeepAliveClient.getSocket().getInetAddress()
+					+ ":CallREQ:" + "callid=" + getHeader.getCallID()
+					+ "; type=" + callType + "; srcid=" + callStruct.getSrcid()
+					+ ";tarid=" + callStruct.getTarid());
 			out.write(info);
 		}
-		//log.info("send->同步数据："+Arrays.toString(info));
+		// log.info("send->同步数据："+Arrays.toString(info));
 		return "OK";
 	}
-	
+
 	// 组播源请求
 	public String MuticastSrcBSREQ(MessageStruct getHeader, int bsId)
 			throws IOException {
@@ -421,15 +522,19 @@ public class SendData {
 
 		byte[] info = bos.toByteArray();
 		if (TcpKeepAliveClient.getSocket().isConnected()) {
-			TrunkMsoDs.MuticastSrcBSREQ muti=TrunkMsoDs.MuticastSrcBSREQ.parseFrom(buffer);
-			log.debug("-->center:"+TcpKeepAliveClient.getSocket().getInetAddress()+":MuticastSrcBSREQ:"
-			+"callid="+getHeader.getCallID()+"; seqNum="+(getHeader.getSeqNum()<<8)+
-			"; Mcsrcbsid="+muti.getMcsrcbsid());
+			TrunkMsoDs.MuticastSrcBSREQ muti = TrunkMsoDs.MuticastSrcBSREQ
+					.parseFrom(buffer);
+			log.debug("-->center:"
+					+ TcpKeepAliveClient.getSocket().getInetAddress()
+					+ ":MuticastSrcBSREQ:" + "callid=" + getHeader.getCallID()
+					+ "; seqNum=" + (getHeader.getSeqNum() << 8)
+					+ "; Mcsrcbsid=" + muti.getMcsrcbsid());
 			out.write(info);
 		}
 		return "OK";
 	}
-	//67)调度台设置模数互联组
+
+	// 67)调度台设置模数互联组
 	public String SetADGroup(MessageStruct getHeader, int group)
 			throws IOException {
 		// 创建客户端的Socket服务，指定目的主机和端口。
@@ -460,12 +565,14 @@ public class SendData {
 
 		byte[] info = bos.toByteArray();
 		if (TcpKeepAliveClient.getSocket().isConnected()) {
-			log.debug("-->center:"+TcpKeepAliveClient.getSocket().getInetAddress()+":SetADGroup:"
-					+"callid="+getHeader.getCallID()+"; seqNum="+(getHeader.getSeqNum()<<8)+
-					"; adgroupid="+group);
+			log.debug("-->center:"
+					+ TcpKeepAliveClient.getSocket().getInetAddress()
+					+ ":SetADGroup:" + "callid=" + getHeader.getCallID()
+					+ "; seqNum=" + (getHeader.getSeqNum() << 8)
+					+ "; adgroupid=" + group);
 			out.write(info);
 		}
-		//log.info("send->同步数据："+Arrays.toString(info));
+		// log.info("send->同步数据："+Arrays.toString(info));
 		return "OK";
 	}
 
@@ -490,7 +597,7 @@ public class SendData {
 		OutputStream out = TcpKeepAliveClient.getSocket().getOutputStream();
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream dos = new DataOutputStream(bos);
-	
+
 		dos.writeShort(getHeader.getCMDHeader()); // commandHeader 2 命令开始字段
 		dos.writeShort(getHeader.getLength() + buffer.length);// length 2 后接数据长度
 		dos.writeShort(6);// commandId 2 命令ID
@@ -505,11 +612,14 @@ public class SendData {
 
 		byte[] info = bos.toByteArray();
 		if (TcpKeepAliveClient.getSocket().isConnected()) {
-			TrunkCommon.DataREQ data=TrunkCommon.DataREQ.parseFrom(buffer);
-			log.debug("-->center:"+TcpKeepAliveClient.getSocket().getInetAddress()+":DataREQ:"
-					+"callid="+getHeader.getCallID()+"; seqNum="+(getHeader.getSeqNum()<<8)+
-					"; deviceType="+data.getDeviceType().toString()+"; mscid="+data.getId()+
-					"; dataType="+data.getDataType()+"; slot="+data.getSlot());
+			TrunkCommon.DataREQ data = TrunkCommon.DataREQ.parseFrom(buffer);
+			log.debug("-->center:"
+					+ TcpKeepAliveClient.getSocket().getInetAddress()
+					+ ":DataREQ:" + "callid=" + getHeader.getCallID()
+					+ "; seqNum=" + (getHeader.getSeqNum() << 8)
+					+ "; deviceType=" + data.getDeviceType().toString()
+					+ "; mscid=" + data.getId() + "; dataType="
+					+ data.getDataType() + "; slot=" + data.getSlot());
 			out.write(info);
 		}
 		return "OK";
@@ -521,7 +631,7 @@ public class SendData {
 		// 创建客户端的Socket服务，指定目的主机和端口。
 		NetDataTypeTransform dd = new NetDataTypeTransform();
 		/* connection(); */
-		srcId=struct.getSrcId();
+		srcId = struct.getSrcId();
 
 		// ===============================protoco buf 数据
 		TrunkCommon.SMS.Builder builder = TrunkCommon.SMS.newBuilder();
@@ -538,8 +648,6 @@ public class SendData {
 		builder.setMsgseqnum(struct.getMsgseqnum());
 		TrunkCommon.SMS sms = builder.build();
 		byte[] buffer = sms.toByteArray();
-		
-
 
 		// ====================================
 		// 发送数据，应该获取Socket流中的输出流。
@@ -562,16 +670,18 @@ public class SendData {
 		byte[] info = bos.toByteArray();
 		if (TcpKeepAliveClient.getSocket().isConnected()) {
 			out.write(info);
-			//log.info("send->发送短信：gpsnum="+getHeader.getSeqNum());
-			log.info("send->发送短信："+Arrays.toString(info));
+			// log.info("send->发送短信：gpsnum="+getHeader.getSeqNum());
+			log.info("send->发送短信：" + Arrays.toString(info));
 			return "OK";
 		}
-		
+
 		return "NO";
-		
+
 	}
-	public String setGps(int id,int gpsen, int type, int t_interval,
-			int d_index, int pool_ch, int format,int slot,int mask) throws IOException {
+
+	public String setGps(int id, int gpsen, int type, int t_interval,
+			int d_index, int pool_ch, int format, int slot, int mask)
+			throws IOException {
 		MessageStruct m_header = new MessageStruct();
 		// 创建客户端的Socket服务，指定目的主机和端口。
 		NetDataTypeTransform dd = new NetDataTypeTransform();
@@ -588,12 +698,11 @@ public class SendData {
 		builder.setDIndex(d_index);
 		builder.setPoolCh(pool_ch);
 		builder.setFormat(format);
-	    //builder.setMask(mask);
-	    builder.setSlot(slot);
-	    /*builder.setSlot(value)*/
+		// builder.setMask(mask);
+		builder.setSlot(slot);
+		/* builder.setSlot(value) */
 		TrunkCommon.SetGPSTrigger dsReq = builder.build();
 		byte[] buffer = dsReq.toByteArray();
-		
 
 		// ====================================
 		// 发送数据，应该获取Socket流中的输出流。
@@ -601,7 +710,7 @@ public class SendData {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream dos = new DataOutputStream(bos);
 		MessageStruct m_header1 = new MessageStruct();
-		int gpsnum=m_header1.getSeqNum();
+		int gpsnum = m_header1.getSeqNum();
 
 		dos.writeShort(m_header.getCMDHeader()); // commandHeader 2 命令开始字段
 		dos.writeShort(m_header.getLength() + buffer.length);// length 2 后接数据长度
@@ -616,12 +725,14 @@ public class SendData {
 		dos.writeShort(m_header.getCheckSum());
 
 		byte[] info = bos.toByteArray();
-		
-		
-		log.debug("-->center:"+TcpKeepAliveClient.getSocket().getInetAddress()+":setGps:"
-				+"gpsNum:"+(gpsnum>>8)+";id="+id+"; ig=0; gpsen="+gpsen+"; type="+type+"; t_interval="+t_interval+
-				"; d_index="+d_index+"; pool_ch="+pool_ch+"; format="+format+"; mask="+mask+"; slot="+slot);
-		
+
+		log.debug("-->center:"
+				+ TcpKeepAliveClient.getSocket().getInetAddress() + ":setGps:"
+				+ "gpsNum:" + (gpsnum >> 8) + ";id=" + id + "; ig=0; gpsen="
+				+ gpsen + "; type=" + type + "; t_interval=" + t_interval
+				+ "; d_index=" + d_index + "; pool_ch=" + pool_ch + "; format="
+				+ format + "; mask=" + mask + "; slot=" + slot);
+
 		out.write(info);
 
 		return "OK";
@@ -664,10 +775,12 @@ public class SendData {
 
 		byte[] info = bos.toByteArray();
 		if (TcpKeepAliveClient.getSocket().isConnected()) {
-			log.debug("-->center:"+TcpKeepAliveClient.getSocket().getInetAddress()+":BSControl:"
-					+"id="+id+"; type="+type+"; content="+content);
+			log.debug("-->center:"
+					+ TcpKeepAliveClient.getSocket().getInetAddress()
+					+ ":BSControl:" + "id=" + id + "; type=" + type
+					+ "; content=" + content);
 			out.write(info);
-			//log.info("send->遥测基站："+Arrays.toString(info));
+			// log.info("send->遥测基站："+Arrays.toString(info));
 			return "OK";
 		}
 		return "NO";
@@ -711,8 +824,11 @@ public class SendData {
 		dos.writeShort(getHeader.getCheckSum());
 
 		byte[] info = bos.toByteArray();
-		log.debug("-->center:"+TcpKeepAliveClient.getSocket().getInetAddress()+":BSControl_CH:"+
-				"; id="+id+"; type="+type+"; content="+("cmdsetch:"+ (bsStruct.getNumber() - 1) + ";"));
+		log.debug("-->center:"
+				+ TcpKeepAliveClient.getSocket().getInetAddress()
+				+ ":BSControl_CH:" + "; id=" + id + "; type=" + type
+				+ "; content="
+				+ ("cmdsetch:" + (bsStruct.getNumber() - 1) + ";"));
 		out.write(info);
 
 		// 获得服务器发过来的数据，先获得输入流
@@ -779,7 +895,9 @@ public class SendData {
 
 		byte[] info = bos.toByteArray();
 		if (TcpKeepAliveClient.getSocket().isConnected()) {
-			log.debug("-->center:"+TcpKeepAliveClient.getSocket().getInetAddress()+":BSStatusREQ:"+"; id="+bsId);
+			log.debug("-->center:"
+					+ TcpKeepAliveClient.getSocket().getInetAddress()
+					+ ":BSStatusREQ:" + "; id=" + bsId);
 			out.write(info);
 		}
 

@@ -164,6 +164,8 @@ public class eventAction extends ActionSupport {
 		else if(dbname.equals("xhdigital_sendsms")){db="短信发件箱";timeChar="writeTime";}
 		else if(dbname.equals("xhdigital_log")){db="系统日志";timeChar="time";}
 		else if(dbname.equals("xhdigital_offonline")){db="设备上下线";timeChar="time";}
+		else if(dbname.equals("xhdigital_callerror")){db="呼叫失败数据";timeChar="starttime";}
+		else if(dbname.equals("xhdigital_channel_send_count")){db="信道机发射时间统计";timeChar="createTime";}
 		else {db="未知数据表";}
 		if(type.equals("delete"))
 		{

@@ -78,7 +78,8 @@ var event_db_store=Ext.create('Ext.data.Store',{
 	      {dbname: 'xhdigital_recvsms',showInfo: '短信收件箱'},
 	      {dbname: 'xhdigital_sendsms',showInfo: '短信发件箱'},
 	      {dbname: 'xhdigital_log',showInfo: '系统操作日志'},
-	      {dbname: 'xhdigital_offonline',showInfo: '设备上下线'}
+	      {dbname: 'xhdigital_callerror',showInfo: '呼叫失败记录'},
+	      {dbname: 'xhdigital_channel_send_count',showInfo: '信道机发射时间统计数据'}
 	      ]
 })
 var event_time_store=Ext.create('Ext.data.Store',{
@@ -97,6 +98,9 @@ var event_date_store=Ext.create('Ext.data.Store',{
 	autoLoad: true,
 	fields:[{name:'time'},{name:'showInfo'}],
 	data:[
+          {time: '10',showInfo: '10天前的数据'},
+          {time: '20',showInfo: '20天前的数据'},
+          {time: '30',showInfo: '一个月前的数据'},
 	      {time: '90',showInfo: '三个月前的数据'},
 	      {time: '180',showInfo: '半年前的数据'},
 	      {time: '360',showInfo: '一年前的数据'},

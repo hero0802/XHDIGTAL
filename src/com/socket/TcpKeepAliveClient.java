@@ -75,6 +75,7 @@ public class TcpKeepAliveClient extends Thread {
 	private static long time = 0;
 	private static int m_rssi = 0;
 	private static int muticastsrc_bsid;
+	public static int cbsId=0;
 	private static ArrayList colorList;
 	private static HashMap<String, ArrayList> colorMap = new HashMap<String, ArrayList>();
 	private static ArrayList<HashMap<String, Object>> callList = new ArrayList<HashMap<String, Object>>();
@@ -155,6 +156,7 @@ public class TcpKeepAliveClient extends Thread {
 				if (socket.isConnected()) {
 					connected = true;
 					log.debug("TCP Connected success!!");
+					SendData.PTTStatsBSREQ();
 					IndexDwr.centerStatus(1);
 					
 					//告警类型：1：断站；2：中心；3：交换；4：温度;5:gps失锁；6：反向功率过大；7：交流；8：功率
@@ -316,6 +318,9 @@ public class TcpKeepAliveClient extends Thread {
 			case 21:
 				RSSI(len, buf);// 基站场强信息
 				break;
+			case 25:
+				PTTStats(len, buf);// ppt统计
+				break;
 			//case 513: HeartBeatOUT(len, buf);// 心跳 break;
 			 
 			case 519:
@@ -329,7 +334,10 @@ public class TcpKeepAliveClient extends Thread {
 				break;
 			case 545:
 				A2DEnableRES(len, buf);// 71)应答设置模拟到数字通道使能开关
-				break;				
+				break;	
+			case 548:
+				PTTStatsBSRES(len, buf);// 71)应答设置模拟到数字通道使能开关
+				break;
 			default:
 				break;
 			}
@@ -673,19 +681,25 @@ public class TcpKeepAliveClient extends Thread {
 			}
 			date = func.nowDate();			
 			HashMap callerror = new HashMap();
+			String bsName=Sql.bsId_bsName(res.getBsid(0));
 			callerror.put("errorMsg",errorMsg);
 			callerror.put("caller", res.getSrcid());
 			callerror.put("called", res.getTarid(0));
 			callerror.put("ig", res.getIg());
 			callerror.put("bsid", res.getBsid(0));
 			
-			callerror.put(
-					"bsName", Sql.bsId_bsName(res
-							.getBsid(0)));
+			callerror.put("bsName", bsName);
 			callerror.put("starttime", date);
 			String jsonstr = json.Encode(callerror);
 			SocketDwr.CallError(jsonstr);
-			
+			String sql="insert into xhdigital_callerror(caller,called,bsId,message,bsName)"
+					+ "values('"+res.getSrcid()+"','"+res.getTarid(0)+"','"+res.getBsid(0)+"','"+errorMsg+"','"+bsName+"')";
+			try {
+				Sql.Update(sql);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		if(type.equals("F_CUTIN")){
 			m_calling=1;
@@ -1313,7 +1327,42 @@ public class TcpKeepAliveClient extends Thread {
 		}
 
 	}
+	//ppt统计
+	public void PTTStats(int len, byte[] buf) {
+		result = new byte[len - 26];
+		System.arraycopy(buf, 24, result, 0, len - 26);
+		TrunkCommon.PTTStats heart = null;
+		try {
+			heart = TrunkCommon.PTTStats.parseFrom(result);
 
+			log.info("[PTTStats]----bsId="+ heart.getBsid()+";time="+heart.getPttDuration());
+			String sql="insert into xhdigital_channel_send_count(bsId,pptTime)values('"+heart.getBsid()+"','"+heart.getPttDuration()+"')";
+			Sql.Update(sql);
+			
+		} catch (InvalidProtocolBufferException e) {
+		} catch (Error e) {
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void PTTStatsBSRES(int len, byte[] buf) {
+		result = new byte[len - 26];
+		System.arraycopy(buf, 24, result, 0, len - 26);
+		TrunkMsoDs.PTTStatsBSRES heart = null;
+		try {
+			heart = TrunkMsoDs.PTTStatsBSRES.parseFrom(result);
+
+			log.info("[PTTStatsBSRES]----ack="+ heart.getAck()+";bsId="+heart.getBsid());
+			TcpKeepAliveClient.cbsId=heart.getBsid();
+			
+		} catch (InvalidProtocolBufferException e) {
+		} catch (Error e) {
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public void HeartBeatOUT(int len, byte[] buf) {
 		result = new byte[len - 26];
 		System.arraycopy(buf, 24, result, 0, len - 26);

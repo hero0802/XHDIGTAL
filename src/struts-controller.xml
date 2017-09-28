@@ -364,6 +364,10 @@
 <action name="UpdateGPSFileterTable" class="com.action.GpsPushAction" method="UpdateGPSFileterTable">  
      <result type="json" name="success"></result> 
 </action>
+<!--设置-->  
+<action name="changeBsId" class="com.action.ChannelCountAction" method="changeBsId">  
+     <result type="json" name="success"></result> 
+</action>
 </package>                      
  <!-- Add packages here -->
 </struts>

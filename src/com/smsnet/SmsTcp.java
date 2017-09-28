@@ -153,6 +153,12 @@ public class SmsTcp extends Thread {
 
 			} catch (SocketException e) {
 				log.info("sms tcp connect trying");
+				try {
+					sleep(10000);
+				} catch (InterruptedException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
 				if (socket.isConnected() || socket != null) {
 					try {
 						socket.close();

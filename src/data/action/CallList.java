@@ -156,6 +156,97 @@ public class CallList {
 				"text/html;charset=UTF-8");
 		ServletActionContext.getResponse().getWriter().write(jsonstr);
 	}
+	//呼叫失败统计
+	public void callerror() throws Exception {
+		String str="";
+		if(bsId>0){
+			str=" and bsId="+bsId;
+		}
+		String sql2 = "select count(*) from xhdigital_callerror where starttime>='"+startTime+"' and starttime<='"+endTime+"' "+str;
+		String sql = "select * from xhdigital_callerror where starttime>='"+startTime+"' and starttime<='"+endTime+"' "+str+" limit " + start + ","
+				+ limit;
+		
+		ArrayList data = Sql.DBList(sql);
+
+		HashMap result = new HashMap();
+		result.put("items", data);
+		result.put("total", Sql.getCount(sql2));
+		String jsonstr = json.Encode(result);
+		ServletActionContext.getResponse().setContentType(
+				"text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jsonstr);
+		
+
+	}
+	//信道机发射时间统计
+	public void channelPro() throws SQLException {
+		String sql="";
+		Connection conn = db.getConn();
+		Statement stmt = conn.createStatement();
+		ArrayList list = new ArrayList();
+		Map rowData;
+		if(bsId==0){
+			bsId=TcpKeepAliveClient.cbsId;
+		}
+		/*sql="select sum(pptTime) as time,DATE_FORMAT(createTime, '%m/%d' ) AS date from xhdigital_channel_send_count "
+		  + "where bsId='"+bsId+"' group by date order by date asc limit 0,31";*/
+		
+		SimpleDateFormat dd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date1 = null,date2 = null;
+		long time1=0;
+		long time2=0;
+		long time=0;
+			try {
+				date1 = dd.parse(startTime.replace("T", " "));
+				date2 = dd.parse(endTime.replace("T", " "));
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			time1=date1.getTime();
+			time2=date2.getTime();
+			time=(time2-time1)/(24*60*60*1000);
+			if(time<=1){
+				
+				sql="select sum(pptTime) as time,DATE_FORMAT(createTime, '%m月%d-%H点' ) AS date from xhdigital_channel_send_count where createTime between '"+startTime+"' " +
+				" and '"+endTime+"' and bsId='"+bsId+"' group by date order by date asc";
+				
+				ResultSet rs = stmt.executeQuery(sql);
+				while (rs.next()) {
+					rowData = new HashMap();
+					rowData.put("label", rs.getString("date"));
+					rowData.put("time", rs.getInt("time")/1000);
+					list.add(rowData);
+				}
+			}
+
+           else{
+        	   sql="select sum(pptTime) as time,DATE_FORMAT(createTime, '%m月%d' ) AS date from xhdigital_channel_send_count where createTime between '"+startTime+"' " +
+       				" and '"+endTime+"' and bsId='"+bsId+"' group by date order by date asc";
+				ResultSet rs = stmt.executeQuery(sql);
+				while (rs.next()) {
+					rowData = new HashMap();
+					rowData.put("label", rs.getString("date"));
+					rowData.put("time", rs.getInt("time")/1000);
+					list.add(rowData);
+				}
+		}
+		HashMap data = new HashMap();
+		data.put("total", list.size());
+		data.put("items", list);
+		String jsonstr = json.Encode(data);
+		ServletActionContext.getResponse().setContentType(
+				"text/html;charset=UTF-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(jsonstr);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+
+	}
 	//呼叫统计
 	public void callPro() throws SQLException {
 		String sql="";
@@ -479,6 +570,7 @@ public class CallList {
 	public void setGroupAlias(String groupAlias) {
 		this.groupAlias = groupAlias;
 	}
+	
 
 }
 class MapComparator implements Comparator<Map<String, String>> {
