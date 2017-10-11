@@ -47,7 +47,7 @@ class BsOffLineCount extends TimerTask{
 		ArrayList result=new ArrayList(); 
 		
 		String sql="select bsId,count(bsId) as num from xhdigital_bs_offonline  "
-				+ "where time<'"+func.DateMinus(func.StringToInt(func.readXml("sms", "bsoffnumtime")))+"' and online=0 group by bsId";
+				+ "where time>'"+func.DateMinus(func.StringToInt(func.readXml("sms", "bsoffnumtime")))+"' and online=0 group by bsId";
 		try {
 			ArrayList data = Sql.DBList(sql);
 			for(int i=0;i<data.size();i++){

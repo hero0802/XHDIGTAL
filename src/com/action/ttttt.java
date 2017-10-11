@@ -25,11 +25,8 @@ public class ttttt {
 	private static MD5 md5=new MD5();
 
 	public static void main(String[] args) throws Exception {
-		/*int a=0;
-		for(int i=0;i<1000;i++){
-			a++;
-		}
-		System.out.println(a);*/
+		
+		System.out.println(func.DateMinus(60));
 		
 	}
 	public static String webPath(){

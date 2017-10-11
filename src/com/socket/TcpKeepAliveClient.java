@@ -1599,10 +1599,7 @@ public class TcpKeepAliveClient extends Thread {
 			// TODO Auto-generated catch block
 			log.info("===[ERROR]====BSControl");
 		}
-		/*log.info("[==BsControl]==");
-		log.info("[BSControl]----BsId>>" + bs.getBsid());
-		log.info("[BSControl]----Type>>" + bs.getType());
-		log.info("[BSControl]----content>>" + bs.getContent().toStringUtf8());*/
+		log.info("DS<-CENTER[BSControl]----BsId=" + bs.getBsid()+";Type="+bs.getType()+";content="+bs.getContent().toStringUtf8());
 		String index = bs.getType().toString();
 		BsControlType type = null;
 		if (index.equals("STATUS")) {
