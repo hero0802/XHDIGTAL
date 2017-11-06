@@ -1,0 +1,228 @@
+//包名
+package trunk_mso_ds;
+import  "trunk_common.proto";
+option java_package = "com.protobuf";
+option java_outer_classname = "TrunkMsoDs";
+
+//	上行心跳[网管到中心]
+message HeartBeatIN
+{
+	required uint32			workstatus = 1;
+}
+
+//	下行心跳[中心到网管]
+message HeartBeatOUT
+{
+	required bool			mso_status = 1;
+	optional bool			sw_connection = 2;
+	optional int32			muticastsrc_bsid = 3;
+}
+
+//数据库参数
+message DBInfo
+{
+	optional string		db_ip 				= 1;
+	optional uint32		db_port 			= 2[default = 3306];
+	optional string		db_username 		= 3[default = 'root'];
+	optional string		db_password 		= 4[default = 'xinhong12345'];
+	optional string		db_name 			= 5[default = 'xh_pdt_trunk'];
+}
+//	数据库参数请求
+//DBInfoREQ
+
+//	数据库参数应答
+message DBInfoRES
+{
+	required DBInfo		info = 1;
+}
+
+message UpdateDBInfoREQ
+{
+	required DBInfo		info = 1;
+}
+
+message UpdateDBInfoRES
+{
+	required DBInfo				info 	= 1;
+	optional trunk_common.Ack	ack		= 2;
+}
+
+//	基站状态
+message BSStatus
+{
+	required uint32	bsid			= 1;	//数据库唯一ID
+	optional uint32 channelno		= 2;	//信道频率号
+	optional uint32	workstatus		= 3;	//工作状态[0:未许可，1：未上线, 2:已上线]
+	optional uint32	slot0_stat		= 4; 	//[0: edle, 1: busy, 2: TSCC]
+	optional uint32	slot1_stat		= 5; 	//[0: edle, 1: busy, 2: TSCC]
+	optional uint32 admode			= 6;	//[0:analog, 1:digital]
+	optional uint32 linkmode		= 7;	//[0:Lan, 1:Wan]
+	optional uint32 offlinerepeaten	= 8;	//[0:禁止脱网转发, 1:脱网转发]
+}
+//	BS状态请求
+message BSStatusREQ
+{
+	optional sint32		bsid 			= 1;
+}
+//	BS状态应答
+message BSStatusRES
+{
+	repeated BSStatus	bsinfo 			= 1;
+	optional trunk_common.Ack	ack		= 2;
+}
+
+//	会议状态
+message MeetStatus
+{
+	required string					id 			= 1;	//会议号
+	optional uint32					status 		= 2; 	//0：无会议，1：话间 2：话中
+	optional trunk_common.CallType	type		= 3;	//呼叫类型，见CallType定义
+	optional uint32 				srcid 		= 4; 	//主叫ID号[24位]
+	optional uint32 				tarid 		= 5; 	//被叫ID号[24位]
+	optional uint32 				pttid 		= 6; 	//当前呼叫ID
+	repeated uint32					bsid		= 7;	//基站id
+	repeated uint32					slot 		= 8;	//时隙
+}
+
+//	会议状态请求
+message MeetStatusREQ
+{
+	optional string		meetid = 1;			//meetid = "********"时返回所有会议状态
+}
+//	会议状态应答
+message MeetStatusRES
+{
+	repeated MeetStatus	meetinfo 		= 1;
+}
+
+//	读取数据库请求 [调度通知中心更新数据库到内存]
+message ReadDBREQ
+{
+	repeated string	 	tablename	= 1;
+}
+//	读取数据库应答
+message ReadDBRES
+{
+	repeated string	 			tablename	= 1;
+	optional trunk_common.Ack	ack			= 2;
+}
+
+//	繁忙排队请求
+//BusyQueuingREQ
+
+//	繁忙排队
+message BusyQueuing
+{
+	message Queue
+	{
+		//排队时间[格式:YYYY-MM-DD hh:mm:ss]
+		optional string						time	= 1;
+		optional trunk_common.CallREQ		req 	= 2;		//具体请求内容
+		optional sint32						flag	= 3;		//标志[0：正常，-1:删除]
+	}
+	repeated Queue		busyqueue	= 1;			//多个繁忙排队
+}
+
+//切换到指定信道请求[网管调度->中心]
+message SwitchChannelREQ
+{
+	required	uint32						bsid		= 1;	//信道机ID[BaseStation表中的ID]
+	required	trunk_common.ChannelPair	newchannel	= 2;	//新指定频率
+}
+//切换到指定信道应答[中心->网管调度]
+message SwitchChannelRES
+{
+	required	uint32 						bsid		= 1;	//信道机ID[BaseStation表中的ID]
+	required	trunk_common.ChannelPair	newchannel	= 2;	//新指定频率
+	optional	trunk_common.Ack	ack					= 3;
+}
+
+//基站->中心
+//基站收到音频后，一个超桢，解码状态与上次不同，则通知中心
+message AudioDecode
+{
+	required uint32		bsid 	= 1;	//bsid
+	optional uint32		slot 	= 2;	//时隙[0-1]
+	optional uint32		status 	= 3;	//状态[0-1] 0:解桢出错或无法解桢 1：解桢正确
+}
+
+
+//更改基站参数通知中心，适用于更改参数
+message UpdateBSREQ
+{
+	repeated uint32  bsid 		= 1;	//基站ID，可重复
+	optional uint32 action 		= 2;	//执行动作[0：增加，  1：删除， 2：修改]
+}
+
+message UpdateBSRES
+{
+	repeated uint32  			bsid 	= 1;	//基站ID，可重复
+	optional uint32 			action 	= 2;	//执行动作[0：增加，  1：删除， 2：修改]
+	optional trunk_common.Ack	ack	 	= 3;	//应答
+}
+
+message MuticastSrcBSREQ
+{
+	required int32 		mcsrcbsid	= 1;		//mcsrcbsid=-1时，为请求组播源基站，否则为设置组播源基站
+}
+
+message MuticastSrcBSRES
+{
+	required int32 					mcsrcbsid	= 1;		//当前组播源基站，-1没有组播源基站
+	optional trunk_common.Ack		ack			= 2;		//应答
+}
+
+//调度台设置GPS过滤列表，通知博康更新数据库
+message UpdateGPSFileterTable
+{
+	repeated uint32 			mscId 		= 1;	//gps 过滤 id列表 0重载整张表
+	optional uint32 			action 		= 2;	//执行动作[0：增加，  1：删除]
+}
+
+//调度台设置模数互联组
+message SetADGroup
+{
+	required uint32				groupid		= 1;   	//模数互联组
+}
+
+//调度台请求模数互联组
+//message ADGroupREQ
+
+//应答模数互联组
+message ADGroupRES
+{
+	required uint32				groupid		= 1;   	//模数互联组
+}
+
+//设置模拟到数字通道使能开关
+message SetA2DEnable
+{
+	required uint32 			enable 	  	= 1;	//0:切断模拟到数字  1:允许模拟到数字
+}
+
+//调度台请求模拟到数字通道
+//message A2DEnableREQ
+
+//应答设置模拟到数字通道使能开关
+message A2DEnableRES
+{
+	required uint32 			enable 	  	= 1;	//0:切断模拟到数字  1:允许模拟到数字
+	optional trunk_common.Ack	ack			= 2;	//应答
+}
+
+
+//设置PTT统计基站
+message SetPTTStatsBS
+{
+	required uint32   			bsid 		= 1;
+}
+
+//调度台请求当前PTT统计基站
+//message PTTStatsBSREQ
+
+//应答设置PTT统计基站开关
+message PTTStatsBSRES
+{
+	required uint32   			bsid 		= 1;
+	optional trunk_common.Ack	ack			= 2;	//应答
+}

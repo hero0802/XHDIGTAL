@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+<constant name="struts.multipart.maxSize" value="204857600"/> <!--支持上传100M文件-->
+<constant name="struts.i18n.encoding" value="utf-8"/>  
+
+<package name="CONTROLLER" extends="json-default" namespace="/controller">  
+
+   <action name="delUser" class="com.action.WebUserAction" method="delete_user">  
+     <result type="json" name="success"></result>   
+   </action> 
+   <action name="addUser" class="com.action.WebUserAction" method="add_user">  
+     <result type="json" name="success"></result>   
+   </action> 
+   <action name="updateUser" class="com.action.WebUserAction" method="update_user">  
+     <result type="json" name="success"></result>   
+   </action> 
+     
+   <action name="addRadioUser" class="com.action.RadioUserAction" method="addRadioUser">  
+     <result type="json" name="success"></result>   
+   </action>  
+   <action name="updateRadioUser" class="com.action.RadioUserAction" method="updateRadioUser">  
+     <result type="json" name="success"></result>   
+   </action>    
+   <action name="delRadioUser" class="com.action.RadioUserAction" method="delRadioUser">  
+     <result type="json" name="success"></result>   
+   </action> 
+      <action name="addRadioUserBS" class="com.action.RadioUserAction" method="addRadioUserBS">  
+     <result type="json" name="success"></result>   
+   </action>
+   <action name="delRadioUserBS" class="com.action.RadioUserAction" method="delRadioUserBS">  
+     <result type="json" name="success"></result>   
+   </action>
+   <action name="stunRadio" class="com.action.RadioUserAction" method="stunRadio">  
+     <result type="json" name="success"></result>   
+   </action>
+   <action name="reviveRadio" class="com.action.RadioUserAction" method="reviveRadio">  
+     <result type="json" name="success"></result>   
+   </action>
+   <action name="killRadio" class="com.action.RadioUserAction" method="killRadio">  
+     <result type="json" name="success"></result>   
+   </action> 
+    <action name="excelTo" class="com.action.RadioUserAction" method="IntoFile">  
+     <result type="json" name="success"></result>   
+   </action> 
+   <action name="leader" class="com.action.RadioUserAction" method="Leader">  
+     <result type="json" name="success"></result> 
+   </action>  
+
+    <action name="addTalkGroup" class="com.action.TalkGroupAction" method="addTalkGroup">  
+     <result type="json" name="success"></result>   
+   </action>  
+   <action name="updateTalkGroup" class="com.action.TalkGroupAction" method="updateTalkGroup">  
+     <result type="json" name="success"></result>   
+   </action>    
+   <action name="delTalkGroup" class="com.action.TalkGroupAction" method="delTalkGroup">  
+     <result type="json" name="success"></result>   
+   </action>
+   <action name="addTGBS" class="com.action.TalkGroupAction" method="addTGBS">  
+     <result type="json" name="success"></result>   
+   </action>
+   <action name="delTGBS" class="com.action.TalkGroupAction" method="delTGBS">  
+     <result type="json" name="success"></result>   
+   </action>
+
+    <action name="addBsStation" class="com.action.BsStationAction" method="addBsStation">  
+     <result type="json" name="success"></result>   
+   </action>  
+   <action name="updateBsStation" class="com.action.BsStationAction" method="updateBsStation">  
+     <result type="json" name="success"></result>   
+   </action>    
+   <action name="delBsStation" class="com.action.BsStationAction" method="delBsStation">  
+     <result type="json" name="success"></result> 
+   </action> 
+   
+    <action name="bs_update" class="com.action.BsStationAction" method="bs_update">  
+     <result type="json" name="success"></result> 
+   </action> 
+   
+   <action name="breakCall" class="com.action.BsStationAction" method="breakCall">  
+     <result type="json" name="success"></result> 
+   </action> 
+   
+      <action name="breakAndKill" class="com.action.BsStationAction" method="breakAndKill">  
+     <result type="json" name="success"></result> 
+   </action> 
+   
+ <action name="updateMsoConfg" class="com.action.MsoConfgAction" method="updateMsoConfg">  
+     <result type="json" name="success"></result> 
+   </action>   
+ <action name="key2" class="com.action.MsoConfgAction" method="Key2">  
+     <result type="json" name="success"></result> 
+   </action> 
+ <action name="tcp" class="com.socket.LongSocket" method="send">  
+     <result type="json" name="success"></result> 
+</action>      
+
+ <action name="groupPower" class="com.action.PowerAction" method="GroupPower">  
+     <result type="json" name="success"></result> 
+</action> 
+<action name="userPower" class="com.action.PowerAction" method="UserPower">  
+     <result type="json" name="success"></result> 
+</action>
+<action name="updateGroupPower" class="com.action.PowerAction" method="updateGroupPower">  
+     <result type="json" name="success"></result> 
+</action> 
+<action name="updateUserPower" class="com.action.PowerAction" method="updateUserPower">  
+     <result type="json" name="success"></result> 
+</action>  
+
+<action name="updateUserMenu" class="com.action.PowerAction" method="updateUserMenu">  
+     <result type="json" name="success"></result> 
+</action> 
+<action name="updateGroupMenu" class="com.action.PowerAction" method="updateGroupMenu">  
+     <result type="json" name="success"></result> 
+</action> 
+
+<action name="fileIsExists" class="com.action.FileIsExistsAction">
+  <result type="json" name="success"></result>
+</action> 
+
+ <action name="downwav" class="com.action.DownWavAction" method="downLoadFile">    
+  <result name="success" type="stream">     
+               <param name="contentType">application/octet-stream;charset=ISO8859-1</param>
+               <param name="inputName">inputStream</param>
+               <param name="contentDisposition">attachment;filename="${downloadFileName}"</param>
+               <param name="bufferSize">4096</param>                
+  </result>    
+</action> 
+ <action name="downSoft" class="com.action.BsStationAction" method="downFile">    
+  <result name="success" type="stream">     
+               <param name="contentType">application/octet-stream;charset=ISO8859-1</param>
+               <param name="inputName">inputStream</param>
+               <param name="contentDisposition">attachment;filename="${downloadFileName}"</param>
+               <param name="bufferSize">4096</param>                
+  </result>    
+</action> 
+
+<action name="sendSms" class="com.action.SendSms" method="sendSms">  
+     <result type="json" name="success"></result> 
+</action>  
+<!--显示-->
+        <action name="getEvent" class="com.action.eventAction" method="get_scheduler">
+          <result type="json" name="success"> </result>
+        </action>
+        <!--开启-->
+        <action name="onEvent" class="com.action.eventAction" method="on_scheduler">
+          <result type="json" name="success"></result>
+        </action>
+        <!--关闭-->
+        <action name="offEvent" class="com.action.eventAction" method="off_scheduler">
+          <result type="json" name="success"></result>
+        </action>
+        <!--添加事件-->
+        <action name="addEvent" class="com.action.eventAction" method="add_event">
+          <result type="json" name="success"></result>
+        </action>
+        <!--删除事件-->
+        <action name="deleteEvent" class="com.action.eventAction" method="delete_event">
+          <result type="json" name="success"></result>
+        </action>  
+<!--遥测基站-->        
+<action name="bsStatus" class="com.action.BsStationAction" method="bs_status">  
+     <result type="json" name="success"></result> 
+</action> 
+<!--忽略告警-->   
+<action name="ignoreBtn" class="com.action.BsStationAction" method="ignoreBtn">  
+     <result type="json" name="success"></result> 
+</action> 
+<!--删除告警-->   
+<action name="delAlarmBtn" class="com.action.BsStationAction" method="delAlarmBtn">  
+     <result type="json" name="success"></result> 
+</action> 
+<!--遥测所有基站-->        
+<action name="bsStatusAll" class="com.action.BsStationAction" method="bs_status_all">  
+     <result type="json" name="success"></result> 
+</action> 
+<!--同步基站GPS-->        
+<action name="bsGps" class="com.action.BsStationAction" method="bs_gps">  
+     <result type="json" name="success"></result> 
+</action> 
+<!--设置基站信道号-->        
+<action name="bsCh" class="com.action.BsStationAction" method="bsCHNum">  
+     <result type="json" name="success"></result> 
+</action>  
+<!--打开基站电源-->        
+<action name="bsPowOn" class="com.action.BsStationAction" method="bs_pow_on">  
+     <result type="json" name="success"></result> 
+</action> 
+<!--关闭基站电源-->        
+<action name="bsPowOff" class="com.action.BsStationAction" method="bs_pow_off">  
+     <result type="json" name="success"></result> 
+</action> 
+<!--基站联网-->        
+<action name="bsNetOn" class="com.action.BsStationAction" method="bs_net_on">  
+     <result type="json" name="success"></result> 
+</action> 
+<!--基站短网-->        
+<action name="bsNetOff" class="com.action.BsStationAction" method="bs_net_off">  
+     <result type="json" name="success"></result> 
+</action>
+<!--功率设定-->        
+<action name="set_power" class="com.action.BsStationAction" method="bs_power_set">  
+     <result type="json" name="success"></result> 
+</action>
+<!--功率标定-->        
+<action name="bs_power_flag" class="com.action.BsStationAction" method="bs_power_flag">  
+     <result type="json" name="success"></result> 
+</action>   
+<!--设置脱网信道-->        
+<action name="bs_offnet_chan" class="com.action.BsStationAction" method="bs_offnet_chan">  
+     <result type="json" name="success"></result> 
+</action> 
+<!--设置数模工作模式-->        
+<action name="bs_admodel" class="com.action.BsStationAction" method="bs_admodel">  
+     <result type="json" name="success"></result> 
+</action> 
+<!--设置组播源-->        
+<action name="updateMutiCastBsId" class="com.action.BsStationAction" method="updateMutiCastBsId">  
+     <result type="json" name="success"></result> 
+</action> 
+<!--通知中心同步数据库-->        
+<action name="tellCenter" class="com.action.BsStationAction" method="ReadDBREQ">  
+     <result type="json" name="success"></result> 
+</action>  
+
+<!--初始化数据库-->        
+<action name="iniData" class="com.sql.CreateDataBase" method="CreateDB">  
+     <result type="json" name="success"></result> 
+</action>
+
+<!--GPS设置-->        
+<action name="setGps" class="com.action.GpsAction" method="setGps">  
+     <result type="json" name="success"></result> 
+</action>
+<!--监听语音-->        
+<action name="startMonotor" class="com.action.BsStationAction" method="startMonitor">  
+     <result type="json" name="success"></result> 
+</action>
+<action name="closeMonotor" class="com.action.BsStationAction" method="closeMonitor">  
+     <result type="json" name="success"></result> 
+</action>
+<!--删除通话记录-->        
+<action name="delCallList" class="com.action.BsStationAction" method="delCallList">  
+     <result type="json" name="success"></result> 
+</action>
+<!--清空遥测记录-->        
+<action name="clearConData" class="com.action.BsStationAction" method="clearConData">  
+     <result type="json" name="success"></result> 
+</action>
+<!--设置经纬度-->        
+<action name="setLngLat" class="com.action.BsStationAction" method="LngLat">  
+     <result type="json" name="success"></result> 
+</action>
+<!--同步基站状态-->        
+<action name="BsStatusAll" class="com.action.BsStationAction" method="BsStatusAll">  
+     <result type="json" name="success"></result> 
+</action>
+
+<!--基站组播源-->        
+<action name="mutiCastBsId" class="com.action.BsStationAction" method="mutiCastBsId">  
+     <result type="json" name="success"></result> 
+</action>
+<!--基站仅上行-->        
+<action name="updateBsRfup" class="com.action.BsStationAction" method="updateBsRfup">  
+     <result type="json" name="success"></result> 
+</action>
+<!--基站仅下行-->        
+<action name="updateBsRfdown" class="com.action.BsStationAction" method="updateBsRfdown">  
+     <result type="json" name="success"></result> 
+</action>
+<!--基站上下行-->        
+<action name="updateBsRfupdown" class="com.action.BsStationAction" method="updateBsRfupdown">  
+     <result type="json" name="success"></result> 
+</action>
+<!--开启全网禁发-->        
+<action name="OpenAllNetStopSend" class="com.action.BsStationAction" method="OpenAllNetStopSend">  
+     <result type="json" name="success"></result> 
+</action>
+<!--关闭全网禁发-->        
+<action name="CloseAllNetStopSend" class="com.action.BsStationAction" method="CloseAllNetStopSend">  
+     <result type="json" name="success"></result> 
+</action>
+<!--全网禁发开关状态-->        
+<action name="AllNetStopSendBtnSta" class="com.action.BsStationAction" method="AllNetStopSendBtnSta">  
+     <result type="json" name="success"></result> 
+</action>
+<!--允许模拟接入--> 
+<action name="OpenMoni" class="com.action.BsStationAction" method="OpenMoni">  
+     <result type="json" name="success"></result> 
+</action>
+<!--禁止模拟接入--> 
+<action name="CloseMoni" class="com.action.BsStationAction" method="CloseMoni">  
+     <result type="json" name="success"></result> 
+</action>
+
+<!--添加联系人-->        
+<action name="addPhone" class="com.action.SmsAlarm" method="add">  
+     <result type="json" name="success"></result> 
+</action>
+<!--修改联系人-->        
+<action name="updatePhone" class="com.action.SmsAlarm" method="update">  
+     <result type="json" name="success"></result> 
+</action>
+<!--删除联系人-->        
+<action name="delPhone" class="com.action.SmsAlarm" method="del">  
+     <result type="json" name="success"></result> 
+</action>
+<!--加载开关-->        
+<action name="loadPhone" class="com.action.SmsAlarm" method="load">  
+     <result type="json" name="success"></result> 
+</action>
+<!--保存开关-->        
+<action name="savePhone" class="com.action.SmsAlarm" method="save">  
+     <result type="json" name="success"></result> 
+</action>
+<!--添加限制基站短信告警-->        
+<action name="addLimitBs" class="com.action.SmsAlarm" method="addLimitBs">  
+     <result type="json" name="success"></result> 
+</action>
+<!--删除限制基站短信告警-->        
+<action name="delLimitBs" class="com.action.SmsAlarm" method="delLimitBs">  
+     <result type="json" name="success"></result> 
+</action>
+<!--清空地图标记-->        
+<action name="ClearPhoneMarker" class="com.action.MapAction" method="ClearPhoneMarker">  
+     <result type="json" name="success"></result> 
+</action>
+<!--天假gps自动任务-->        
+<action name="addTask" class="com.action.GpsAction" method="addTask">  
+     <result type="json" name="success"></result> 
+</action>
+<!--删除gps自动任务-->        
+<action name="delGpsTask" class="com.action.GpsAction" method="delTask">  
+     <result type="json" name="success"></result> 
+</action>
+<!--手动上拉gps-->        
+<action name="gpsTask" class="com.action.GpsAction" method="gpsTask">  
+     <result type="json" name="success"></result> 
+</action>
+<action name="handleTask" class="com.action.GpsAction" method="handleTask">  
+     <result type="json" name="success"></result> 
+</action>
+<!--屏蔽手台gps信息上传到博康系统-->  
+<action name="stopPushGpsList" class="com.action.GpsPushAction" method="stopPushGpsList">  
+     <result type="json" name="success"></result> 
+</action>
+<!--解除屏蔽手台gps信息上传到博康系统-->  
+<action name="openPushGps" class="com.action.GpsPushAction" method="openPushGps">  
+     <result type="json" name="success"></result> 
+</action>  
+<!--限制手台上拉gps-->      
+<action name="addMscId" class="com.action.GpsPushAction" method="addMscId">  
+     <result type="json" name="success"></result> 
+</action>
+<!--解除限制手台上拉gps-->          
+<action name="delMscId" class="com.action.GpsPushAction" method="delMscId">  
+     <result type="json" name="success"></result> 
+</action>
+<!--通知中心同步过滤列表-->  
+<action name="UpdateGPSFileterTable" class="com.action.GpsPushAction" method="UpdateGPSFileterTable">  
+     <result type="json" name="success"></result> 
+</action>
+<!--设置-->  
+<action name="changeBsId" class="com.action.ChannelCountAction" method="changeBsId">  
+     <result type="json" name="success"></result> 
+</action>
+</package>                      
+ <!-- Add packages here -->
+</struts>
