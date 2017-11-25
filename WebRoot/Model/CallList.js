@@ -351,7 +351,7 @@ dockedItems: [{
 	 xtype: 'toolbar',
 	 dock: 'top',
 	 items: [ {fieldLabel:'主叫号码',xtype:'textfield',name:'caller',id:'caller',labelWidth: 65,width:140,emptyText:'主叫号码' },
-	          {fieldLabel:'被叫号码',xtype:'textfield',name:'called',id:'called',margin:'0 40',labelWidth: 65,width:140,emptyText:'被叫号码' },
+	          {fieldLabel:'被叫组',xtype:'textfield',name:'called',id:'called',margin:'0 40',labelWidth: 65,width:140,emptyText:'被叫号码' },
 	          {fieldLabel:'基站',xtype:'combobox',name:'bsId', id:'bsId', labelWidth:40,width:170,
       	        store:bs_store,queryModel:'remote',emptyText:'请选择...',value:0,
       	        valueField:'bsId',displayField:'bsName',forceSelection : true}]

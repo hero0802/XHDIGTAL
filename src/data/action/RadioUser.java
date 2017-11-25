@@ -40,6 +40,7 @@ public class RadioUser extends ActionSupport{
 	private String msc;
 	private String startTime;
 	private String endTime;
+	private int tag=0;
 	
 	private XhMysql db=new XhMysql();
 	private SysMysql db2=new SysMysql();
@@ -104,22 +105,44 @@ public class RadioUser extends ActionSupport{
 	}
 	
 	public void useronline(){
-		String sql="",str="";
+		String sql="",str="",sql2 = null;
 		if(!msc.equals("")){
 			str=" and mscid="+msc;
 		}
-		String sql2="select count(id) from xhdigital_offonline where "
-				+ "time between '"+startTime+"' and '"+endTime+"'  "+str; 
-		if (StringUtil.isNullOrEmpty(sort) == false)
-		{
-			sql="select * from xhdigital_offonline where "
-					+ "time between '"+startTime+"' and '"+endTime+"'  "+str+" order by "+sort+" "+dir+" limit "+start+","+limit;
+		
+		if(tag==0){
+			sql2="select count(id) from xhdigital_offonline where "
+					+ "time between '"+startTime+"' and '"+endTime+"'  "+str; 
+			if (StringUtil.isNullOrEmpty(sort) == false)
+			{
+				sql="select * from xhdigital_offonline where "
+						+ "time between '"+startTime+"' and '"+endTime+"'  "+str+" order by "+sort+" "+dir+" limit "+start+","+limit;
+			}
+			else
+			{           
+				sql="select * from xhdigital_offonline where "
+						+ "time between '"+startTime+"' and '"+endTime+"' "+str+" order by time desc limit "+start+","+limit;       
+			}
+		}else{
+			sql2="select count(DISTINCT mscid) from xhdigital_offonline where "
+					+ "time between '"+startTime+"' and '"+endTime+"'  "+str; 
+			if (StringUtil.isNullOrEmpty(sort) == false)
+			{
+				sql="select * from xhdigital_offonline where "
+						+ "time between '"+startTime+"' and '"+endTime+"'  "+str+" group by mscid  order by "+sort+" "+dir+" limit "+start+","+limit;
+			}
+			else
+			{           
+				sql="select * from xhdigital_offonline where "
+						+ "time between '"+startTime+"' and '"+endTime+"' "+str+" group by mscid order by mscid asc limit "+start+","+limit; 
+				
+				
+				
+				/*select * from (select * from `test` order by `date` desc) `temp`  group by category_id order by `date` desc*/
+			}
 		}
-		else
-		{           
-			sql="select * from xhdigital_offonline where "
-					+ "time between '"+startTime+"' and '"+endTime+"' "+str+" order by time desc limit "+start+","+limit;       
-		}
+		
+		
 		try {
 			ArrayList data = sysSql.DBList(sql);
 			HashMap result=new HashMap();
@@ -294,6 +317,16 @@ public class RadioUser extends ActionSupport{
 
 	public void setEndTime(String endTime) {
 		this.endTime = endTime;
+	}
+
+
+	public int getTag() {
+		return tag;
+	}
+
+
+	public void setTag(int tag) {
+		this.tag = tag;
 	}
 	
 	

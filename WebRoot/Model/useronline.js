@@ -93,9 +93,18 @@ var refreshAction=Ext.create('Ext.Action',{
     handler:function(){store.reload()}
 });
 var searchAction=Ext.create('Ext.Action',{
-	text:'在线状态查询',
+	text:'上线记录',
 	iconCls:'search',
-    handler:function(){store.loadPage(1);}
+    handler:function(){
+    	Ext.getCmp('tag').setValue(0);
+    	store.loadPage(1);}
+});
+var onlineStatusAction=Ext.create('Ext.Action',{
+	text:'上线状态查询',
+	iconCls:'search',
+    handler:function(){
+    	Ext.getCmp('tag').setValue(1);
+    	store.loadPage(1);}
 });
 var offonlineAction=Ext.create('Ext.Action',{
 	text:'未上线手台查询',
@@ -129,7 +138,7 @@ if(!grid)
 	columns:[
 	         /*new Ext.grid.RowNumberer({width:50,text:'#'}), */
 	         {text: "手台ID", width: 100, dataIndex: 'mscid', sortable: true},
-	         {text: "在线状态", width: 100, dataIndex: 'online', sortable: true,
+	         {text: "在线状态", width: 100, dataIndex: 'online', sortable: false,
 	        	 editor : {  
 	        	 allowBlank : false  
 	         },renderer:function(v,b){
@@ -182,11 +191,13 @@ if(!grid)
 		        	        		 name:'Etime',
 		        	        		 value:getOneDay(),
 		        	        		 format:'Y-m-d H:i:s',
-		        	        		 labelWidth: 60,width:220}]
+		        	        		 labelWidth: 60,width:220},
+		        	        		 {fieldLabel:'手台ID',xtype:'textfield',id:'tag',value:0,
+		        	        			 labelWidth: 50,width:130,hidden:true }]
 	         },{
 	             dock: 'top',
 	             xtype: 'toolbar',
-	             items:["->",searchAction,offonlineAction,{
+	             items:["->",onlineStatusAction,searchAction,offonlineAction,{
 	        	        	 text:'清除',
 	        	        	 iconCls:'clear',
 	        	        	 tooltip:'清除输入的查询数据',
@@ -263,12 +274,14 @@ store.on('beforeload', function (store, options) {
     var new_params = { 
     		msc: Ext.getCmp('mscid').getValue(),
     		startTime: Ext.getCmp('Ftime').getValue(),
-    		endTime: Ext.getCmp('Etime').getValue()
+    		endTime: Ext.getCmp('Etime').getValue(),
+    		tag:Ext.getCmp('tag').getValue()
     		};  
     Ext.apply(store.proxy.extraParams, new_params);  
 
 });
-userstore.on('beforeload', function (store, options) {  
+userstore.on('beforeload', function (store, options) { 
+	
     var new_params = { 
     		startTime: Ext.getCmp('Ftime').getValue(),
     		endTime: Ext.getCmp('Etime').getValue(),
