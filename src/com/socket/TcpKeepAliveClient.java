@@ -187,9 +187,14 @@ public class TcpKeepAliveClient extends Thread {
 
 						System.arraycopy(readBuf, 0, bufH, 0, 2);
 						String packageHeader = HexString(bufH);
+						
+						/*log.info("TCP数据：->writebuf="+func.BytesToHexS(writeBuf));
+						log.info("TCP数据：->readBuf="+func.BytesToHexS(readBuf));*/
 						if (!packageHeader.equals("c4d7")) {
 							log.error("SocketError1111:>>!c4d7");
 							log.info(packageHeader);
+							this.writeBuf=new byte[0];
+							
 							/* writeBuf=null; */
 						} else {
 							int length = dd.BigByteArrayToShort(readBuf, 2);
@@ -223,6 +228,7 @@ public class TcpKeepAliveClient extends Thread {
 									packageHeader = HexString(bufH);
 									if (!packageHeader.equals("c4d7")) {
 										log.error("SocketError2:>>!c4d7");
+										this.writeBuf=new byte[0];
 									}
 									if (dataLen > len - i) {
 										writeBuf = new byte[len - i];
