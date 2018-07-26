@@ -1,0 +1,193 @@
+//包名
+package trunk_mso_ds;
+import  "trunk_common.proto";
+option java_package = "com.protobuf";
+option java_outer_classname = "TrunkMsoDs";
+
+//	上行心跳[网管到中心]
+message HeartBeatIN
+{
+	required uint32			workstatus = 1;
+}
+
+//	下行心跳[中心到网管]
+message HeartBeatOUT
+{
+	required bool			mso_status = 1;
+	optional bool			sw_connection = 2;
+}
+
+//数据库参数
+message DBInfo
+{
+	optional string		db_ip 				= 1;
+	optional uint32		db_port 			= 2[default = 3306];
+	optional string		db_username 		= 3[default = 'root'];
+	optional string		db_password 		= 4[default = 'xinhong12345'];
+	optional string		db_name 			= 5[default = 'xh_pdt_trunk'];
+}
+//	数据库参数请求
+//DBInfoREQ
+
+//	数据库参数应答
+message DBInfoRES
+{
+	required DBInfo		info = 1;
+}
+
+message UpdateDBInfoREQ
+{
+	required DBInfo		info = 1;
+}
+
+message UpdateDBInfoRES
+{
+	required DBInfo				info 	= 1;
+	optional trunk_common.Ack	ack		= 2;
+}
+
+//	基站状态
+message BSStatus
+{
+	required uint32	bsid			= 1;	//数据库唯一ID
+	optional uint32 channelno		= 2;	//信道频率号
+	optional uint32	workstatus		= 3;	//工作状态[0:未许可，1：未上线, 2:已上线]
+	optional uint32	slot0_stat		= 4; 	//[0: edle, 1: busy, 2: TSCC]
+	optional uint32	slot1_stat		= 5; 	//[0: edle, 1: busy, 2: TSCC]
+}
+//	BS状态请求
+message BSStatusREQ
+{
+	optional sint32		bsid 			= 1;
+}
+//	BS状态应答
+message BSStatusRES
+{
+	repeated BSStatus	bsinfo 			= 1;
+	optional trunk_common.Ack	ack		= 2;
+}
+
+//	会议状态
+message MeetStatus
+{
+	required string					id 			= 1;	//会议号
+	optional uint32					status 		= 2; 	//0：无会议，1：话间 2：话中
+	optional trunk_common.CallType	type		= 3;	//呼叫类型，见CallType定义
+	optional uint32 				srcid 		= 4; 	//主叫ID号[24位]
+	optional uint32 				tarid 		= 5; 	//被叫ID号[24位]
+	optional uint32 				pttid 		= 6; 	//当前呼叫ID
+	repeated uint32					bsid		= 7;	//基站id
+	repeated uint32					slot 		= 8;	//时隙
+}
+
+//	会议状态请求
+message MeetStatusREQ
+{
+	optional string		meetid = 1;			//meetid = "********"时返回所有会议状态
+}
+//	会议状态应答
+message MeetStatusRES
+{
+	repeated MeetStatus	meetinfo 		= 1;
+}
+
+//	读取数据库请求 [调度通知中心更新数据库到内存]
+message ReadDBREQ
+{
+	repeated string	 	tablename	= 1;
+}
+//	读取数据库应答
+message ReadDBRES
+{
+	repeated string	 			tablename	= 1;
+	optional trunk_common.Ack	ack			= 2;
+}
+
+//	繁忙排队请求
+//BusyQueuingREQ
+
+//	繁忙排队
+message BusyQueuing
+{
+	message Queue
+	{
+		//排队时间[格式:YYYY-MM-DD hh:mm:ss]
+		optional string						time	= 1;
+		optional trunk_common.CallREQ		req 	= 2;		//具体请求内容
+		optional sint32						flag	= 3;		//标志[0：正常，-1:删除]
+	}
+	repeated Queue		busyqueue	= 1;			//多个繁忙排队
+}
+
+//切换到指定信道请求[网管调度->中心]
+message SwitchChannelREQ
+{
+	required	uint32						bsid		= 1;	//信道机ID[BaseStation表中的ID]
+	required	trunk_common.ChannelPair	newchannel	= 2;	//新指定频率
+}
+//切换到指定信道应答[中心->网管调度]
+message SwitchChannelRES
+{
+	required	uint32 						bsid		= 1;	//信道机ID[BaseStation表中的ID]
+	required	trunk_common.ChannelPair	newchannel	= 2;	//新指定频率
+	optional	trunk_common.Ack	ack					= 3;
+}
+
+//设置派接组请求
+message SetCombineGroupREQ
+{
+	repeated	uint32						groupid		= 1;	//个数大于1
+}
+//拆除派接组请求
+message ClearCombineGroupREQ
+{
+	required	uint32						tempgroupid	= 1;	//临时组号
+}
+//查询派接组请求
+message QueryCombineGroupREQ
+{
+	required	uint32						tempgroupid	= 1;
+}
+//增添派接组请求
+message AddCombineGroupREQ
+{
+	required	uint32						tempgroupid	= 1;
+	repeated	uint32						groupid		= 2;	//需要增加入tempgroupid的组号码
+}
+//删除派接组请求
+message DeleteCombineGroupREQ
+{
+	required	uint32						tempgroupid	= 1;
+	repeated	uint32						groupid		= 2;	//必须是tempgroupid中存在的组号码
+}
+//所有派接组应答
+message CombineGroupRES
+{
+	repeated	uint32						groupid		= 1;	//个数大于1
+	optional	uint32						tempgroupid	= 2;	//临时组号码
+	optional	trunk_common.Ack			ack			= 3;
+}
+
+//基站->中心
+//基站收到音频后，一个超桢，解码状态与上次不同，则通知中心
+message AudioDecode
+{
+	required uint32		bsid 	= 1;	//bsid
+	optional uint32		slot 	= 2;	//时隙[0-1]
+	optional uint32		status 	= 3;	//状态[0-1] 0:解桢出错或无法解桢 1：解桢正确
+}
+
+
+//更改基站参数通知中心，适用于更改参数
+message UpdateBSREQ
+{
+	repeated uint32  bsid 		= 1;	//基站ID，可重复
+	optional uint32 action 		= 2;	//执行动作[0：增加，  1：删除， 2：修改]
+}
+
+message UpdateBSRES
+{
+	repeated uint32  			bsid 	= 1;	//基站ID，可重复
+	optional uint32 			action 	= 2;	//执行动作[0：增加，  1：删除， 2：修改]
+	optional trunk_common.Ack	ack	 	= 3;	//应答
+}
