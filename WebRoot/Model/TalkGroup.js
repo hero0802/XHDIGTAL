@@ -229,7 +229,7 @@ if(!grid)
 	loadMask: true,  
 	columns:[
 	        /* new Ext.grid.RowNumberer({width:50,text:'#'}),*/
-	         {text: "用户ID", width:120, dataIndex: 'id', sortable: true,
+	         {text: "组ID", width:120, dataIndex: 'id', sortable: true,
 	        	 renderer : function(v){
 	        	 return"<a href='#' onclick=update_btn() title='详细信息' style='color:blue'>"+v+"</a>";
 	         }

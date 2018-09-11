@@ -94,22 +94,30 @@ var refreshAction=Ext.create('Ext.Action',{
 });
 var searchAction=Ext.create('Ext.Action',{
 	text:'上线记录',
-	iconCls:'search',
+	icon:'../resources/images/btn/3.png',
     handler:function(){
     	Ext.getCmp('tag').setValue(0);
     	store.loadPage(1);}
 });
 var onlineStatusAction=Ext.create('Ext.Action',{
 	text:'上线状态查询',
-	iconCls:'search',
+	icon:'../resources/images/btn/2.png',
     handler:function(){
     	Ext.getCmp('tag').setValue(1);
     	store.loadPage(1);}
 });
 var offonlineAction=Ext.create('Ext.Action',{
 	text:'未上线手台查询',
-	iconCls:'search',
+	icon:'../resources/images/btn/4.png',
     handler:function(){searchOffonline()}
+});
+var onlineAction=Ext.create('Ext.Action',{
+	text:'上线手台统计',
+	icon:'../resources/images/btn/1.png',
+    handler:function(){
+    	 Ext.getCmp('tag').setValue(2);
+    	 store.loadPage(1);
+    	 }
 });
 // 创建菜单
 var contextMenu = Ext.create('Ext.menu.Menu', {
@@ -197,7 +205,7 @@ if(!grid)
 	         },{
 	             dock: 'top',
 	             xtype: 'toolbar',
-	             items:["->",onlineStatusAction,searchAction,offonlineAction,{
+	             items:["->",onlineAction,onlineStatusAction,searchAction,offonlineAction,{
 	        	        	 text:'清除',
 	        	        	 iconCls:'clear',
 	        	        	 tooltip:'清除输入的查询数据',

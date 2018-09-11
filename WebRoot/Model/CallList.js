@@ -10,7 +10,7 @@ Ext.require([
              'Ext.grid.feature.Grouping'
              ]		 
 );
-//创建call Model
+// 创建call Model
 Ext.define('call',{
 	extend:'Ext.data.Model',
 	fields:[
@@ -54,56 +54,100 @@ Ext.define('bs',{
 	        ], 
 	        idProperty : 'id'
 }); 
+// 创建Model
+Ext.define('group',{
+	extend:'Ext.data.Model',
+	fields:[
+	        {name: 'id'},
+	        {name: 'alias'},
+	        {name: 'type'},
+	        {name: 'callmode'},
+	        {name: 'priority'},
+	        {name: 'slot'},
+	        {name: 'count'},
+	        {name: 'bs'},
+	        {name: 'maxcalltime'},
+	        {name: 'roamen'},
+	        {name: 'name'}
+	        ], 
+	        idProperty : 'id'
+});
 
-//创建数据源
+// 创建数据源
 var store = Ext.create('Ext.data.Store',{
 	model:'call',	
 	remoteSort: true,
-	/*groupField:'Call_id' ,*/
-//	设置分页大小
+	/* groupField:'Call_id' , */
+// 设置分页大小
 	pageSize:50,
 	proxy: {
 	type: 'ajax',
 	url : '../data/callList.action',
 	timeout: 10000,
 	reader: {
-	//数据格式为json
+	// 数据格式为json
 	type: 'json',
 	root: 'items',
-	//获取数据总数
+	// 获取数据总数
 	totalProperty: 'total'
 },
-autoLoad: true ,//很关键 ,
+autoLoad: true ,// 很关键 ,
 sorters: [{ 
-	            //排序字段。 
+	            // 排序字段。
 	            property: 'starttime', 
-	            //排序类型，默认为 ASC 
+	            // 排序类型，默认为 ASC
 	            direction: 'DESC' 
 	        }]
+}
+});
+// 创建数据源
+var group_store = Ext.create('Ext.data.Store',{
+	model:'group',	
+	remoteSort: true,
+// 设置分页大小
+	pageSize:100,
+	proxy: {
+	type: 'ajax',
+	url : '../data/talkGroup.action',
+	// url:'../../user/show.action',
+	reader: {
+	// 数据格式为json
+	type: 'json',
+	root: 'items',
+	// 获取数据总数
+	totalProperty: 'total'
+    },
+    sorters: [{ 
+    	            // 排序字段。
+    	            property: 'id', 
+    	            // 排序类型，默认为 ASC
+    	            direction: 'DESC' 
+    	        }] ,
+    simpleSortMode: true 
 }
 });
 var callPttStore = Ext.create('Ext.data.Store',{
 	
 	model:'call',	
 	remoteSort: true,
-//	设置分页大小
+// 设置分页大小
 	pageSize:50,
 	proxy: {
 	type: 'ajax',
 	url : '../data/callListFromCallid.action',
-	//url:'../../user/show.action',
+	// url:'../../user/show.action',
 	reader: {
-	//数据格式为json
+	// 数据格式为json
 	type: 'json',
 	root: 'items',
-	//获取数据总数
+	// 获取数据总数
 	totalProperty: 'total'
 },
-autoLoad: true ,//很关键 ,
+autoLoad: true ,// 很关键 ,
 sorters: [{ 
-	            //排序字段。 
+	            // 排序字段。
 	            property: 'id', 
-	            //排序类型，默认为 ASC 
+	            // 排序类型，默认为 ASC
 	            direction: 'DESC' 
 	        }]
 }
@@ -119,33 +163,33 @@ var Alarm_sys_id_store=Ext.create('Ext.data.Store',{
 	      {id:'1',sys:'eTra'}
 	      ]
 })
-//创建数据源
+// 创建数据源
 var bs_store = Ext.create('Ext.data.Store',{
 	model:'bs',	
 	remoteSort: true,
-//	设置分页大小
+// 设置分页大小
 	pageSize:300,
 	proxy: {
 	type: 'ajax',
 	url : '../data/bsList.action',
-	//url:'../../user/show.action',
+	// url:'../../user/show.action',
 	reader: {
-	//数据格式为json
+	// 数据格式为json
 	type: 'json',
 	root: 'items',
-	//获取数据总数
+	// 获取数据总数
 	totalProperty: 'total'
     },
     sorters: [{ 
-    	            //排序字段。 
+    	            // 排序字段。
     	            property: 'id', 
-    	            //排序类型，默认为 ASC 
+    	            // 排序类型，默认为 ASC
     	            direction: 'DESC' 
     	        }] ,
     simpleSortMode: true
 }
 });
- //创建多选 
+ // 创建多选
      var selModel = Ext.create('Ext.selection.CheckboxModel'); 
      var cellEditing = Ext.create('Ext.grid.plugin.CellEditing', { 
 	        clicksToEdit: 2
@@ -154,7 +198,7 @@ var bs_store = Ext.create('Ext.data.Store',{
 	        clicksToEdit: 2
 	     }); 
 
-//创建Action
+// 创建Action
 var downloadAction=Ext.create('Ext.Action',{
 	iconCls:'download',
 	text:'下载音频',
@@ -169,19 +213,16 @@ var playAction=Ext.create('Ext.Action',{
 	tooltip:'播放音频',
 	handler:player
 })
-/*var deleteAction=Ext.create('Ext.Action',{
-	iconCls:'delete',
-	text:'删除数据',
-	disabled:call_del?false:true,
-			tooltip:'删除数据',
-			handler:del_btn
-});*/
+/*
+ * var deleteAction=Ext.create('Ext.Action',{ iconCls:'delete', text:'删除数据',
+ * disabled:call_del?false:true, tooltip:'删除数据', handler:del_btn });
+ */
 var searchAction=Ext.create('Ext.Action',{
 	text:'查询',
 	iconCls:'search',
 	handler:function(){store.loadPage(1);}
 });
-//创建Action
+// 创建Action
 var downPttAction=Ext.create('Ext.Action',{
 	iconCls:'download',
 	text:'下载音频',
@@ -203,10 +244,10 @@ var play=Ext.create('Ext.Action',{
 	tooltip:'播放音频',
 	handler:player
 })
-//创建菜单
+// 创建菜单
 var contextMenu = Ext.create('Ext.menu.Menu', {
 	items: [
-	        /*deleteAction,'-',*/
+	        /* deleteAction,'-', */
 	        play
 	        ]
 });
@@ -231,7 +272,7 @@ var paggingToolbar=new Ext.PagingToolbar({
 	refreshText:'刷新',
 	prependButtons:true
 })
-//创建grid
+// 创建grid
      var cellEditing = Ext.create('Ext.grid.plugin.CellEditing', { 
 	        clicksToEdit: 2
 	     }); 
@@ -241,19 +282,19 @@ var groupingFeature = Ext.create('Ext.grid.feature.Grouping',{
 	});
 if(!grid)
 { grid=Ext.create('Ext.grid.Panel',{
-//	xtype: 'grouped-grid',
+// xtype: 'grouped-grid',
 	region:'center',
 	title:'当前位置>>终端信息>>通话记录',
 	iconCls:'icon-location',
 	store:store,
 	frame:false,
-	//trackMouseOver: false,
-	//renderTo: Ext.getBody(),
+	// trackMouseOver: false,
+	// renderTo: Ext.getBody(),
 	disableSelection: false,
 	loadMask: true,  
-//	features: [groupingFeature],
+// features: [groupingFeature],
 	columns:[
-	        // new Ext.grid.RowNumberer({width:50,text:'#'}), 
+	        // new Ext.grid.RowNumberer({width:50,text:'#'}),
 	         {text: "ID", width: 100, dataIndex: 'id', sortable: false,hidden:true},
 	         {text: "通话时间", width: 150, dataIndex: 'starttime', sortable: false,
 	        	 editor : {  
@@ -296,10 +337,10 @@ if(!grid)
 	        	 editor : {  
 	        	 allowBlank : false  
 	         },renderer:function(v){return v+"dB"}},
-	         /*{text: "结束原因", width: 80, dataIndex: 'endway', sortable: false,
-	        	 editor : {  
-	        	 allowBlank : false  
-	         }},*/{
+	         /*
+				 * {text: "结束原因", width: 80, dataIndex: 'endway', sortable:
+				 * false, editor : { allowBlank : false }},
+				 */{
 	        	 text: "播放/下载", width: 100,  dataIndex: 'Call_id',sortable: false,
 	        	 renderer :function(value, metaData, record, rowIndex, colIndex, store){
 	        	 isHave(record);
@@ -320,16 +361,15 @@ if(!grid)
 	   
 	         ],
 	         plugins : [cellEditing1],
-	         /*plugins: [{
-	             ptype: 'rowexpander',
-	     		  rowBodyTpl : new Ext.XTemplate(
-	  				'<div id="Inner{Call_id}">',
-	  				'</div>'
-	  		 )}],*/
-	        /* view: new Ext.grid.GroupingView({  
-                 forceFit:true,  
-                 groupTextTpl: '{Call_id} ({[values.rs.length]} {[values.rs.length > 1 ? "项" : "个"]})'  
-             }),*/
+	         /*
+				 * plugins: [{ ptype: 'rowexpander', rowBodyTpl : new
+				 * Ext.XTemplate( '<div id="Inner{Call_id}">', '</div>' )}],
+				 */
+	        /*
+			 * view: new Ext.grid.GroupingView({ forceFit:true, groupTextTpl:
+			 * '{Call_id} ({[values.rs.length]} {[values.rs.length > 1 ? "项" :
+			 * "个"]})' }),
+			 */
 	         border:true,
 	         forceFit: false,
 	         columnLines : true, 
@@ -351,8 +391,11 @@ dockedItems: [{
 	 xtype: 'toolbar',
 	 dock: 'top',
 	 items: [ {fieldLabel:'主叫号码',xtype:'textfield',name:'caller',id:'caller',labelWidth: 65,width:140,emptyText:'主叫号码' },
-	          {fieldLabel:'被叫组',xtype:'textfield',name:'called',id:'called',margin:'0 40',labelWidth: 65,width:140,emptyText:'被叫号码' },
-	          {fieldLabel:'基站',xtype:'combobox',name:'bsId', id:'bsId', labelWidth:40,width:170,
+	          /*{fieldLabel:'被叫组',xtype:'textfield',name:'called',id:'called',margin:'0 40',labelWidth: 65,width:140,emptyText:'被叫号码' },*/
+	          {fieldLabel:'被叫组',xtype:'combobox',name:'called',id:'called', labelWidth:70,width:230,
+	      	        store:group_store,queryModel:'remote',emptyText:'请选择...',value:0,
+	      	        valueField:'id',displayField:'name',forceSelection : true},
+	          {fieldLabel:'基站',xtype:'combobox',name:'bsId', id:'bsId', labelWidth:40,width:230,
       	        store:bs_store,queryModel:'remote',emptyText:'请选择...',value:0,
       	        valueField:'bsId',displayField:'bsName',forceSelection : true}]
  },{
@@ -389,7 +432,7 @@ for (var i = 0; i <grid.dockedItems.keys.length; i++) {
          refreshStr= grid.dockedItems.keys[i];  
     }  
 }  
-//grid.dockedItems.get(refreshStr).child('#refresh').hide(true);  
+// grid.dockedItems.get(refreshStr).child('#refresh').hide(true);
 grid.dockedItems.get(refreshStr).child('#refresh').setHandler(   
 	     function() {   
 	            Ext.getCmp('Etime').setValue(getOneDay());
@@ -426,7 +469,7 @@ bs_store.on('load',function(){
     }); 
     bs_store.insert(0,ins_rec);
     Ext.getCmp('bsId').setValue(0);
-	//bs_store.addSorted({bsId:0,bsName:"全部"});
+	// bs_store.addSorted({bsId:0,bsName:"全部"});
 })
 store.on('beforeload', function (store, options) {  
 	var new_params = { 
@@ -440,10 +483,30 @@ store.on('beforeload', function (store, options) {
 	Ext.apply(store.proxy.extraParams, new_params);  
 
 });
+group_store.on('beforeload', function (store, options) {  
+	var new_params = { 
+			id: "",
+    		name: ""
+	};  
+	Ext.apply(store.proxy.extraParams, new_params);  
+
+});
+group_store.on('load',function(){
+	/*for(var i =0;i<group_store.getCount();i++){
+		bs_store.getAt(i).set("bsName",bs_store.getAt(i).get('bsId')+":"+bs_store.getAt(i).get("bsName"));
+
+	}*/
+	var ins_rec = Ext.create('group',{
+		id:"",name:"所有被叫组"
+    }); 
+	group_store.insert(0,ins_rec);
+    Ext.getCmp('called').setValue("");
+	// bs_store.addSorted({bsId:0,bsName:"全部"});
+})
 var  innerGrid = Ext.create('Ext.grid.Panel', {
 	title:'播放列表',
 	store: callPttStore,
-	//collapsible : true, // 设置可折叠,
+	// collapsible : true, // 设置可折叠,
 	split : true, 
 	region:'center',
 	columns:[
@@ -533,7 +596,7 @@ forceFit: true,
 columnLines : true,
 height:420
 });
-//表格行选择
+// 表格行选择
 grid.getSelectionModel().on({
 	selectionchange:function(sm,selections){
 	var data=grid.getSelectionModel().getSelection();
@@ -579,9 +642,9 @@ grid.getSelectionModel().on({
 }
 	
 });
-//显示表格
+// 显示表格
 Ext.QuickTips.init(); 
-//禁止整个页面的右键
+// 禁止整个页面的右键
 Ext.getDoc().on("contextmenu", function(e){
       e.stopEvent();
 });
@@ -593,20 +656,22 @@ Ext.onReady(function(){
 		items:[grid,rightPanel]
 	})
 	store.load({params:{start:0,limit:50}}); 
-	bs_store.load();       
+	bs_store.load(); 
+	group_store.load();
 });
-//增加、删除，修改功能
-//提示信息
+// 增加、删除，修改功能
+// 提示信息
 var Tip=function(){
 	Ext.Msg.wait("数据删除中","等待完成",{text:"正在删除。。。"});
 }
-//-----------------表单---------------------------------
+// -----------------表单---------------------------------
 var updateWindow;
 var addWindow;
 var ExcelWin;
 var record;
 
-//-----------------------------------------------编码ID删除  --------------------------------------------------
+// -----------------------------------------------编码ID删除
+// --------------------------------------------------
 function del_btn() {  
 	var data = grid.getSelectionModel().getSelection(); 
 	if (data.length == 0) {  
@@ -622,7 +687,7 @@ function del_btn() {
 				var ids = [];  
 				Ext.Array.each(data, function(record) {  
 					var userId=record.get('id');  
-					//如果删除的是幻影数据，则id就不传递到后台了，直接在前台删除即可  
+					// 如果删除的是幻影数据，则id就不传递到后台了，直接在前台删除即可
 					if(userId){ids.push(userId);}  
 
 				}); 
@@ -635,10 +700,10 @@ function del_btn() {
 				success : function(response, opts) {  
 					var success = Ext.decode(response.responseText).success; 
 
-					// 当后台数据同步成功时  
+					// 当后台数据同步成功时
 					if (success) {  
 						Ext.Array.each(data, function(record) {  
-							store.remove(record);// 页面效果 		
+							store.remove(record);// 页面效果
 						}); 
 						Ext.example.msg("提示","数据删除成功");
 
@@ -681,17 +746,17 @@ grid.getSelectionModel().on({
 });
 
 
-//检查文件是否存在
+// 检查文件是否存在
 function isHave(record)
 {
-	//var record = grid.getSelectionModel().getLastSelected(); 
+	// var record = grid.getSelectionModel().getLastSelected();
 	if(record.get("filePath")==""){
 		return;
 	}
 	Ext.Ajax.request({
 		url:'../controller/fileIsExists.action',
 		params: {
-		//fileName:record.get("filename"),
+		// fileName:record.get("filename"),
 		filePath:record.get("filePath")
 	},
 	method:'POST',
@@ -710,14 +775,14 @@ function isHave(record)
 }
 function isPttHave(record)
 {
-	//var record = innerGrid.getSelectionModel().getLastSelected(); 
+	// var record = innerGrid.getSelectionModel().getLastSelected();
 	if(record.get("filePath")==""){
 		return;
 	}
 	Ext.Ajax.request({
 		url:'../controller/fileIsExists.action',
 		params: {
-		//fileName:record.get("filename"),
+		// fileName:record.get("filename"),
 		filePath:record.get("filePath")
 	},
 	method:'POST',
@@ -769,7 +834,7 @@ innerGrid.getSelectionModel().on({
 			downPttAction.disable();
 			playPttAction.disable();
 		}})}}});
-//下载音频
+// 下载音频
 function downFile(){
 	var data=grid.getSelectionModel().getSelection();
 	if(data.length !=1){
@@ -817,11 +882,11 @@ function downFile(){
 		});
 
 
-		//window.open(downUrl,'_self','width=1,height=1,toolbar=no,menubar=no,location=no');				
+		// window.open(downUrl,'_self','width=1,height=1,toolbar=no,menubar=no,location=no');
 	}
 
 }
-//下载音频
+// 下载音频
 function downPttFile(){
 	var data=innerGrid.getSelectionModel().getSelection();
 	if(data.length !=1){
@@ -869,11 +934,11 @@ function downPttFile(){
 		});
 
 
-		//window.open(downUrl,'_self','width=1,height=1,toolbar=no,menubar=no,location=no');				
+		// window.open(downUrl,'_self','width=1,height=1,toolbar=no,menubar=no,location=no');
 	}
 
 }
-//播放音频
+// 播放音频
 var win="";
 function playWav(){
 	var data=grid.getSelectionModel().getSelection();
@@ -943,7 +1008,7 @@ function player(){
 	}
 
 }
-//播放音频
+// 播放音频
 function PttPlayer(){	
 	var data=innerGrid.getSelectionModel().getSelection();
 	if(data.length !=1)
@@ -988,7 +1053,7 @@ function PttPlayer(){
 		win.show();
 	}	   		
 }
-//时间格式化
+// 时间格式化
 function getTime(time)
 {
 	var datetime="";
@@ -1002,7 +1067,7 @@ function getTime(time)
 function GetDay()   
 {   
     var  today=new Date();      
-    var  yesterday_milliseconds=today.getTime();    //-1000*60*60*24
+    var  yesterday_milliseconds=today.getTime();    // -1000*60*60*24
 
     var  yesterday=new   Date();      
     yesterday.setTime(yesterday_milliseconds);      
@@ -1020,7 +1085,7 @@ function GetDay()
     return  strYesterday;
 }
 
-//播放音频
+// 播放音频
 function p_music()
 {
 	var data=grid.getSelectionModel().getSelection();
@@ -1037,8 +1102,8 @@ function p_music()
 		callPttStore.each(function(record) {
 			var path=record.get('filePath');  
 			path=path.substring(1,path.length);
-			//path="../.."+path;
-			//如果删除的是幻影数据，则id就不传递到后台了，直接在前台删除即可  
+			// path="../.."+path;
+			// 如果删除的是幻影数据，则id就不传递到后台了，直接在前台删除即可
 			if(path){paths.push(path);} 
 	    });
 		
@@ -1062,16 +1127,16 @@ function p_music()
 	
 	
 	playWin.show();
-	//p_play()
+	// p_play()
 }
 var flag=0;
 function p_play(){
 	var paths=[];
 	callPttStore.each(function(record) {
 		var path=record.get('filePath');  
-//		path=path.substring(1,path.length);
+// path=path.substring(1,path.length);
 		path="../.."+path;
-		//如果删除的是幻影数据，则id就不传递到后台了，直接在前台删除即可  
+		// 如果删除的是幻影数据，则id就不传递到后台了，直接在前台删除即可
 		if(path){paths.push(path);} 
     });
 	var starts = document.getElementById("player").playState;
@@ -1095,7 +1160,7 @@ function p_play(){
 }
 
 
-//显示播放列表
+// 显示播放列表
 var playWindow="";
 var music_src = new Array();
 var music_index = 0;
@@ -1105,8 +1170,8 @@ function showPlayWindow(){
 	callPttStore.each(function(record) {
 		var path=record.get('filePath');  
 		path=path.substring(1,path.length);
-//		path="../.."+path;
-		//如果删除的是幻影数据，则id就不传递到后台了，直接在前台删除即可  
+// path="../.."+path;
+		// 如果删除的是幻影数据，则id就不传递到后台了，直接在前台删除即可
 		if(path){paths.push(path);} 
 		
     });
@@ -1169,7 +1234,7 @@ function showPlayWindow(){
 		border:false,
 		region:'north',
 		height:100,
-//		html:html,
+// html:html,
 		items: [{  title: '', 
 			header:false, 
 			html : '<iframe style="border-top-width: 0px; border-left-width: 0px; border-bottom-width: 0px; width: 728px; height: 455px; border-right-width: 0px" src="../View/playall.jsp?paths='+paths
@@ -1203,9 +1268,10 @@ function showPlayWindow(){
 			listeners: {
 			 'hide':function(){
 			 playWindow="";
-			 /*music_index=music_src.length-1;
-			 timeout=1;
-			 document.getElementById("wind_meb").url="";*/
+			 /*
+				 * music_index=music_src.length-1; timeout=1;
+				 * document.getElementById("wind_meb").url="";
+				 */
 			 playPanel.removeAll();
 			 playPanel.doLayout();
 	
@@ -1213,14 +1279,15 @@ function showPlayWindow(){
 		 }
 		})
 		playWindow.show();
-		/*document.getElementById("wind_meb").url = music_src[music_index];
-		document.getElementById("wind_meb").controls.play();
-		wavController();*/
+		/*
+		 * document.getElementById("wind_meb").url = music_src[music_index];
+		 * document.getElementById("wind_meb").controls.play(); wavController();
+		 */
 		
 		
 	}
 }
-//播放控制
+// 播放控制
 function wavController(){
 	var starts = document.getElementById("wind_meb").playState;
 	if(starts == 1 && music_index<music_src.length-1)
@@ -1233,27 +1300,27 @@ function wavController(){
 	timer=setTimeout("wavController()",100);
 }
 
-//浏览器判断
+// 浏览器判断
 function userAgent(){
 	var str=navigator.userAgent;
 	var explorer = window.navigator.userAgent ;
-	//ie 
+	// ie
 	if (explorer.indexOf("MSIE") >= 0) {
 	return "ie";
 	}
-	//firefox 
+	// firefox
 	else if (explorer.indexOf("Firefox") >= 0) {
 		return "Firefox";
 	}
-	//Chrome
+	// Chrome
 	else if(explorer.indexOf("Chrome") >= 0){
 		return "Chrome";
 	}
-	//Opera
+	// Opera
 	else if(explorer.indexOf("Opera") >= 0){
 	return "Opera";
 	}
-	//Safari
+	// Safari
 	else if(explorer.indexOf("Safari") >= 0){
 	return "Safari";
 	}
@@ -1261,7 +1328,7 @@ function userAgent(){
 function getDay()   
 {   
     var   today=new Date();      
-    var   yesterday_milliseconds=today.getTime();    //-1000*60*60*24
+    var   yesterday_milliseconds=today.getTime();    // -1000*60*60*24
 
     var   yesterday=new   Date();      
     yesterday.setTime(yesterday_milliseconds);      
@@ -1284,7 +1351,7 @@ function getDay()
 function getOneDay()   
 {   
     var   today=new Date();      
-    var   yesterday_milliseconds=today.getTime();    //-1000*60*60*24
+    var   yesterday_milliseconds=today.getTime();    // -1000*60*60*24
 
     var   yesterday=new   Date();      
     yesterday.setTime(yesterday_milliseconds);      

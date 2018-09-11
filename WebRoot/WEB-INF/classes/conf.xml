@@ -8,7 +8,7 @@
 		<sys_dbname>xhdigital</sys_dbname>
 	</sysDataBase>
 	<centerDataBase>
-		<xh_ip>127.0.0.1</xh_ip>
+		<xh_ip>192.168.30.12</xh_ip>
 		<xh_port>3306</xh_port>
 		<xh_root>root</xh_root>
 		<xh_password>xinhong12345</xh_password>
@@ -17,7 +17,7 @@
 	<centerNet>
 		<center_ip>127.0.0.1</center_ip>
 		<center_port>12002</center_port>
-		<udp_port>12000</udp_port>
+		<udp_port>16000</udp_port>
 	</centerNet>
 	<Multicast>
 		<multicast_ip>224.1.2.3</multicast_ip>

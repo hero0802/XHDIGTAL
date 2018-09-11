@@ -123,7 +123,7 @@ public class RadioUser extends ActionSupport{
 				sql="select * from xhdigital_offonline where "
 						+ "time between '"+startTime+"' and '"+endTime+"' "+str+" order by time desc limit "+start+","+limit;       
 			}
-		}else{
+		}else if(tag==1){
 			sql2="select count(DISTINCT mscid) from xhdigital_offonline where "
 					+ "time between '"+startTime+"' and '"+endTime+"'  "+str; 
 			if (StringUtil.isNullOrEmpty(sort) == false)
@@ -136,18 +136,41 @@ public class RadioUser extends ActionSupport{
 				sql="select * from xhdigital_offonline where "
 						+ "time between '"+startTime+"' and '"+endTime+"' "+str+" group by mscid order by mscid asc limit "+start+","+limit; 
 				
-				
-				
-				/*select * from (select * from `test` order by `date` desc) `temp`  group by category_id order by `date` desc*/
 			}
+		}else if(tag==2){
+			sql2="select count(*) from hometerminal where onlinestatus=1";
+			sql="select id as mscid, onlinestatus as online,update_time as time from hometerminal where onlinestatus=1";
+			/*
+			
+			sql2="select count(DISTINCT mscid) from xhdigital_offonline where "
+					+ "online=1 and time between '"+startTime+"' and '"+endTime+"'  "+str; 
+			if (StringUtil.isNullOrEmpty(sort) == false)
+			{
+				sql="select * from xhdigital_offonline where "
+						+ "time between '"+startTime+"' and '"+endTime+"'  "+str+" group by mscid  order by "+sort+" "+dir+" limit "+start+","+limit;
+			}
+			else
+			{           
+				sql="select * from xhdigital_offonline where "
+						+ "time between '"+startTime+"' and '"+endTime+"' "+str+" group by mscid order by mscid asc limit "+start+","+limit; 
+				
+			}*/
 		}
 		
 		
 		try {
-			ArrayList data = sysSql.DBList(sql);
+			ArrayList data=new ArrayList();
+			int count=0;
+			if(tag!=2){
+				data = sysSql.DBList(sql);
+				count=sysSql.getCount(sql2);
+			}else{
+				data = Sql.DBList(sql);
+				count=Sql.getCount(sql2);
+			}
 			HashMap result=new HashMap();
 			result.put("items", data);
-			result.put("total", sysSql.getCount(sql2));
+			result.put("total", count);
 			String jsonstr = json.Encode(result);
 			ServletActionContext.getResponse().setContentType("text/html;charset=UTF-8");
 			ServletActionContext.getResponse().getWriter().write(jsonstr);

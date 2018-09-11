@@ -1675,7 +1675,7 @@ public class TcpKeepAliveClient extends Thread {
 				int temp=Integer.parseInt(func.readXml("Alarm", "temp"));
 				int bpower=Integer.parseInt(func.readXml("Alarm", "back_power"));				
 				alarm(4, bsStruct.getTemp1()>temp?0:1, bs.getBsid());
-				/*alarm(5, bsStruct.getGps(), bs.getBsid());*/
+				alarm(5, bsStruct.getGps(), bs.getBsid());
 				alarm(6, bsStruct.getBack_power()>bpower?0:1, bs.getBsid());
 				alarm(7, bsStruct.getjI_status(), bs.getBsid());
 				IndexDwr.alarmDwr();

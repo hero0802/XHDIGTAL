@@ -21,6 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.action.BsStationAction;
+import com.activemq.ActiveMqImpl;
 import com.config.config;
 import com.func.WebFun;
 import com.protobuf.TrunkCommon;
@@ -88,17 +89,25 @@ public class VoiceUDP extends Thread {
 				byte[] voiceData = new byte[100];
 				byte[] udpData = new byte[103];
 				byte[] callIdByte = new byte[8];
+				int i=0;
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);
+				
 				while (isconnected) {
 					socket.receive(packet);
 					int len = packet.getLength();
 					String callid = "";
+					
 					if (len >= 103) {
 						try {
 							System.arraycopy(buf, 3, voiceData, 0, 100);
 							System.arraycopy(buf, 103, callIdByte, 0, 8);
 							System.arraycopy(buf, 0, udpData, 0, 103);
 							callid = dd.ByteArraytoString(callIdByte, 0, 8);
+							///System.out.println("接收数据："+(i++));
+							//ActiveMqImpl.SendTextMessage("UDP-VOICE", new String(udpData));
+							
+							//func.writeVoiceFile("145", voiceData);
+							
 
 							String filestr = TcpKeepAliveClient.getCallMap().get(callid).get("fileName").toString();
 							if (filestr != null) {// config.ReadConfig("voicePath")

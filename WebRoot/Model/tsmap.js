@@ -28,10 +28,20 @@ Ext.define('bs',{
 	        {name:'latitude'},
 	        {name:'lng'},
 	        {name:'lat'},
+	        {name:'gps'},
 	        {name: 'channel_number'}
 	        ], 
 	        idProperty : 'id'
-});  
+}); 
+//创建Model
+Ext.define('group',{
+	extend:'Ext.data.Model',
+	fields:[
+	        {name: 'id'},
+	        {name: 'name'}
+	        ], 
+	        idProperty : 'id'
+});
 Ext.define('info',{
 	extend:'Ext.data.Model',
 	fields:[
@@ -97,6 +107,32 @@ Ext.define('bsControll',{
 	        {name:'sum'}
 	        ], 
 	        idProperty : 'id'
+});
+//创建数据源
+var group_store = Ext.create('Ext.data.Store',{
+	model:'group',	
+	remoteSort: true,
+//	设置分页大小
+	pageSize:100,
+	proxy: {
+	type: 'ajax',
+	url : 'data/TalkGroupAllList.action',
+	//url:'../../user/show.action',
+	reader: {
+	//数据格式为json
+	type: 'json',
+	root: 'items',
+	//获取数据总数
+	totalProperty: 'total'
+    },
+    sorters: [{ 
+    	            //排序字段。 
+    	            property: 'id', 
+    	            //排序类型，默认为 ASC 
+    	            direction: 'DESC' 
+    	        }] ,
+    simpleSortMode: true 
+}
 });
 // 创建数据源
 var store = Ext.create('Ext.data.Store',{
@@ -267,16 +303,16 @@ var mapPanel=Ext.create('Ext.panel.Panel',{
 		xtype:"panel",
 		id:'map-show',
 		region:'center',
-		html:html,
+		html:normalHtml,
 		dockedItems: [{
             xtype: 'toolbar',
             dock: 'top',
             items:[{
     			xtype:'radiogroup',fieldLabel:"",name:"type",id:"type",labelWidth:30,width:100,
     			items:[{
-    				boxLabel:'地图',name:'type', inputValue: '0',checked: true 
+    				boxLabel:'地图',name:'type', inputValue: '0'
     			},{
-    				boxLabel:'普通',name:'type', inputValue: '1'
+    				boxLabel:'普通',name:'type', inputValue: '1',checked: true 
     			}],
     			listeners:{
         			change:function(){
@@ -393,6 +429,10 @@ if(!grid)
 	        	 allowBlank : false  
 	         }
 	         }, 
+	         {text: "被叫组", width: 120, dataIndex: 'called', sortable: false,
+	        	 editor : {  
+	        	 allowBlank : false  
+	         }} ,
 	        
 	         {text: "主讲基站", width: 100, dataIndex: 'bsName', sortable: false,
 	        	 editor : {  
@@ -406,10 +446,7 @@ if(!grid)
 	         },renderer:function(v){
 	        	 return v+" dB"
 	         }},
-	         {text: "被叫组", width: 120, dataIndex: 'called', sortable: false,
-	        	 editor : {  
-	        	 allowBlank : false  
-	         }} ,
+	        
 	         {text: "通话时长", width: 90, dataIndex: 'usetime', sortable: false,
 	        	 editor : {  
 	        	 allowBlank : false  
@@ -873,7 +910,7 @@ var grid_controll=Ext.create('Ext.grid.Panel',{
 
 })
 var callPanel=Ext.create('Ext.Panel',{
-	title:'呼叫信息',
+	title:'呼叫信息<select id="group_list" style="margin-left:30px;"><option value="0">==所有被叫组==</option></select>',
 	region:'east',
 	collapsible : true,
 	collapsed:false,
@@ -919,7 +956,7 @@ var centerPanel=Ext.create('Ext.Panel',{
 			    		};  
 			    Ext.apply(store.proxy.extraParams, new_params);  
 
-			});
+});
 var bsHtml="";
 var bsChHtml="";
 store.on('load',function (store, options){
@@ -960,6 +997,36 @@ store.on('load',function (store, options){
 		
 	}	
 });
+group_store.on('load', function (s, options) {  
+    console.log("store->"+s.getCount());
+    s.each(function(record){
+    	$("#group_list").append("<option value='"+record.get('id')+"'>"+record.get('name')+"["+record.get('id')+"]"+"</option>")
+    })
+    
+    
+    
+
+});
+call_store.on('beforeload', function (store, options) {  
+    var new_params = { 
+    		called:$("#group_list").val()
+    		};  
+    Ext.apply(store.proxy.extraParams, new_params);  
+
+});
+$("#group_list").live("change",function(){
+　　　　//获取选择的值
+　　　　var condition = $(this).val();
+　　　　//其他操作
+    call_store.on('beforeload', function (store, options) {  
+    var new_params = { 
+    		called:condition
+    		};  
+    Ext.apply(store.proxy.extraParams, new_params);  
+
+});
+     call_store.reload();
+　　});
 /*
  * tabPanel.addListener("tabchange", function(tabs, nowtab){
  * 
@@ -1004,6 +1071,7 @@ Ext.onReady(function(){
 	bs_status_store.load();
 	call_store.load();
 	bs_info_store.load();
+	group_store.load();
 	dwr.engine.setActiveReverseAjax(true);
 	dwr.engine.setAsync(false);// 同步步
 	dwr_Data();
@@ -1518,6 +1586,17 @@ function callColorControll(str){
   }
 function BsControlRefresh(){
 	bs_status_store.reload();
+	bs_status_store.each(function(record){
+		console.log("data->"+record.get('gps'))
+		var bsid=record.get('bsId');
+		var gps=record.get('gps');
+		if(gps==1){
+			$("#gpsen-"+bsid).html("");
+		}else{
+			$("#gpsen-"+bsid).html("<span>失锁</span>");
+		}
+		
+	})
 }
 function BsInfo(){
 	bs_info_store.reload();
@@ -1854,7 +1933,9 @@ function GetBsView(){
 		str+='<tr><td  colspan="3"><span id="bs_rssi_'+record.get('bsId')+'"></span></td></tr>';
 		str+='<tr><td  colspan="3"><span style="color:red;font-weight: bold; font-size: 11px;" id="bs_outnet_'+record.get('bsId')+'">'
 			+(record.get('offlinerepeaten')==1&&record.get('online')==2?"<img src='mapfiles/close.png'>单站":"")+'</span></td></tr>';
+		
 		str+='</table></div>';
+		str+='<div class="gps-div" id="gpsen-'+record.get('bsId')+'">'+(record.get('gps')==1?"":"<span>失锁</span>")+'</div>';
 		str+='</div>';
 		$("#bs_div").html(str);
 		

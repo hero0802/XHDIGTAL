@@ -38,6 +38,17 @@ public class TalkGroup extends ActionSupport{
 	private XhLog log=new XhLog();	
 	private FlexJSON json=new FlexJSON();
 	
+	public void TalkGroupAllList() throws Exception
+	{
+		String sql="select id,name from homegroup order by id asc";
+		
+		ArrayList data = Sql.DBList(sql);
+		HashMap result=new HashMap();
+		result.put("items", data);
+		String jsonstr = json.Encode(result);
+		ServletActionContext.getResponse().setContentType("text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jsonstr);
+	}
 	public void TalkGroup() throws Exception
 	{
 		String sql ="",sql2=""; 

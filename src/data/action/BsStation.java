@@ -111,7 +111,7 @@ public class BsStation extends ActionSupport{
 	{
 		String sql ="",sql2=""; 
 		sql2="select count(id) from xhdigital_bs_sta ";
-		sql="select a.*,b.channel_number from xhdigital_bs_sta as a left join xhdigital_bs_control as b"
+		sql="select a.*,b.channel_number,b.gps from xhdigital_bs_sta as a left join xhdigital_bs_control as b"
 				+ " on a.bsId=b.bsId order by bsId asc";
 		
 		ArrayList data = Sql_sys.DBList(sql);

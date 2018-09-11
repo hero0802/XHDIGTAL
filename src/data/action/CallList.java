@@ -12,8 +12,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -129,6 +131,8 @@ public class CallList {
 
 	// 呼叫实时信息
 	public void CallNow() throws Exception {
+		
+		List list=new ArrayList();		
 		/*HashMap callNowMap = new HashMap();
 		String wavStr = "/resources/wav/Ring.wav";
 		callNowMap.put("time", time);
@@ -144,13 +148,24 @@ public class CallList {
 		callNowMap.put("starttime", "2017-09-08 12:00:00");
 		callNowMap.put("usetime", 10);
 		TcpKeepAliveClient.getCallList().add(callNowMap);*/
-
-		dataNow=TcpKeepAliveClient.getCallList();
+		
+		
+        if(!called.equals("0")){
+        	for(int i=0;i<TcpKeepAliveClient.getCallList().size();i++){
+        		Map<String,Object> map=(Map<String, Object>) TcpKeepAliveClient.getCallList().get(i);
+        		if(map.get("called").toString().equals(called)){
+        			list.add(map);
+        		}
+        	};
+		}else{
+			list=TcpKeepAliveClient.getCallList();
+		}
+        
 		//Collections.reverse(dataNow);
-		Collections.sort(dataNow,new MapComparator());
+		Collections.sort(list,new MapComparator());
 		HashMap result = new HashMap();
-		result.put("items", dataNow);
-		result.put("total", dataNow.size());
+		result.put("items", list);
+		result.put("total", list.size());
 		String jsonstr = json.Encode(result);
 		ServletActionContext.getResponse().setContentType(
 				"text/html;charset=UTF-8");

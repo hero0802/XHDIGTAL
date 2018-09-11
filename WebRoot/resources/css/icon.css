@@ -516,4 +516,13 @@ div #badge-right-center{
 .btn-success{background-color: #629b58!important;
 	border-color: #87b87f}
 .clear{clear:both} 
+.gps-div{background:padding:0;text-align: left;width:25px;}
+.gps-div span{
+	color:#fff;font-size:9px;font-weight:800;padding:2px;background:red;
+}
+#group_list{
+	height: 30px;
+	border:1px solid #000;
+	font-weight:800;
+}
 

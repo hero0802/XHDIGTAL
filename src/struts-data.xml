@@ -30,6 +30,9 @@
    <action name="talkGroup" class="data.action.TalkGroup" method="TalkGroup">  
      <result type="json" name="success"></result>   
    </action> 
+      <action name="TalkGroupAllList" class="data.action.TalkGroup" method="TalkGroupAllList">  
+     <result type="json" name="success"></result>   
+   </action> 
     <action name="bsStation" class="data.action.BsStation" method="BsStation">  
      <result type="json" name="success"></result>   
    </action> 
