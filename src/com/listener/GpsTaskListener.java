@@ -190,26 +190,31 @@ class Task extends TimerTask {
 	protected final Log log4j = LogFactory.getLog(Task.class);
 
 	public void run() {
-		/*
-		 * long newTime = (long) Float.parseFloat(func.readXml("Listener",
-		 * "emergTaskTime"));// 这个时间是动态加载的 if (time != newTime) {
-		 * resetPeriod(newTime); time = newTime; }
-		 */
-
-		// TODO Auto-generated method stub
-
 		try {
+
 			int start = Integer.parseInt(func.readXml("gps", "gpsTaskOpen"));
+			int start1 = Integer.parseInt(func.readXml("Listener", "gpsTimerTaskStart"));
+			
+			int start2 = Integer.parseInt(func.readXml("Listener", "gpsDateTaskStart"));
 			long nowTime = new Date().getTime();
-			long time = func.nowDateTime(func.readXml("Listener",
-					"gpsTaskDate2"));
+			long time = func.nowDateTime(func.readXml("Listener","gpsTaskDate2"));
+			if((start1==1 || start2==1) && nowTime < time){
+				runTask();
+			}else{
+				func.updateXML("Listener", "gpsDateTaskStart",String.valueOf(0));
+				func.updateXML("Listener", "gpsTimerTaskStart",String.valueOf(0));
+			}
+			
+			
+			/*
+			
 
 			if (start == 1 && nowTime < time) {
 				runTask();
 			} else {
 				func.updateXML("Listener", "gpsDateTaskStart",
 						String.valueOf(0));
-			}
+			}*/
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

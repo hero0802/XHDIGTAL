@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ejb.HomeHandle;
+
 import org.apache.struts2.ServletActionContext;
 
 import com.func.Cookies;
@@ -31,6 +33,9 @@ public class TalkGroup extends ActionSupport{
 	private String id;
 	private String name;
 	
+	private String detachmentid;
+	private String homegroupid;
+	
 	private XhMysql db=new XhMysql();
 	private XhSql Sql=new XhSql();
 	private MD5 md5=new MD5();
@@ -41,6 +46,31 @@ public class TalkGroup extends ActionSupport{
 	public void TalkGroupAllList() throws Exception
 	{
 		String sql="select id,name from homegroup order by id asc";
+		
+		ArrayList data = Sql.DBList(sql);
+		HashMap result=new HashMap();
+		result.put("items", data);
+		String jsonstr = json.Encode(result);
+		ServletActionContext.getResponse().setContentType("text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jsonstr);
+	}
+	public void TalkGroupDetachmentList() throws Exception
+	{
+		String sql="select a.*,b.detachment_name as name from homegroup_detachment_limit as a "
+				+ "left join  detachment as b on a.detachmentid=b.detachment_id where a.homegroupid="+id;
+		
+		ArrayList data = Sql.DBList(sql);
+		HashMap result=new HashMap();
+		result.put("items", data);
+		String jsonstr = json.Encode(result);
+		ServletActionContext.getResponse().setContentType("text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jsonstr);
+	}
+	public void DetachmentList() throws Exception
+	{
+
+		String sql="select * from detachment  where detachment_id not in(select detachmentid from homegroup_detachment_limit"
+				+ " where homegroupid="+homegroupid+")";
 		
 		ArrayList data = Sql.DBList(sql);
 		HashMap result=new HashMap();
@@ -168,6 +198,18 @@ public class TalkGroup extends ActionSupport{
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getDetachmentid() {
+		return detachmentid;
+	}
+	public void setDetachmentid(String detachmentid) {
+		this.detachmentid = detachmentid;
+	}
+	public String getHomegroupid() {
+		return homegroupid;
+	}
+	public void setHomegroupid(String homegroupid) {
+		this.homegroupid = homegroupid;
 	}
 	
 	

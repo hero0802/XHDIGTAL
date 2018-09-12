@@ -77,7 +77,7 @@ Ext.define('group',{
 var store = Ext.create('Ext.data.Store',{
 	model:'call',	
 	remoteSort: true,
-	/* groupField:'Call_id' , */
+	groupField:'callid' ,
 // 设置分页大小
 	pageSize:50,
 	proxy: {
@@ -277,12 +277,15 @@ var paggingToolbar=new Ext.PagingToolbar({
 	        clicksToEdit: 2
 	     }); 
 var grid;
+/*总计：{[values.rows.length]}   被叫组 ID:<tpl for="rows[0].data">{called}</tpl>*/
 var groupingFeature = Ext.create('Ext.grid.feature.Grouping',{
-	groupHeaderTpl: "{columnName} : {name}"
+	groupHeaderTpl: '{columnName} : {name}<span style="color:red;margin-left:40px;">  </span>',
+	hideGroupedHeader: true,
+    startCollapsed: false,
 	});
 if(!grid)
 { grid=Ext.create('Ext.grid.Panel',{
-// xtype: 'grouped-grid',
+   // xtype: 'grouped-grid',
 	region:'center',
 	title:'当前位置>>终端信息>>通话记录',
 	iconCls:'icon-location',
@@ -292,7 +295,7 @@ if(!grid)
 	// renderTo: Ext.getBody(),
 	disableSelection: false,
 	loadMask: true,  
-// features: [groupingFeature],
+    features: [groupingFeature],
 	columns:[
 	        // new Ext.grid.RowNumberer({width:50,text:'#'}),
 	         {text: "ID", width: 100, dataIndex: 'id', sortable: false,hidden:true},
@@ -341,7 +344,7 @@ if(!grid)
 				 * {text: "结束原因", width: 80, dataIndex: 'endway', sortable:
 				 * false, editor : { allowBlank : false }},
 				 */{
-	        	 text: "播放/下载", width: 100,  dataIndex: 'Call_id',sortable: false,
+	        	 text: "播放/下载", flex: 1,  dataIndex: 'Call_id',sortable: false,
 	        	 renderer :function(value, metaData, record, rowIndex, colIndex, store){
 	        	 isHave(record);
 	        	 if(hasFile){
@@ -354,13 +357,14 @@ if(!grid)
 
 	         }
 
-	         }, {text: "流水号",  flex: 1,dataIndex: 'callid', sortable: false,
+	         }/*, {text: "流水号",  flex: 1,dataIndex: 'callid', sortable: false,
 	        	 editor : {  
 		        	 allowBlank : false  
-		         }},
+		         }},*/
 	   
 	         ],
 	         plugins : [cellEditing1],
+	       
 	         /*
 				 * plugins: [{ ptype: 'rowexpander', rowBodyTpl : new
 				 * Ext.XTemplate( '<div id="Inner{Call_id}">', '</div>' )}],

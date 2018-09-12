@@ -510,28 +510,10 @@ var right_leftPanel=Ext.create('Ext.Panel',{
 	bodyCls:'',
 	bodyStyle:'background:#fff;',
 	border:false,
-	
 	items:[{
-		xtype:'panel',border:false,region:'north',margin:1,height:50,
+		xtype:'panel',border:false,layout:'border',region:'north',margin:1,height:50,
 	   	bodyStyle:'background:#fff;',
 	   	items:[{
-	   		xtype:'panel',
-	   		layout:"column",
-	   		margin:'10 0 0 0',
-	   		border:0,
-	   		items:[
-		    	 {xtype:'numberfield',fieldLabel:'间隔时间（毫秒）',width:260,labelWidth:140,id:'eachTime',value:500,minValue:1
-	             },{fieldLabel:'结束时间',
-	 		    	xtype:'datetimefield',
-			    	id:'Etime',
-			    	name:'Etime',
-			    	format:'Y-m-d H:i:s',
-			    	margin:'0 0 0 20',
-			        labelWidth: 60,
-			        width:220
-			     }
-		    	 ]
-	   	}/*,{
 	   		xtype:'panel',
 	   		layout:"column",
 	   		margin:'10 0 0 0',
@@ -542,9 +524,8 @@ var right_leftPanel=Ext.create('Ext.Panel',{
 	   		{xtype:"button", text:"开始", iconCls:'start', handler:taskOpen},
 	        {xtype:"button", text:"停止", iconCls:'stop', handler:taskClose, margin:'0 0 0 10'},
 	        {xtype:"displayfield",id:"gpsTaskOpen",labelWidth:60,
-		    	 fieldLabel:"<span style='color:red;font-weight:bold'>运行状态</span>",margin:'0 0 10 60'}
-		    	 ]
-	   	}*/]
+		    	 fieldLabel:"<span style='color:red;font-weight:bold'>运行状态</span>",margin:'0 0 10 60'}]
+	   	}]
 	},{
 		xtype:'panel',border:false,layout:'border',region:'north',margin:1,height:240,
 	   	bodyStyle:'background:#fff;',
@@ -554,7 +535,22 @@ var right_leftPanel=Ext.create('Ext.Panel',{
 			     items:[{xtype:'numberfield',fieldLabel:'循环时间（秒）',width:210,labelWidth:140,id:'gpsTaskTime',value:1,minValue:5
 		             }/*,{xtype:"button", text:"更新时间",iconCls:'update',handler:save, margin:'0 0 0 10'
 		             }*/]
-			 },,{xtype:"displayfield",id:"dateRunStatus",labelWidth:60,
+			 },{xtype:'numberfield',fieldLabel:'间隔时间（毫秒）',width:210,labelWidth:140,id:'eachTime',value:500,minValue:1
+             },/*{fieldLabel:'起始时间',
+ 		    	xtype:'datetimefield',
+ 		    	id:'Ftime',
+ 		    	name:'Ftime',
+ 		    	format:'Y-m-d H:i:s',
+ 		        labelWidth: 60,
+ 		        width:220
+ 		    },*/{fieldLabel:'结束时间',
+		    	xtype:'datetimefield',
+		    	id:'Etime',
+		    	name:'Etime',
+		    	format:'Y-m-d H:i:s',
+		        labelWidth: 60,
+		        width:220
+		     },{xtype:"displayfield",id:"dateRunStatus",labelWidth:60,
 		    	 fieldLabel:"<span style='color:red;font-weight:bold'>运行状态</span>",margin:'0 0 10 0'},
 		     {layout:'column',border:false,
 		    	 items:[
@@ -640,11 +636,11 @@ function loadConfig(){
 			}else{
 				Ext.getCmp('dateRunStatus').setValue("未运行");
 			}
-			/*if(str.gpsTaskOpen){
+			if(str.gpsTaskOpen){
 				Ext.getCmp('gpsTaskOpen').setValue("运行中..");
 			}else{
 				Ext.getCmp('gpsTaskOpen').setValue("未运行");
-			}*/
+			}
 			//Ext.getCmp('Ftime').setValue(str.gpsTaskDate1);
 			Ext.getCmp('Etime').setValue(str.gpsTaskDate2);
 		}else{
@@ -1356,32 +1352,14 @@ function stopDateTask() {
 }
 //开始执行定时gps任务
 function startTimerTask() {  
-	var nowTime=parseInt(new Date().getTime());
-	var time=parseInt(new Date(Ext.getCmp('Etime').getValue()).getTime());
-	if(Ext.getCmp('Etime').getValue()=="" ){
-		 Ext.MessageBox.show({  
-			 title : "提示",  
-			 msg : "结束时间不能为空", 
-			 icon: Ext.MessageBox.ERROR 
-		 }); 
-		return;
-	}
-	if(time<nowTime){
-		Ext.MessageBox.show({  
-			 title : "提示",  
-			 msg : "结束时间必须大于当前时间", 
-			 icon: Ext.MessageBox.ERROR 
-		 }); 
-		return;
-	}
-	if(Ext.getCmp('eachTime').getValue()<300 ){
+/*	if(Ext.getCmp('emergTaskTime').getValue()<300 ){
 		 Ext.MessageBox.show({  
 			 title : "提示",  
 			 msg : "间隔时间不能小于300毫秒", 
 			 icon: Ext.MessageBox.ERROR 
 		 }); 
 		return;
-	}
+	}*/
 	Ext.Ajax.request({
 		url : '../data/startTimerTask.action', 
 		params : { 

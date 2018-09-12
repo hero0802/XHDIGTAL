@@ -574,7 +574,7 @@ Ext.getDoc().on("contextmenu", function(e){
 Ext.onReady(function(){
 	new Ext.Viewport({
 	layout:"border",	
-	items:[grid,radiouserAttr,right]
+	items:[grid,radiouserAttr]
      })
 	store.load({params:{start:0,limit:100}}); 
 });

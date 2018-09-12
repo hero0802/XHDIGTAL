@@ -197,13 +197,13 @@ public class NetDataTypeTransform {
 
 	public int BigByteArrayToThreeByte(byte[] bArr, int start) {
 		byte[] str = new byte[3];
-		for (int j = 0; j < 1; j++) {
+		for (int j = 0; j < 3; j++) {
 			str[j] = bArr[j + start];
 		}
 		if (str.length != 3) {
 			return -1;
 		}
-		return (int) ((((str[0] & 0xff) << 16) | ((str[1] & 0xff) << 8) | ((str[1] & 0xff) << 0)));
+		return (int) ((((str[0] & 0xff) << 16) | ((str[1] & 0xff) << 8) | ((str[2] & 0xff) << 0)));
 	}
 
 	/**
@@ -240,6 +240,17 @@ public class NetDataTypeTransform {
 		}
 		return (int) ((((str[3] & 0xff) << 24) | ((str[2] & 0xff) << 16)
 				| ((str[1] & 0xff) << 8) | ((str[0] & 0xff) << 0)));
+	}
+	
+	public int SmallByteArrayToThreeByte(byte[] bArr, int start) {
+		byte[] str = new byte[3];
+		for (int j = 0; j < 1; j++) {
+			str[j] = bArr[j + start];
+		}
+		if (str.length != 3) {
+			return -1;
+		}
+		return (int) ((((str[2] & 0xff) << 16) | ((str[1] & 0xff) << 8) | ((str[0] & 0xff) << 0)));
 	}
 
 	/**

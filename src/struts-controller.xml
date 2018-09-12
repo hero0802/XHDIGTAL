@@ -62,10 +62,15 @@
    <action name="addTGBS" class="com.action.TalkGroupAction" method="addTGBS">  
      <result type="json" name="success"></result>   
    </action>
+   <action name="addTGDem" class="com.action.TalkGroupAction" method="addTGDem">  
+     <result type="json" name="success"></result>   
+   </action>
    <action name="delTGBS" class="com.action.TalkGroupAction" method="delTGBS">  
      <result type="json" name="success"></result>   
    </action>
-
+   <action name="delDetachment" class="com.action.TalkGroupAction" method="delDetachment">  
+     <result type="json" name="success"></result>   
+   </action>
     <action name="addBsStation" class="com.action.BsStationAction" method="addBsStation">  
      <result type="json" name="success"></result>   
    </action>  

@@ -84,45 +84,43 @@ public class VoiceUDP extends Thread {
 				}// Socket对象.端口3000
 
 			}
-			try {// 数据长度 3+100+8
-				byte buf[] = new byte[111];
-				byte[] voiceData = new byte[100];
-				byte[] udpData = new byte[103];
+			try {// 数据长度 3+100+8 --->320+8
+				byte buf[] = new byte[334];
+				byte[] voiceData = new byte[320];
 				byte[] callIdByte = new byte[8];
-				int i=0;
+				byte[] groupId = new byte[3];
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);
 				
 				while (isconnected) {
 					socket.receive(packet);
 					int len = packet.getLength();
 					String callid = "";
+					int group=0;
 					
-					if (len >= 103) {
+					if (len >= 334) {
 						try {
-							System.arraycopy(buf, 3, voiceData, 0, 100);
-							System.arraycopy(buf, 103, callIdByte, 0, 8);
-							System.arraycopy(buf, 0, udpData, 0, 103);
+							System.arraycopy(buf, 0, voiceData, 0, 320);
+							System.arraycopy(buf, 320, callIdByte, 0, 8);
+							System.arraycopy(buf, 331, groupId, 0, 3);
 							callid = dd.ByteArraytoString(callIdByte, 0, 8);
-							///System.out.println("接收数据："+(i++));
-							//ActiveMqImpl.SendTextMessage("UDP-VOICE", new String(udpData));
-							
-							//func.writeVoiceFile("145", voiceData);
-							
-
+							group=dd.BigByteArrayToThreeByte(groupId, 0);
+							//System.out.println("接收数据： callid="+callid+";group="+group);
 							String filestr = TcpKeepAliveClient.getCallMap().get(callid).get("fileName").toString();
 							if (filestr != null) {// config.ReadConfig("voicePath")
 								func.writeVoiceFile(filestr, voiceData);
 
 							}
-
-							if (BsStationAction.getMonitorMap().size() > 0) {
-								Iterator iter = BsStationAction.getMonitorMap()
-										.entrySet().iterator();
-								while (iter.hasNext()) {
-									Map.Entry entry = (Map.Entry) iter.next();
-									Object key = entry.getKey();
-									sendData(udpData, key.toString());
+							if (BsStationAction.getMonitorList().size() > 0) {
+								Iterator<Map<String,Object>> it=BsStationAction.getMonitorList().iterator();
+								while(it.hasNext()){
+									Map<String,Object> map=it.next();
+									String ip=map.get("ip").toString();
+									int groupid=(Integer) map.get("group");
+									if(group==groupid){
+										sendData(voiceData, ip);
+									}
 								}
+								
 							}
 
 						} catch (NullPointerException e) {

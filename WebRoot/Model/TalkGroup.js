@@ -63,6 +63,23 @@ Ext.define('group_bs',{
 	        ], 
 	        idProperty : 'basestationid'
 })
+Ext.define('group_radio',{
+	extend:'Ext.data.Model',
+	fields:[
+	        {name: 'homegroupid'},
+	        {name: 'detachmentid'},
+	        {name: 'name'}
+	        ], 
+	        idProperty : 'detachmentid'
+})
+Ext.define('detachment',{
+	extend:'Ext.data.Model',
+	fields:[
+	        {name: 'detachment_id'},
+	        {name: 'detachment_name'}
+	        ], 
+	        idProperty : 'detachment_id'
+})
 //创建数据源
 var store = Ext.create('Ext.data.Store',{
 	model:'radiouser',	
@@ -110,6 +127,57 @@ var bsStore = Ext.create('Ext.data.Store',{
     sorters: [{ 
     	            //排序字段。 
     	            property: 'id', 
+    	            //排序类型，默认为 ASC 
+    	            direction: 'DESC' 
+    	        }] ,
+    simpleSortMode: true 
+}
+});
+//创建数据源
+var detachmentStore = Ext.create('Ext.data.Store',{
+	model:'detachment',	
+	remoteSort: true,
+//	设置分页大小
+	pageSize:100,
+	proxy: {
+	type: 'ajax',
+	url : '../data/DetachmentList.action',
+	//url:'../../user/show.action',
+	reader: {
+	//数据格式为json
+	type: 'json',
+	root: 'items',
+	//获取数据总数
+	totalProperty: 'total'
+    },
+    sorters: [{ 
+    	            //排序字段。 
+    	            property: 'detachment_id', 
+    	            //排序类型，默认为 ASC 
+    	            direction: 'DESC' 
+    	        }] ,
+    simpleSortMode: true 
+}
+});
+var groupDetachmentStore = Ext.create('Ext.data.Store',{
+	model:'group_radio',	
+	remoteSort: true,
+//	设置分页大小
+	pageSize:100,
+	proxy: {
+	type: 'ajax',
+	url : '../data/TalkGroupDetachmentList.action',
+	//url:'../../user/show.action',
+	reader: {
+	//数据格式为json
+	type: 'json',
+	root: 'items',
+	//获取数据总数
+	totalProperty: 'total'
+    },
+    sorters: [{ 
+    	            //排序字段。 
+    	            property: 'detachmentid', 
     	            //排序类型，默认为 ASC 
     	            direction: 'DESC' 
     	        }] ,
@@ -355,6 +423,47 @@ var TkGroupBsGrid=Ext.create('Ext.grid.Panel',{
 	         }]
 
 });
+var TkGroupDetachmentGrid=Ext.create('Ext.grid.Panel',{
+	margin:'0 0 0 10',
+	title:'限制支队手台列表',
+	region:'south',
+	height:document.documentElement.clientHeight/2,
+	// width:400,
+	store:groupDetachmentStore ,
+	trackMouseOver: false,
+	renderTo: Ext.getBody(),
+	disableSelection: false,
+	loadMask: true,  
+	columns:[
+	         new Ext.grid.RowNumberer({width:50,text:'#'}), 
+	         {text: "支队ID", width: 100, dataIndex: 'detachmentid', sortable: true},
+	         {text: "名称", flex:1, dataIndex: 'name', sortable: true},
+	         {text: "操作", width: 120, dataIndex: 'name', sortable: true,
+	        	 renderer:function(value,metaData,record){
+	        	 var str="<img src='../resources/images/picture/delete.png'>" +
+	        	 		"<a href='#' onclick=delGroupDetachment("+record.get('homegroupid')+","+record.get('detachmentid')+")>删除</a>";
+	        	 return str;
+	         }}
+	         ],
+	        /* plugins : [cellEditing], */
+	         frame:false,
+	         border:true,
+	         forceFit: true,
+	         columnLines : true, /*
+									 * height:document.documentElement.clientHeight,
+									 */
+	         
+	         /* selModel: selModel, */
+	         viewConfig: {
+	             stripeRows: true
+	         },
+
+	         emptyText:'<span>没有查询到数据</span>',
+	         bbar:[{
+	        	 xtype:"button",text:"增加限制支队",iconCls:'add',handler:addTGDem
+	         }]
+
+});
 var bs_Grid=Ext.create('Ext.grid.Panel',{
 	// margin:'0 0 0 10',
 	region:'center',
@@ -448,6 +557,99 @@ var bs_Grid=Ext.create('Ext.grid.Panel',{
 	         emptyText:'<span>没有查询到数据</span>'
 
 });
+var detachment_Grid=Ext.create('Ext.grid.Panel',{
+	// margin:'0 0 0 10',
+	region:'center',
+	// width:400,
+	store:detachmentStore,
+	trackMouseOver: false,
+	renderTo: Ext.getBody(),
+	disableSelection: false,
+	loadMask: true,  
+	columns:[
+	        /* new Ext.grid.RowNumberer({width:50,text:'#'}), */
+	         {text: "支队ID", width: 100, dataIndex: 'detachment_id', sortable: true},
+	         {text: "名称", flex:1, dataIndex: 'detachment_name', sortable: true}
+	         ],
+	        // plugins : Ext.create('Ext.selection.CheckboxModel'),
+	         frame:false,
+	         border:false,
+	         forceFit: true,
+	         columnLines : true, 
+	         selModel: Ext.create('Ext.selection.CheckboxModel'),
+	         viewConfig: {
+	             stripeRows: true,
+	             listeners: {
+	            	 itemdblclick:function(dataview, record, item, index, e){
+	            		 var data_bs = bs_Grid.getSelectionModel().getSelection();
+	            		 var data = grid.getSelectionModel().getSelection();
+	     				if (data_bs.length ==0) {  
+	     					Ext.MessageBox.show({  
+	     						title : "提示",  
+	     						msg : "请至少选择一个基站!" , 
+	     						icon: Ext.MessageBox.ERROR  
+	     					});  
+	     					return;  
+	     				};
+	     			var myMask = new Ext.LoadMask(Ext.getBody(), { 
+	     		        msg: '正在验证数据，请稍后！',  
+	     		        //loadMask: true, 
+	     		        removeMask: true //完成后移除  
+	     		    });
+	     			myMask.show();
+	     			var homegroupids = [],bsids=[];  
+	     			Ext.Array.each(data, function(record) {  
+	     				var homegroupid=record.get('id');  
+	     				// 如果删除的是幻影数据，则id就不传递到后台了，直接在前台删除即可
+	     				if(homegroupid){homegroupids.push(homegroupid);}  
+
+	     			}); 
+	     			
+	     			Ext.Array.each(data_bs,function(record){
+	     				var bsid=record.get('id');
+	     				if(bsid){bsids.push(bsid);}
+	     			});
+	     			 Ext.Ajax.request({  
+	     				 url : '../controller/addTGBS.action',  
+	     				 params : {
+	     					 homegroupids:homegroupids.join(','),
+	     					 bsids:bsids.join(',')
+	     			 },  
+	     			 method : 'POST',
+	     			 success : function(response) { 
+	     				 var rs=Ext.decode(response.responseText);
+	     				 myMask.hide();
+	     				 if(rs.success)
+	     				 {
+	     					 groupBsStore.reload();
+	     					groupOtherBsStore.reload();
+	     				 Ext.example.msg("提示",rs.message);
+	     				 /*win.hide();*/
+	     				 }
+	     				 else
+	     				 {
+	     					 Ext.MessageBox.show({  
+	     						 title : "提示",  
+	     						 msg : rs.message , 
+	     						 icon: Ext.MessageBox.ERROR  
+	     					 }); 
+	     				 }
+	     			 },
+
+	     			 failure: function(response) {
+
+	     				 myMask.hide();
+	     				
+	     			 }  
+	     			 });
+	            		 
+	            	 }
+	             }
+	         },
+
+	         emptyText:'<span>没有查询到数据</span>'
+
+});
 
 store.on('beforeload', function (store, options) {  
     var new_params = { 
@@ -457,6 +659,7 @@ store.on('beforeload', function (store, options) {
     Ext.apply(store.proxy.extraParams, new_params);  
 
 });
+
 //表格行选择
 grid.getSelectionModel().on({
 	selectionchange:function(sm,selections){
@@ -473,6 +676,17 @@ grid.getSelectionModel().on({
 		});
 		groupBsStore.load();
 	}
+	
+	groupDetachmentStore.on('beforeload', function (store, options) {  
+	    var new_params = { 
+	    		id: record.get('id')
+	    		};  
+	    Ext.apply(store.proxy.extraParams, new_params);  
+
+	});
+	groupDetachmentStore.load()
+	
+	
 }
 	
 });
@@ -482,7 +696,7 @@ var right=Ext.create('Ext.panel.Panel',{
 	border:false,
 	region:'east',
 	width:450,
-	items:[TkGroupBsGrid]
+	items:[TkGroupBsGrid,TkGroupDetachmentGrid]
 })
 //显示表格
 Ext.QuickTips.init(); 
@@ -1272,6 +1486,7 @@ function editTGBS(){
 		        	 renderer:function(value,metaData,record){
 		        	 var str="<img src='../resources/images/picture/delete.png'>" +
 		        	 		"<a href='#' onclick=delGroupBs("+record.get('homegroupid')+","+record.get('basestationid')+")>删除</a>";
+		 
 		        	 return str;
 		         }}
 		         ],
@@ -1359,26 +1574,6 @@ function addTGBS(){
 		});  
 		return;  
 	}
-	
-	
-	
-	
-	/*record = grid.getSelectionModel().getLastSelected();
-	var vaForm=new Ext.FormPanel({
-		region:'center',
-		frame :true,
-		bodyBorder: 0, 
-		autoWidth:true,
-		height:450,
-		layout:'form',
-		items:[{
-			xtype:'combobox',fieldLabel:'选择基站',labelWidth:100,name:'basestationid',	
-			 allowBlank: false,msgTarget : 'side',store:groupOtherBsStore,
-			 queryMode:'remote',editable:false,emptyText:'请选择...',
-			 valueField: 'id',displayField: 'name'
-			 
-		     }]
-	})*/
 	var win=new Ext.Window({
 		title:'用户组限制基站',
 		border:false,
@@ -1481,6 +1676,121 @@ function addTGBS(){
 	
 	win.show();
 }
+
+//增加支队
+//添加归属基站
+function addTGDem(){
+	var data = grid.getSelectionModel().getSelection();
+	if (data.length ==0) {  
+		Ext.MessageBox.show({  
+			title : "提示",  
+			msg : "请至少选择一个组!" , 
+			icon: Ext.MessageBox.ERROR  
+		});  
+		return;  
+	}
+	var win=new Ext.Window({
+		title:'支队列表',
+		border:false,
+		layout:'border',
+		height:300,
+		width:400,
+		modal:false,
+		items:detachment_Grid,
+		closable:true,
+		iconCls:'add',
+		dragable:false,
+		closeAction:'close',
+		buttons:[{text:'保存',
+			handler:function(){
+				var data_bs = detachment_Grid.getSelectionModel().getSelection();
+				if (data_bs.length ==0) {  
+					Ext.MessageBox.show({  
+						title : "提示",  
+						msg : "请至少选择一个支队!" , 
+						icon: Ext.MessageBox.ERROR  
+					});  
+					return;  
+				};
+				Ext.Msg.confirm("请确认", "是否真的要添加支队到选中的组里？", function(button, text) {  
+					if (button == "yes") {  
+			var myMask = new Ext.LoadMask(Ext.getBody(), { 
+		        msg: '正在验证数据，请稍后！',  
+		        //loadMask: true, 
+		        removeMask: true //完成后移除  
+		    });
+			myMask.show();
+			win.hide();
+			var homegroupids = [],ids=[];  
+			Ext.Array.each(data, function(record) {  
+				var homegroupid=record.get('id');  
+				// 如果删除的是幻影数据，则id就不传递到后台了，直接在前台删除即可
+				if(homegroupid){homegroupids.push(homegroupid);}  
+
+			}); 
+			
+			Ext.Array.each(data_bs,function(record){
+				var bsid=record.get('detachment_id');
+				if(bsid){ids.push(bsid);}
+			});
+			 Ext.Ajax.request({  
+				 url : '../controller/addTGDem.action',  
+				 params : {
+					 homegroupids:homegroupids.join(','),
+					 ids:ids.join(',')
+			 },  
+			 method : 'POST',
+			 success : function(response) { 
+				 var rs=Ext.decode(response.responseText);
+				 myMask.hide();
+				 if(rs.success)
+				 {
+					 groupDetachmentStore.reload();
+				 Ext.example.msg("提示",rs.message);
+				 /*win.hide();*/
+				 }
+				 else
+				 {
+					 Ext.MessageBox.show({  
+						 title : "提示",  
+						 msg : rs.message , 
+						 icon: Ext.MessageBox.ERROR  
+					 }); 
+				 }
+			 },
+
+			 failure: function(response) {
+
+				 myMask.hide();
+				 Ext.MessageBox.show({  
+					 title : "提示",  
+					 msg : "数据修改失败!" , 
+					 icon: Ext.MessageBox.ERROR 
+				 }); 
+			 }  
+			 });}})
+		}}]
+	})
+	record = grid.getSelectionModel().getLastSelected();
+	var homegroupid=-1;
+	if(data.lenght>1){
+		homegroupid=-1
+	}else{
+		homegroupid=record.get('id');
+	}
+	detachmentStore.on('beforeload', function (store, options) {  
+	    var new_params = { 
+	    		 homegroupid:  homegroupid
+	    		};  
+	    Ext.apply(store.proxy.extraParams, new_params);  
+
+	});
+	
+	detachmentStore.load();
+	
+	win.show();
+}
+
 //删除归属基站
 function delGroupBs(homegroupid,basestationid){
 	var myMask = new Ext.LoadMask(Ext.getBody(), {  
@@ -1526,6 +1836,54 @@ function delGroupBs(homegroupid,basestationid){
 	 }  
 	 });
 }
+
+//删除支队
+function delGroupDetachment(homegroupid,detachmentid){
+	var myMask = new Ext.LoadMask(Ext.getBody(), {  
+        msg: '正在验证数据，请稍后！',  
+        //loadMask: true, 
+        removeMask: true //完成后移除  
+    });
+	myMask.show();
+	 Ext.Ajax.request({  
+		 url : '../controller/delDetachment.action',  
+		 params : {
+		 homegroupid:homegroupid,
+		 detachmentid:detachmentid
+	 },  
+	 method : 'POST',
+	 success : function(response) { 
+		 var rs=Ext.decode(response.responseText);
+		 myMask.hide();
+		 if(rs.success)
+		 {
+			 groupDetachmentStore.reload();
+		 Ext.example.msg("提示",rs.message);
+		 }
+		 else
+		 {
+			 Ext.MessageBox.show({  
+				 title : "提示",  
+				 msg : rs.message , 
+				 icon: Ext.MessageBox.ERROR  
+			 }); 
+		 }
+	 },
+
+	 failure: function(response) {
+
+		 myMask.hide();
+		 Ext.MessageBox.show({  
+			 title : "提示",  
+			 msg : "数据修改失败!" , 
+			 icon: Ext.MessageBox.ERROR 
+		 }); 
+	 }  
+	 });
+}
+
+
+
 //通知中心
 function tellCenter(){
 	Ext.Ajax.request({  

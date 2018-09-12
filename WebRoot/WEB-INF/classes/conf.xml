@@ -8,7 +8,7 @@
 		<sys_dbname>xhdigital</sys_dbname>
 	</sysDataBase>
 	<centerDataBase>
-		<xh_ip>192.168.30.12</xh_ip>
+		<xh_ip>localhost</xh_ip>
 		<xh_port>3306</xh_port>
 		<xh_root>root</xh_root>
 		<xh_password>xinhong12345</xh_password>

@@ -1,12 +1,2 @@
-/Config.properties
 /com
-/conf.xml
 /data
-/log4j.properties
-/struts-controller.xml
-/struts-data.xml
-/struts-power.xml
-/struts.xml
-/trunk_common.proto
-/trunk_mso_ds.proto
-/user.xml

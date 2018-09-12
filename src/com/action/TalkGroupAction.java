@@ -18,6 +18,7 @@ public class TalkGroupAction extends ActionSupport{
 	private boolean success;
 	private String message;
 	private String deleteIds; //删除ID号
+	private String ids; //删除ID号
 	
 	private int id;
     private String alias;
@@ -35,6 +36,8 @@ public class TalkGroupAction extends ActionSupport{
     
     private String homegroupids;
     private String bsids;
+    
+    private String detachmentid;
     
     private XhMysql db=new XhMysql();
 	private XhSql Sql=new XhSql();
@@ -135,6 +138,27 @@ public class TalkGroupAction extends ActionSupport{
 		}
 		return SUCCESS;*/
 	}
+	//添加支队
+	public String addTGDem() throws Exception{
+		String[] groupid=homegroupids.split(",");
+		String[] tsId=ids.split(",");
+		for (int i = 0; i < groupid.length; i++) {
+			for (int j = 0; j < tsId.length; j++) {
+				
+			    String sql = "replace into homegroup_detachment_limit(homegroupid,detachmentid)VALUES("
+					+ groupid[i] + "," + tsId[j] + ")";
+			    Sql.Update(sql);
+			    this.message = "添加支队成功";
+				log.writeLog(1, "添加支队成功：" + tsId[j], "");
+			}
+		}
+		
+		setMessageHeader();
+		send.ReadDBREQ(header, "group_basestation_static");
+		this.success=true;
+		
+		return SUCCESS;
+	}
 	//修改通话组
 	public String updateTalkGroup() throws Exception{
 		String sql="update homegroup set alias='"+alias+"',type='"+type+"',callmode='"+callmode+"'," +
@@ -170,6 +194,16 @@ public class TalkGroupAction extends ActionSupport{
 		this.success=true;
 		return SUCCESS;
 	}
+	  //添加通话组限制支队ID
+	public String delDetachment() throws Exception{
+			String sql="delete from homegroup_detachment_limit where homegroupid="+homegroupid+" and detachmentid="+detachmentid;
+
+			Sql.Update(sql);
+			this.message="删除限制支队["+detachmentid+"]成功";
+			log.writeLog(3, "删除限制支队："+this.detachmentid, "");
+			this.success=true;
+			return SUCCESS;
+		}
 	public void setMessageHeader()
 	{		
 		header.setCMDId((short)524);    //  命令id
@@ -271,6 +305,18 @@ public class TalkGroupAction extends ActionSupport{
 	}
 	public void setBsids(String bsids) {
 		this.bsids = bsids;
+	}
+	public String getDetachmentid() {
+		return detachmentid;
+	}
+	public void setDetachmentid(String detachmentid) {
+		this.detachmentid = detachmentid;
+	}
+	public String getIds() {
+		return ids;
+	}
+	public void setIds(String ids) {
+		this.ids = ids;
 	}
     
     

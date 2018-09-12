@@ -12,18 +12,18 @@ import java.io.IOException;
  "data"
  声音数据大小
  声音数据*/
-public class WavHeaderStruct {
+public class CopyOfWavHeaderStruct {
 	private char fileID[] = { 'R', 'I', 'F', 'F' }; // 标志符 4byte
 	private int fileLength; // 数据长度 4byte 从下一个地址开始到文件尾的总字节数。
 	private char wavTag[] = { 'W', 'A', 'V', 'E' }; // WAVE标志 4byte
 	private char fmtHdrID[] = { 'f', 'm', 't', ' ' }; // fmt标志，最后一位为空 4byte
 	private int fmtHdrLeth = 16;// 量化 4byte sizeof(PCMWAVEFORMAT)
-	private short formatTag = 0x0001; // u率格式;0x0007
+	private short formatTag = 0x0007; // u率格式;
 									// //编码格式，包括WAVE_FORMAT_PCM，WAVEFORMAT_ADPCM等
 									// 2byte
 	public short channels = 1; // 声道数，单声道为1，双声道为2; 2byte
 	public short sampleRate = 8000;// 采样频率； 2byte
-	public short bitsPerSample = 16; // WAVE文件的采样大小；2byte 16
+	public short bitsPerSample = 8; // WAVE文件的采样大小；2byte
 									// 本数据位数，0010H即16，一个量化样本占2byte
 	private short blockAlign = (short) (channels * bitsPerSample / 8);// 块对齐；
 																		// 2byte
@@ -37,7 +37,7 @@ public class WavHeaderStruct {
 	private char dataHdrID[] = { 'd', 'a', 't', 'a' }; // data，一个标志而已。 4byte
 	private int dataHdrLeth;// 数据包总长度 4byte
 
-	public WavHeaderStruct(int fileLength) {
+	public CopyOfWavHeaderStruct(int fileLength) {
 		this.fileLength = fileLength + (44 - 8);
 		this.dataHdrLeth = fileLength;
 	}

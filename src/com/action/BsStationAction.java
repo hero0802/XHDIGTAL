@@ -12,6 +12,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -119,6 +120,7 @@ public class BsStationAction extends ActionSupport {
 	private String inputPath;
     private String fileName;
     private static Map<String, String> monitorMap=new HashMap<String, String>();
+    private static ArrayList<Map<String, Object>> monitorList=new ArrayList<Map<String,Object>>();
     protected final Log log4j = LogFactory.getLog(BsStationAction.class);
     private  int allNetStopSendSwitch; //全网禁发开关
     private  static int moniSwitch=0; //模拟接入开关
@@ -238,21 +240,26 @@ public class BsStationAction extends ActionSupport {
 		ArrayList list=new ArrayList();
 		Map map=new HashMap();
 		
-		map.put("monitor", 1);
-		map.put("ip", func.getIpAddr(request));		
-		monitorMap.put(func.getIpAddr(request), func.getIpAddr(request));
-		log4j.info("monitorVoiceMap:"+monitorMap.toString());
+		map.put("ip", func.getIpAddr(request));
+		map.put("group", tarid);
+		
+		monitorList.add(map);
+		log4j.info("monitor-open:"+monitorList);
 		return SUCCESS;
 	}
 	public String closeMonitor(){
 		HttpServletRequest request =ServletActionContext.getRequest();
 		String ip=func.getIpAddr(request);
-		if (monitorMap!=null) {
-			if (monitorMap.get(ip) != null) {
-				monitorMap.remove(ip);
+		if(monitorList!=null){
+			Iterator<Map<String,Object>> it=monitorList.iterator();
+			while(it.hasNext()){
+				Map<String,Object> map=it.next();
+				if(map.get("ip").toString().equals(ip)){
+					it.remove();
+				}
 			}
 		}
-				
+		log4j.info("monitor-close:"+monitorList);
 		return SUCCESS;
 	}
 
@@ -1567,6 +1574,12 @@ public class BsStationAction extends ActionSupport {
 	}
 	public void setRssi_ceiling(String rssi_ceiling) {
 		this.rssi_ceiling = rssi_ceiling;
+	}
+	public static ArrayList<Map<String, Object>> getMonitorList() {
+		return monitorList;
+	}
+	public static void setMonitorList(ArrayList<Map<String, Object>> monitorList) {
+		BsStationAction.monitorList = monitorList;
 	}
 
 

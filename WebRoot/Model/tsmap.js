@@ -134,6 +134,31 @@ var group_store = Ext.create('Ext.data.Store',{
     simpleSortMode: true 
 }
 });
+var group_view_store = Ext.create('Ext.data.Store',{
+	model:'group',	
+	remoteSort: true,
+//	设置分页大小
+	pageSize:100,
+	proxy: {
+	type: 'ajax',
+	url : 'data/TalkGroupAllList.action',
+	//url:'../../user/show.action',
+	reader: {
+	//数据格式为json
+	type: 'json',
+	root: 'items',
+	//获取数据总数
+	totalProperty: 'total'
+    },
+    sorters: [{ 
+    	            //排序字段。 
+    	            property: 'id', 
+    	            //排序类型，默认为 ASC 
+    	            direction: 'DESC' 
+    	        }] ,
+    simpleSortMode: true 
+}
+});
 // 创建数据源
 var store = Ext.create('Ext.data.Store',{
 	model:'bs',	
@@ -341,11 +366,11 @@ var mapPanel=Ext.create('Ext.panel.Panel',{
             		store.reload();
             	}
             },*/{
-            	text:'<span style="color:#000">开启语音监听</span>',
+            	text:'<span style="color:#000">语音监听</span>',
             	id:'voiceBtn',
             	icon:'resources/images/menu/monitor.png',
             	handler:function(){
-            		voice();
+            		listen();
             	}
             },'-',{
             	text:'<span style="color:#fff">开启全网禁发</span>',
@@ -798,6 +823,17 @@ if(!info_grid)
 })
 };
 
+var listen_panel=Ext.create('Ext.panel.Panel',{
+	region:'center',
+	/*collapsible : true,
+	collapsed:false,*/
+	split:true,
+	width:630,
+	html:'<div id="group-div"></div>'
+})
+
+
+
 var grid_controll=Ext.create('Ext.grid.Panel',{
 	title:'遥测数据       &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" style="color:#fff" onclick="refresh()">刷新</a>',
 	region:"south",
@@ -1000,13 +1036,64 @@ store.on('load',function (store, options){
 group_store.on('load', function (s, options) {  
     console.log("store->"+s.getCount());
     s.each(function(record){
-    	$("#group_list").append("<option value='"+record.get('id')+"'>"+record.get('name')+"["+record.get('id')+"]"+"</option>")
-    })
-    
-    
+    	$("#group_list").append("<option value='"+record.get('id')+"'>"+record.get('name')+"["+record.get('id')+"]"+"</option>");
+    	$("#group-div").html(record.get('name'));
+    }) 
     
 
 });
+group_view_store.on('load', function (s, options) {  
+	var htm="";
+	   
+	group_view_store.each(function(record){
+		if(getCookie("openVoice")==1 && getCookie("listenGroup")==record.get('id')){
+			htm+="<div class='group-div listenning' value='"+record.get('id')+"'>";
+	    	htm+="<p>"+record.get('name')+"</p>";
+	    	htm+="<p class='listen-status'>正在监听..</p>"
+	    	htm+="</div>";
+		}else{
+			htm+="<div class='group-div' value='"+record.get('id')+"'>";
+	    	htm+="<p>"+record.get('name')+"</p>";
+	    	htm+="<p class='listen-status'></p>"
+	    	htm+="</div>";
+		}
+		
+		
+		
+    
+    }) 
+    $("#group-view").html(htm);
+	
+});
+
+$(".group-div").live('click',function(e){
+	
+	
+	if($(this).find(".listen-status").html()!=""){
+		$(".group-div").find(".listen-status").html("");
+		$(".group-div").removeClass("listenning");
+		setCookie("openVoice", 0);
+		setCookie("listenGroup","");
+		closeVoice($(this).attr("value"));
+	}else{
+		$(".group-div").find(".listen-status").html("");
+		$(".group-div").removeClass("listenning");
+		closeVoice($(this).attr("value"));
+		$(this).find(".listen-status").html("<span>正在监听..</span>");
+		$(this).toggleClass("listenning");
+		setCookie("openVoice", 1);
+		setCookie("listenGroup", $(this).attr("value"));
+		openVoice($(this).attr("value"));
+	}
+	
+})
+$(".group-div").live('mouseover',function(e){
+	
+	
+})
+
+
+
 call_store.on('beforeload', function (store, options) {  
     var new_params = { 
     		called:$("#group_list").val()
@@ -1051,14 +1138,6 @@ Ext.onReady(function(){
 		items:[mapPanel,callPanel,controllPanel]
 	});
 	
-	if(getCookie("openVoice")!=""){
-		var btn=Ext.getCmp('voiceBtn');
-		if(getCookie("openVoice")==0){
-			btn.setText("开启语音监听");
-		}else{
-			btn.setText("关闭语音监听");
-		}
-	}
 	/*var wgloc={};
 	wgloc.lat=39.1187;
 	wgloc.lng=117.20233;
@@ -2696,6 +2775,31 @@ function ADMode(id,model){
 	// Form.form.findField('channel').setValue(model);
 	 Ext.getCmp('channel').down('radio').setValue(model);
 }
+var group_view_win=Ext.create("Ext.Window",{
+	modal:false,
+	title:'语音监听[提示：单击组，开启监听；再次单击，取消组监听]',
+	width:700,
+	height:500,
+	autoScroll:true,
+	closeAction:'hide',
+	html:"<div id='group-view'></div>",
+	buttons:[{
+		
+		text:'关闭窗口',
+		iconCls:'close',
+		handler:function(){
+			group_view_win.close();
+	}
+	}]
+})
+
+function listen(){
+	
+	
+	group_view_store.load();
+	group_view_win.show();
+	
+}
 // 设置基站经纬度
 function setLngLat(id){
 	var Form=Ext.create('Ext.FormPanel',{
@@ -3464,22 +3568,11 @@ function updateBsRfupdown(id){
 }
 
 
-function voice(){
-	var btn=Ext.getCmp('voiceBtn');
-	if(btn.text=="开启语音监听"){
-		btn.setText("关闭语音监听");
-		setCookie("openVoice", 1);
-		openVoice();
-	}else{
-		btn.setText("开启语音监听");var btn=Ext.getCmp('voiceBtn');
-		setCookie("openVoice", 0);
-		closeVoice();
-	}
-}
-function openVoice(){
+function openVoice(group){
 	Ext.Ajax.request({  
 		url : 'controller/startMonotor.action',  
 		params : {  
+			tarid:group
 	},  
 	method : 'POST',
 	async:false,
@@ -3489,10 +3582,11 @@ function openVoice(){
 	}  
 	}); 
 }
-function closeVoice(){
+function closeVoice(group){
 	Ext.Ajax.request({  
 		url : 'controller/closeMonotor.action',  
 		params : {  
+			tarid:group
 	},  
 	method : 'POST',
 	async:false,
