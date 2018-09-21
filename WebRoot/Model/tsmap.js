@@ -18,6 +18,8 @@ Ext.define('bs',{
 	        {name:'model'},
 	        {name:'linkModel'},
 	        {name:'channelno'},
+	        {name:'groupName'},
+	        {name:'groupId'},
 	       
 	        {name:'offlinerepeaten'},
 	        {name:'rf_send'},
@@ -710,7 +712,7 @@ var grid_status=Ext.create('Ext.grid.Panel',{
 	        		 if(value==0){
 		        		 metaData.tdCls='x-grid-record-alarm3';
 		        	 }
-	        	 if(value==0){return "失锁"}else{return "锁定";}
+	        	 if(value==0){return "失锁"}else if(value==1){return "锁定";}else{ return "";}
 	        	 }else{
 	        		 return "- -"
 	        	 }
@@ -904,7 +906,11 @@ var grid_controll=Ext.create('Ext.grid.Panel',{
 	        		 if(value==0){
 		        		 metaData.tdCls='x-grid-record-alarm3';
 		        	 }
-	        	 if(value==0){return "失锁"}else{return "锁定";}
+	        	 if(value==0){return "失锁"}else if(value==1){
+	        		 return "锁定";}
+	        	 else{
+	        		 return "";
+	        	 }
 	        	 }else{
 	        		 return "- -"
 	        	 }
@@ -1165,10 +1171,12 @@ Ext.onReady(function(){
 		} 
 	})
 	
+	
 	//$("#errorMsg").html("2weer");
 	
 	
 });
+
 function dwr_Data(){
 	SocketDwr.refresh();
 	// SocketDwr.rssi(null);
@@ -1198,8 +1206,14 @@ function bsStatusDwr(str){
 				  icon='mapfiles/bs_moni.png';
 			  }else{
 				  icon='mapfiles/bs_digital.png';
+				  if(offlinerepeaten==1){
+					  icon='mapfiles/bs_digital_offnet.png'; 
+				  }
 				  if(linkModel==1){
-						icon="mapfiles/bs_4g.png";
+						icon="mapfiles/bs_4g_green.png";
+						if(offlinerepeaten==1){
+							  icon='mapfiles/bs_4g.png'; 
+						  }
 				  }
 				  if(status==2){
 					  if(linkModel==1){
@@ -1259,8 +1273,8 @@ function bsStatusDwr(str){
 		    $("#img_"+bsId).attr("src",icon);	
 		    $(".ch_"+bsId).html("ch:"+channelno);
 		    //(offlinerepeaten==1&&online==2?"<img src='mapfiles/close.png'>脱网":"")+'</span>
-		    var hh=offlinerepeaten==1&&online==2?"<img src='mapfiles/close.png'>单站":""
-		    $("bs_outnet_"+bsId).html(hh)
+		    /*var hh=offlinerepeaten==1&&online==2?"<img src='mapfiles/close.png'>单站":""
+		    $("bs_outnet_"+bsId).html(hh)*/
 			
 		  // store.reload();
 		}
@@ -1315,6 +1329,7 @@ function BsToControl(str){
 	var linkModel=recvData.linkModel;
 	var status=recvData.status;
 	var bsChannel_status=recvData.bsChannel_status;
+	var offlinerepeaten=recvData.offlinerepeaten;
 	var icon='mapfiles/bs_digital.png';
 	
 	  if(online==2){
@@ -1322,8 +1337,14 @@ function BsToControl(str){
 			  icon='mapfiles/bs_moni.png';
 		  }else{
 			  icon='mapfiles/bs_digital.png';
+			  if(offlinerepeaten==1){
+				  icon='mapfiles/bs_digital_offnet.png';
+			  }
 			  if(linkModel==1){
-					icon="mapfiles/bs_4g.png";
+					icon="mapfiles/bs_4g_green.png";
+					if(offlinerepeaten==1){
+						  icon='mapfiles/bs_4g.png';
+					  }
 			  }
 			  if(status==2){
 				  if(linkModel==1){
@@ -1397,6 +1418,7 @@ function BsOffLine(str){
 	var model=recvData.model;
 	var linkModel=recvData.linkModel;
 	var status=recvData.status;
+	var offlinerepeaten=recvData.offlinerepeaten;
 	var icon='mapfiles/bs_digital.png';
 	
 	  if(online==1){
@@ -1404,8 +1426,14 @@ function BsOffLine(str){
 			  icon='mapfiles/bs_moni.png';
 		  }else{
 			  icon='mapfiles/bs_digital.png';
+			  if(offlinerepeaten==1){
+				  icon='mapfiles/bs_digital_offnet.png'; 
+			  }
 			  if(linkModel==1){
-					icon="mapfiles/bs_4g.png";
+					icon="mapfiles/bs_4g_green.png";
+					if(offlinerepeaten==1){
+						  icon='mapfiles/bs_4g.png'; 
+					  }
 			  }
 			  if(status==2){
 				  if(linkModel==1){
@@ -1514,13 +1542,20 @@ function bsModel(str){
 		var bsId=items[i].bsId;
 		var linkModel=items[i].linkModel;
 		var status=items[i].status;
+		var offlinerepeaten=items[i].offlinerepeaten
 		if(online==2){
 			  if(model==0){
 				  icon='mapfiles/bs_moni.png';
 			  }else{
 				  icon='mapfiles/bs_digital.png';
+				  if(offlinerepeaten==1){
+					  icon='mapfiles/bs_digital_offnet.png';
+				  }
 				  if(linkModel==1){
-						icon="mapfiles/bs_4g.png";
+						icon="mapfiles/bs_4g_green.png";
+						 if(offlinerepeaten==1){
+							  icon='mapfiles/bs_4g.png';
+						  }
 				  }
 				  if(status==2){
 					  if(linkModel==1){
@@ -1599,8 +1634,14 @@ function callColorControll(str){
 				  if(recvData.items[i].model==0){
 					  icon='mapfiles/bs_monil.png';
 				  }else{
+					  if(recvData.items[i].offlinerepeaten==1){
+						  icon="mapfiles/bs_digital_offnet.png";
+					  }
 					  if(recvData.items[i].linkModel==1){
-						  icon="mapfiles/bs_4g.png";
+						  icon="mapfiles/bs_4g_green.png";
+						  if(recvData.items[i].offlinerepeaten==1){
+							  icon="mapfiles/bs_4g.png";
+						  }
 					  }
 					  if(recvData.items[i].status==2){
 						  if(recvData.items[i].linkModel==1){
@@ -1639,8 +1680,14 @@ function callColorControll(str){
 			  if(recvData.items[i].model==0){
 				  icon='mapfiles/bs_monil.png';
 			  }else{
+				  if(recvData.items[i].offlinerepeaten==1){
+					  icon="mapfiles/bs_digital_offnet.png";
+				  }
 				  if(recvData.items[i].linkModel==1){
-					  icon="mapfiles/bs_4g.png";
+					  icon="mapfiles/bs_4g_green.png";
+					  if(recvData.items[i].offlinerepeaten==1){
+						  icon="mapfiles/bs_4g.png";
+					  }
 				  }
 				  if(recvData.items[i].status==2){
 					  if(recvData.items[i].linkModel==1){
@@ -1668,11 +1715,11 @@ function BsControlRefresh(){
 	bs_status_store.each(function(record){
 		console.log("data->"+record.get('gps'))
 		var bsid=record.get('bsId');
-		var gps=record.get('gps');
-		if(gps==1){
-			$("#gpsen-"+bsid).html("");
+		var gps=record.get('gps').toString();
+		if(gps=='0'){
+			$("#bsName-"+bsid).css("color","red")			
 		}else{
-			$("#gpsen-"+bsid).html("<span>失锁</span>");
+			$("#bsName-"+bsid).css("color","#000")
 		}
 		
 	})
@@ -1839,7 +1886,14 @@ function MapData(){
 				// labelClass="marker-label-error";
 			}else{
 				if(record.get('linkModel')==1){
-					icon="mapfiles/bs_4g.png";
+					icon="mapfiles/bs_4g_green.png";
+					if(record.get('offlinerepeaten')==1){
+						icon="mapfiles/bs_4g.png";
+					}
+					
+				}
+				if(record.get('offlinerepeaten')==1){
+					icon="mapfiles/bs_digital_offnet.png";
 				}
 				if(record.get('bsChannel_status')==2){
 					  if(record.get('linkModel')==1){
@@ -1858,7 +1912,7 @@ function MapData(){
 			id : record.get("bsId"),
 			icon :icon,
 			record:record,
-			labelContent :(record.get('offlinerepeaten')==1&&record.get('online')==2?"<span style='color:red'>[单站]</span>":"")+record.get("bsName")+"<span id='bs_"+record.get("bsId")+"'></span>",
+			labelContent :record.get("bsName")+"<span id='bs_"+record.get("bsId")+"'></span>",
 			labelAnchor : new google.maps.Point(37, 0),
 			labelClass : labelClass, // the CSS class for
 			labelStyle : {}
@@ -1976,9 +2030,16 @@ function GetBsView(){
 				icon="mapfiles/bs_digital_red.png";
 				labelClass="marker-label-error";
 			}else{
+				if(record.get('offlinerepeaten')){
+					  icon="mapfiles/bs_digital_offnet.png";
+				  }
 				if(record.get('linkModel')==1){
-					icon="mapfiles/bs_4g.png";
+					icon="mapfiles/bs_4g_green.png";
+					if(record.get('offlinerepeaten')==1){
+						icon="mapfiles/bs_4g.png";
+					}
 				}
+
 				  if(record.get('bsChannel_status')==2){
 					  if(record.get('linkModel')==1){
 							icon="mapfiles/bs_4g_off.png";
@@ -2004,17 +2065,29 @@ function GetBsView(){
 	
 		str+='<div  bsId="'+record.get('bsId')+'" linkModel="'+record.get('linkModel')+'" id="bs-div-on" model="'+record.get('model')+'" >';
 		
-		str+='<div style="width:100%;"><span  id="badge-right" title="基站ID">'+record.get('bsId')+'</span>';
+	/*	str+='<div style="width:100%;"><span  id="badge-right" title="基站ID">'+record.get('bsId')+'</span>';
 		str+='<span  id="badge-right-center" title="联网信道"  class="ch_'+record.get('bsId')+'" >ch:'+record.get('channelno')+'</span>';
-		str+='</div><div><table >';
+		str+='</div><div><table >';*/
+		str+='<div><table >';
+		str+='<tr>';
+		str+='<td><span  id="badge-right" title="基站ID">'+record.get('bsId')+'</span></td>';
+		str+='<td><span  id="badge-right-center" title="联网信道"  class="ch_'+record.get('bsId')+'" >ch:'+record.get('channelno')+'</span></td>'
+		str+='<tr style="padding:5px;" ><td colspan="3" style="font-size:10px;color:#000"> &nbsp;';
+		str+=record.get("groupName");
+		str+='</td></tr>';
 		str+='<tr><td><img id="imgRf_'+record.get('bsId')+'" src="'+iconRfr+'" style="margin:0 auto"><br><span style="font-size:11px">收</span></td><td style="text-align:center"><img id="img_'+record.get('bsId')+'" src="'+icon+'" style="margin:0 auto"></td><td><img id="imgRf_'+record.get('bsId')+'" src="'+iconRfs+'" style="margin:0 auto"><br><span style="font-size:11px">发</span></td></tr>';
-		str+='<tr><td  colspan="3"><span style="color:#000;font-weight: bold; font-size: 11px;">'+record.get('bsName')+'</span></td></tr>';
+		if(record.get("gps").toString()=='0'){
+			str+='<tr style="color:red;font-weight: bold; font-size: 11px;"><td  colspan="3" id="bsName-'+record.get('bsId')+'"><span>'+record.get('bsName')+'</span></td></tr>';
+		}else{
+			str+='<tr style="color:#000;font-weight: bold; font-size: 11px;"><td  colspan="3" id="bsName-'+record.get('bsId')+'"><span>'+record.get('bsName')+'</span></td></tr>';
+		}
+
 		str+='<tr><td  colspan="3"><span id="bs_rssi_'+record.get('bsId')+'"></span></td></tr>';
-		str+='<tr><td  colspan="3"><span style="color:red;font-weight: bold; font-size: 11px;" id="bs_outnet_'+record.get('bsId')+'">'
-			+(record.get('offlinerepeaten')==1&&record.get('online')==2?"<img src='mapfiles/close.png'>单站":"")+'</span></td></tr>';
+		/*str+='<tr><td  colspan="3"><span style="color:red;font-weight: bold; font-size: 11px;" id="bs_outnet_'+record.get('bsId')+'">'
+			+(record.get('offlinerepeaten')==1&&record.get('online')==2?"<img src='mapfiles/close.png'>单站":"")+'</span></td></tr>';*/
 		
 		str+='</table></div>';
-		str+='<div class="gps-div" id="gpsen-'+record.get('bsId')+'">'+(record.get('gps')==1?"":"<span>失锁</span>")+'</div>';
+		/*str+='<div class="gps-div" id="gpsen-'+record.get('bsId')+'">'+(record.get('gps')==0?"<span>失锁</span>":"")+'</div>';*/
 		str+='</div>';
 		$("#bs_div").html(str);
 		

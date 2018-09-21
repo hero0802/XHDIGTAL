@@ -402,6 +402,31 @@ public class SysSql {
 		return model;
 		
 	}
+	public int bsId_offlinerepeaten(int id){
+		int model=-1;
+		try {
+		String sql="select offlinerepeaten from xhdigital_bs_sta where bsId="+id;
+		Connection conn=db.getConn();
+		Statement stmt;
+		
+		
+			stmt = conn.createStatement();
+			ResultSet rst = stmt.executeQuery(sql);	
+			while(rst.next()){
+				model=rst.getInt("offlinerepeaten");
+			}
+			stmt.close();
+			conn.close();
+		} catch (NullPointerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return model;
+		
+	}
 	public int bsId_status(int id){
 		int model=-1;
 		try {
@@ -499,6 +524,7 @@ public class SysSql {
 				markStruct.setModel(rst.getInt("model"));
 				markStruct.setLinkModel(rst.getInt("linkModel"));
 				markStruct.setStatus(rst.getInt("bsChannel_status"));
+				markStruct.setOfflinerepeaten(rst.getInt("offlinerepeaten"));
 				//list.add(markStruct);
 				
 			}

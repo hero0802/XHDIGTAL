@@ -9,6 +9,15 @@ var flightPath=null;
 var refreshMap=1;
 var nowMscId=0;
 var startFlag=0;
+Ext.define('detm',{
+	extend:'Ext.data.Model',
+	fields:[
+	        {name: 'id'},
+	        {name: 'name'}
+	      
+	        ], 
+	        idProperty : 'id'
+})
 var userStore = Ext.create('Ext.data.Store', {
 	fields : [ {name : 'id'},{name : 'mscId'},
 	           {name:'name'},{name:'onlinestatus'},{name:'lat'},{name:'lng'},{name:'result'}],
@@ -17,6 +26,21 @@ var userStore = Ext.create('Ext.data.Store', {
 	proxy : {
 		type : 'ajax',
 		url : 'data/useronline.action',
+		reader : {
+			type : 'json',
+			root : 'items',
+			totalProperty : 'total'
+		},
+		simpleSortMode : true
+	}
+});
+var detachmentStore = Ext.create('Ext.data.Store', {
+	fields : [ {name : 'id'},{name:'name'}],
+	remoteSort : true,
+	pageSize : 500,
+	proxy : {
+		type : 'ajax',
+		url : 'data/RadioUserDetm.action',
 		reader : {
 			type : 'json',
 			root : 'items',
@@ -209,12 +233,13 @@ var usergrid=Ext.create('Ext.grid.Panel',{
 	             dock: 'top',
 	             items: [{
 	 				xtype:'combobox',fieldLabel:'支队',id:'mscType',name:'mscType',labelWidth:30,
-		    		store:[
-		    		       ["0","不限制"],["16","领导"],["0120","和平"],["0221","河东"],["0322","河西"],["0423","河北"],
-		    		       ["0524","南开"],["0625","红桥"],["0726","东丽"],["0827","西青"],
-		    		       ["0928","津南"],["1029","北辰"],["0033","机关"],["1139","塘沽"],
-		    		       ["1240","汉沽"],["1341","大港"]],
-		    		queryMode:'local',value:"0",width:110
+	 				store:detachmentStore,
+		    		queryMode: "local",
+		    		editable: false,
+		            displayField: "name",
+		            valueField: "id",
+		            emptyText: "--请选择--",
+		    		width:130
 				},{
 	 				xtype:'combobox',fieldLabel:'状态',id:'status',name:'status',labelWidth:30,
 		    		store:[
@@ -328,6 +353,14 @@ userStore.on('beforeload', function (store, options) {
     usergrid.getSelectionModel().clearSelections();
 
 });
+detachmentStore.on('load', function (s, options) {  
+	var ins_rec = Ext.create('detm',{
+	      id:0,
+	      name:'=全部='
+	    }); 
+	    s.insert(0,ins_rec);
+	    Ext.getCmp("mscType").setValue(0);
+});
 //表格行选择
 /*usergrid.getSelectionModel().on({
 	selectionchange:function(sm,selections){
@@ -374,6 +407,7 @@ Ext.onReady(function(){
 	mapInitialize();
 	/*ClearPhoneMarker();*/
 	userStore.load();
+	detachmentStore.load();
 	//MapData();
 	dwr_Data();
 	dwr.engine.setActiveReverseAjax(true);
@@ -719,6 +753,7 @@ function gpsTask(){
 			
 		}else{
 			clearInterval(timeout);
+			timeout=null;
 			/*Ext.MessageBox.show({  
 				title : "提示",  
 				msg : "<p>一共执行"+i+"次</p> <p>成功"+successfully+"个</p> <p>失败"+error+"个</p>" , 
@@ -737,12 +772,17 @@ function gpsTask(){
 			
 		}
 			var a=0,b=0,c=0;
+			var userIds=[];
 			 for(var j=0;j<userStore.getCount();j++){
+				
+				
 				 if(userStore.getAt(j).get("result")=="无数据"){
 					 a++;
 				 }
 				 else if(userStore.getAt(j).get("result")=="有定位"){
 					 b++;
+					
+					 
 				 }
 				 else if(userStore.getAt(j).get("result")=="无定位"){
 					 c++;
@@ -754,6 +794,10 @@ function gpsTask(){
 			 var html2="gps拉取结束";
 				$("#showMessageInfo").html(html2);
 			 $("#showMessage").html(html);
+			/* if(b>0){
+				 addOnlineUser(userIds)
+			 }*/
+			
 		}
 		
      }, 500);  //每隔 1秒钟  
@@ -779,8 +823,31 @@ function gpsTask(){
 	
 }
 
+function addOnlineUser(json){
+	var str=JSON.stringify(json);
+	Ext.Ajax.request({
+		url : 'controller/addOnlineUser.action', 
+		params : { 
+		 userJson:str
+	},
+	method : 'POST',
+	    waitTitle : '请等待' ,  
+	    waitMsg: '正在提交中', 
+	    success : function(response) {
+	    	
+	    },
+	    failure: function(response) {
+	     }
+	});
+	
+}
+
 function stop(){
+	if(timeout==null){
+		return;
+	};
 	clearInterval(timeout);
+	timeout=null;
 	 Ext.getCmp('handlerTask').enable();
 	 for(var j=0;j<=i;j++){
 			var userId=userStore.getAt(j).get('id');
@@ -792,12 +859,15 @@ function stop(){
 	
      }
 	var a=0,b=0,c=0;
+	var userIds=[];
 	 for(var j=0;j<=i;j++){
+		
 		 if(userStore.getAt(j).get("result")=="无数据"){
 			 a++;
 		 }
 		 else if(userStore.getAt(j).get("result")=="有定位"){
 			 b++;
+			
 		 }
 		 else if(userStore.getAt(j).get("result")=="无定位"){
 			 c++;
@@ -807,6 +877,7 @@ function stop(){
 	 }
 	 var html="统计： 有定位："+b+" &nbsp; &nbsp; 无定位:"+c+"&nbsp; &nbsp;无数据:"+a
 	 var html2="gps拉取结束";
+	
 	 $("#showMessageInfo").html(html2);
 	 $("#showMessage").html(html);
 	 i=0;

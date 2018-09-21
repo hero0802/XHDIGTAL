@@ -109,12 +109,36 @@ public class BsStation extends ActionSupport{
 	}
 	public void BsView() throws Exception
 	{
-		String sql ="",sql2=""; 
+		String sql ="",sql2="",sql3=""; 
 		sql2="select count(id) from xhdigital_bs_sta ";
 		sql="select a.*,b.channel_number,b.gps from xhdigital_bs_sta as a left join xhdigital_bs_control as b"
 				+ " on a.bsId=b.bsId order by bsId asc";
 		
+		sql3="select a.* ,b.name as groupName from (select homegroupid as groupId,basestationid as bsId from  "
+				+ "group_basestation_static where homegroupid not in(select id from homegroup where slot=0)  GROUP BY basestationid ) as a "
+				+ "LEFT JOIN homegroup as b on a.groupId=b.id";
+		
+		
 		ArrayList data = Sql_sys.DBList(sql);
+		
+		ArrayList data_group = Sql.DBList(sql3);
+		
+		for(int i=0;i<data.size();i++){
+			Map<String,Object> map=(Map<String, Object>) data.get(i);
+			String bsId=map.get("bsId").toString();
+			for(int j=0;j<data_group.size();j++){
+				Map<String,Object> map2=(Map<String, Object>) data_group.get(j);
+				if(map2.get("bsId").toString().equals(bsId)){
+					map.put("groupName", map2.get("groupName"));
+					map.put("groupId", map2.get("groupId"));
+					data.set(i, map);
+				}
+			}
+			
+		}
+		
+		
+		
 
 		HashMap result=new HashMap();
 		result.put("items", data);

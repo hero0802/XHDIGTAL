@@ -18,7 +18,34 @@ Ext.define('radiouser',{
 	        ], 
 	        idProperty : 'id'
 })
+Ext.define('detm',{
+	extend:'Ext.data.Model',
+	fields:[
+	        {name: 'id'},
+	        {name: 'name'}
+	      
+	        ], 
+	        idProperty : 'id'
+})
+
+var is_pull=false;
+
 // 创建数据源
+var detachmentStore = Ext.create('Ext.data.Store', {
+	fields : [ {name : 'id'},{name:'name'}],
+	remoteSort : true,
+	pageSize : 500,
+	proxy : {
+		type : 'ajax',
+		url : '../data/RadioUserDetm.action',
+		reader : {
+			type : 'json',
+			root : 'items',
+			totalProperty : 'total'
+		},
+		simpleSortMode : true
+	}
+});
 var store = Ext.create('Ext.data.Store',{
 	model:'offonline',	
 	remoteSort: true,
@@ -69,6 +96,22 @@ var userstore = Ext.create('Ext.data.Store',{
     simpleSortMode: true 
 }
 });
+var userOnlineStore = Ext.create('Ext.data.Store', {
+	fields : [ {name : 'id'},{name : 'mscId'},
+	           {name:'name'},{name:'onlinestatus'},{name:'lat'},{name:'lng'},{name:'result'}],
+	remoteSort : true,
+	pageSize : 1000,
+	proxy : {
+		type : 'ajax',
+		url : '../data/useronline.action',
+		reader : {
+			type : 'json',
+			root : 'items',
+			totalProperty : 'total'
+		},
+		simpleSortMode : true
+	}
+});
 var typeStore=Ext.create('Ext.data.Store',{
 	autoDestroy: true,
 	autoLoad:true,
@@ -112,11 +155,12 @@ var offonlineAction=Ext.create('Ext.Action',{
     handler:function(){searchOffonline()}
 });
 var onlineAction=Ext.create('Ext.Action',{
-	text:'上线手台统计',
+	id:'online',
+	text:'在线手台统计',
 	icon:'../resources/images/btn/1.png',
     handler:function(){
-    	 Ext.getCmp('tag').setValue(2);
-    	 store.loadPage(1);
+    	gpsTask();
+    	 
     	 }
 });
 // 创建菜单
@@ -146,6 +190,8 @@ if(!grid)
 	columns:[
 	         /*new Ext.grid.RowNumberer({width:50,text:'#'}), */
 	         {text: "手台ID", width: 100, dataIndex: 'mscid', sortable: true},
+	         {text: "使用人", width: 100, dataIndex: 'name', sortable: true},
+	         
 	         {text: "在线状态", width: 100, dataIndex: 'online', sortable: false,
 	        	 editor : {  
 	        	 allowBlank : false  
@@ -185,7 +231,16 @@ if(!grid)
 	         dockedItems: [{
 	             xtype: 'toolbar',
 	             dock: 'top',
-	             items: [ {fieldLabel:'手台ID',xtype:'textfield',name:'mscid',id:'mscid',labelWidth: 50,width:130,emptyText:'操作员' },
+	             items: [ {
+		 				xtype:'combobox',fieldLabel:'支队',id:'mscType',name:'mscType',labelWidth:30,
+		 				store:detachmentStore,
+			    		queryMode: "local",
+			    		editable: false,
+			            displayField: "name",
+			            valueField: "id",
+			            emptyText: "--请选择--",
+			    		width:180
+					},{fieldLabel:'手台ID',xtype:'textfield',name:'mscid',id:'mscid',labelWidth: 50,width:130,emptyText:'手台ID' },
 		        	         {fieldLabel:'起始时间',
 		        	        	 xtype:'datetimefield',
 		        	        	 id:'Ftime',
@@ -214,6 +269,11 @@ if(!grid)
 	        	         }}]
 
 	          	 
+	         },{
+	        	 dock:'top',
+	        	 xtype:'panel',
+	        	 height:30,
+	        	 html:"<div id='showMessageInfo'></div>"
 	         },{
 	             dock: 'bottom',
 	             xtype: 'pagingtoolbar',
@@ -280,6 +340,7 @@ var offonlineGrid=Ext.create('Ext.grid.Panel',{
 
 store.on('beforeload', function (store, options) {  
     var new_params = { 
+    		mscType: Ext.getCmp('mscType').getValue(),
     		msc: Ext.getCmp('mscid').getValue(),
     		startTime: Ext.getCmp('Ftime').getValue(),
     		endTime: Ext.getCmp('Etime').getValue(),
@@ -287,6 +348,50 @@ store.on('beforeload', function (store, options) {
     		};  
     Ext.apply(store.proxy.extraParams, new_params);  
 
+});
+detachmentStore.on('load', function (s, options) {  
+	var ins_rec = Ext.create('detm',{
+	      id:0,
+	      name:'===全部==='
+	    }); 
+	    s.insert(0,ins_rec);
+	    Ext.getCmp("mscType").setValue(0);
+});
+var i=0;
+var timeout=null;
+userOnlineStore.on('beforeload', function (s, options) {  
+    var new_params = { 
+    		mscType:Ext.getCmp('mscType').getValue(),
+    		mscId:Ext.getCmp("mscid").getValue(),
+    		online:1,
+    		};  
+    Ext.apply(s.proxy.extraParams, new_params); 
+
+});
+userOnlineStore.on('load', function (s, options) { 
+	var ids = []; 
+	if(s.getCount()<1){
+		$("#showMessageInfo").html("根据条件没有找到相关手台");
+		return;
+	}
+	truncateOnlineUser();
+	Ext.getCmp('online').disable();
+    timeout=setInterval(function(){
+		if(i<s.getCount()){			
+			gpsSet(i);
+			var html="正在统计数据；手台<span style='color:red;font-weight:800'>总数："+s.getCount()+"个</span>"+"      正在获取第<span style='color:red;font-weight:800'>"+(i+1)+"</span>个手台的状态";
+			$("#showMessageInfo").html(html);
+		}else{
+			clearInterval(timeout);
+			timeout=null;
+			i=0;/*flag=0;successfully=0;error=0;*/
+			 Ext.getCmp('online').enable();
+			
+			 var html2="统计结束;";
+			 $("#showMessageInfo").html(html2);
+		}
+		
+     }, 500);  //每隔 1秒钟  
 });
 userstore.on('beforeload', function (store, options) { 
 	
@@ -298,6 +403,7 @@ userstore.on('beforeload', function (store, options) {
     Ext.apply(store.proxy.extraParams, new_params);  
 
 });
+
 userstore.on('load', function (store, options) {  
 	var time1=Ext.getCmp('Ftime').getValue();
 	var time2=Ext.getCmp('Etime').getValue()
@@ -326,12 +432,112 @@ Ext.onReady(function(){
 	items:[grid,offonlineGrid]
      })
 	store.load({params:{start:0,limit:30}}); 
+	//MapData();
+	dwr_Data();
+	detachmentStore.load();
+	dwr.engine.setActiveReverseAjax(true);
+	//dwr.engine.setAsync(false);// 同步步
+	dwr.engine.setErrorHandler(function() {
+		//window.location.href = "index.html"
+		console.log("map===err");
+	});
 });
+
+function dwr_Data(){
+	PullUserOnlineDwr.BackUserGps();
+  } 
+function backusergps(str){
+	var data=Ext.decode(str);
+	if(str==null){
+		return;
+	}
+	var userIds=[];
+	for(var i=0;i<userOnlineStore.getCount();i++){
+		if(userOnlineStore.getAt(i).get("id")==data.id){
+			
+			 var rec={
+					 userId:userOnlineStore.getAt(i).get("id"),
+					 name:userOnlineStore.getAt(i).get("name")
+				 }
+		     userIds.push(rec);
+			 addOnlineUser(userIds);
+			
+			 Ext.getCmp('tag').setValue(2);
+			 store.reload();
+			 console.log("user:"+data.id);
+			
+		}
+		
+		
+	}
+	
+	
+}
+
 
 function searchOffonline(){
 	
 	userstore.reload();
 	
+}
+//手动上拉
+function gpsTask(){
+	userOnlineStore.reload();
+	
+}
+
+function addOnlineUser(json){
+	var str=JSON.stringify(json);
+	Ext.Ajax.request({
+		url : '../controller/addOnlineUser.action', 
+		params : { 
+		 userJson:str
+	},
+	method : 'POST',
+	    waitTitle : '请等待' ,  
+	    waitMsg: '正在提交中', 
+	    success : function(response) {
+	    	
+	    },
+	    failure: function(response) {
+	     }
+	});
+	
+}
+function truncateOnlineUser(){
+	Ext.Ajax.request({
+		url : '../controller/truncateOnlineUser.action', 
+		params : { 
+	},
+	method : 'POST',
+	    waitTitle : '请等待' ,  
+	    waitMsg: '正在提交中', 
+	    success : function(response) {
+	    	
+	    },
+	    failure: function(response) {
+	     }
+	});
+	
+}
+function gpsSet(a){
+	Ext.Ajax.request({
+		url : '../controller/handleTask.action', 
+		params : { 
+		 mscId:userOnlineStore.getAt(a).get('id')
+	},
+	method : 'POST',
+	    waitTitle : '请等待' ,  
+	    waitMsg: '正在提交中', 
+	    success : function(response) {
+	    	var rs = Ext.decode(response.responseText);
+	    	if(rs.success){
+	    		i++;
+	    	}
+	    },
+	    failure: function(response) {
+	     }
+	});
 }
 function formatDateTime (date) {  
     var y = date.getFullYear();  

@@ -31,7 +31,10 @@
 		
 		<create creator="new" javascript="AlarmDwr">
 			 <param name="class" value="com.dwr.AlarmDwr"/>
-		</create>        
+		</create> 
+		<create creator="new" javascript="PullUserOnlineDwr">
+             <param name="class" value="com.dwr.PullUserOnlineDwr"/>
+        </create>        
 		                                                     
 	</allow>
 </dwr>

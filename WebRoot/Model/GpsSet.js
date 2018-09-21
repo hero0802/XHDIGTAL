@@ -10,6 +10,16 @@ Ext.require([
              ]		 
 );
 
+Ext.define('detm',{
+	extend:'Ext.data.Model',
+	fields:[
+	        {name: 'id'},
+	        {name: 'name'}
+	      
+	        ], 
+	        idProperty : 'id'
+})
+
 // 用户数据
 var store = Ext.create('Ext.data.Store', {
 	fields : [ {name : 'id'},{name : 'mscid'},{name:'name'},{name:'timeout'}],
@@ -33,6 +43,21 @@ var userStore = Ext.create('Ext.data.Store', {
 	proxy : {
 		type : 'ajax',
 		url : '../data/userGps.action',
+		reader : {
+			type : 'json',
+			root : 'items',
+			totalProperty : 'total'
+		},
+		simpleSortMode : true
+	}
+});
+var detachmentStore = Ext.create('Ext.data.Store', {
+	fields : [ {name : 'id'},{name:'name'}],
+	remoteSort : true,
+	pageSize : 500,
+	proxy : {
+		type : 'ajax',
+		url : '../data/RadioUserDetm.action',
 		reader : {
 			type : 'json',
 			root : 'items',
@@ -273,12 +298,13 @@ var usergrid=Ext.create('Ext.grid.Panel',{
 	             dock: 'top',
 	             items: [{
 	 				xtype:'combobox',fieldLabel:'支队',id:'mscType',name:'mscType',labelWidth:30,
-		    		store:[
-		    		       ["0","不限制"],["16","领导"],["0120","和平"],["0221","河东"],["0322","河西"],["0423","河北"],
-		    		       ["0524","南开"],["0625","红桥"],["0726","东丽"],["0827","西青"],
-		    		       ["0928","津南"],["1029","北辰"],["0033","机关"],["1139","塘沽"],
-		    		       ["1240","汉沽"],["1341","大港"]],
-		    		queryMode:'local',value:"0",width:110
+		    		store:detachmentStore,
+		    		queryMode: "local",
+		    		editable: false,
+		            displayField: "name",
+		            valueField: "id",
+		            emptyText: "--请选择--",
+		    		width:180
 				},{
 	 				xtype:'combobox',fieldLabel:'状态',id:'status',name:'status',labelWidth:30,
 		    		store:[
@@ -395,6 +421,14 @@ userStore.on('beforeload', function (store, options) {
     		};  
     Ext.apply(store.proxy.extraParams, new_params);  
 
+});
+detachmentStore.on('load', function (s, options) {  
+	var ins_rec = Ext.create('detm',{
+	      id:0,
+	      name:'===全部==='
+	    }); 
+	    s.insert(0,ins_rec);
+	    Ext.getCmp("mscType").setValue(0);
 });
 
 var leftPanel=Ext.create('Ext.form.Panel',{
@@ -610,6 +644,7 @@ Ext.onReady(function () {
 	})
 	userStore.load({params:{start:0,limit:500}}); 
 	// store.load();
+	detachmentStore.load();
 	taskUserStore.load();
 	gpsTimerktaskUserStore.load();
 	gpsClockStore.load();

@@ -26,6 +26,9 @@
    </action>   
    <action name="radioUser" class="data.action.RadioUser" method="RadioUser">  
      <result type="json" name="success"></result>   
+   </action>  
+   <action name="RadioUserDetm" class="data.action.RadioUser" method="RadioUserDetm">  
+     <result type="json" name="success"></result>   
    </action>     
    <action name="talkGroup" class="data.action.TalkGroup" method="TalkGroup">  
      <result type="json" name="success"></result>   

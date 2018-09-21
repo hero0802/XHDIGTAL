@@ -27,6 +27,7 @@ import com.action.BsStationAction;
 import com.action.RadioUserAction;
 import com.config.config;
 import com.dwr.IndexDwr;
+import com.dwr.PullUserOnlineDwr;
 import com.dwr.RadioDwr;
 import com.dwr.SocketDwr;
 import com.func.FlexJSON;
@@ -466,6 +467,7 @@ public class TcpKeepAliveClient extends Thread {
 					colorMap.put("model", mark.getModel());
 					colorMap.put("linkModel", mark.getLinkModel());
 					colorMap.put("status", mark.getStatus());
+					colorMap.put("offlinerepeaten", mark.getOfflinerepeaten());
 
 					if (mark.getModel() == 1 && mark.getStatus() == 1) {
 						colorList.add(colorMap);
@@ -498,6 +500,8 @@ public class TcpKeepAliveClient extends Thread {
 				map.put("model", model);
 				map.put("linkModel", Sql.bsId_linkModel(res.getBsid(i)));
 				map.put("status", Sql.bsId_status(res.getBsid(i)));
+				map.put("offlinerepeaten", Sql.bsId_offlinerepeaten(res.getBsid(i)));
+				
 				if (model == 1) {
 					colorList.add(map);
 				}
@@ -1018,7 +1022,7 @@ public class TcpKeepAliveClient extends Thread {
 			 * lon_1); log.info("GPS====lon2->" + lon_2);
 			 */
 		
-			log.info("DS<-MSO[GPS] srcId:"+gps.getMsid()+"q:" + q + "; speed:" + speed + "; lat:"
+			log.info("DS<-MSO[GPS] srcId:"+gps.getMsid()+";q:" + q + "; speed:" + speed + "; lat:"
 					+ df.format(lat) + "; lon:" + df.format(lon));
 			String sql = "";
 			/*String sql2 = "update hometerminal set lat='" + lat + "',lng='"
@@ -1057,6 +1061,7 @@ public class TcpKeepAliveClient extends Thread {
 				result.put("lat",lat);
 				String jsonstr = json.Encode(result);
 				RadioDwr.RadioGps(jsonstr);
+				PullUserOnlineDwr.BackUserGps(jsonstr);
                 
 				
 			} catch (Exception e) {
@@ -1322,6 +1327,7 @@ public class TcpKeepAliveClient extends Thread {
 				result.put("model", xhSql.bsId_model(onOffStatus.getId()));
 				result.put("linkModel", Sql.bsId_linkModel(onOffStatus.getId()));
 				result.put("status", Sql.bsId_status(onOffStatus.getId()));
+				result.put("offlinerepeaten", Sql.bsId_offlinerepeaten(onOffStatus.getId()));
 				String jsonstr = json.Encode(result);
 				SocketDwr.BsOffLineDwr(jsonstr);
 				;
@@ -1854,6 +1860,7 @@ public class TcpKeepAliveClient extends Thread {
 					result.put("model", xhSql.bsId_model(bs.getBsid()));
 					result.put("linkModel", Sql.bsId_linkModel(bs.getBsid()));
 					result.put("status", Sql.bsId_status(bs.getBsid()));
+					result.put("offlinerepeaten", Sql.bsId_offlinerepeaten(bs.getBsid()));
 					String jsonstr = json.Encode(result);
 					SocketDwr.BsControl(jsonstr);
 

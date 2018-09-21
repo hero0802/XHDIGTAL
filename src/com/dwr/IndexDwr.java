@@ -180,5 +180,27 @@ public class IndexDwr {
 	    //推送  
 	    util.addScript(sb); 
 	}
+	//全网告警推送
+	public static void alarmRefresh(){
+		
+		 if (wctx == null) {
+	         wctx = WebContextFactory.get();
+	     }
+		 if (wctx == null) {
+				return ;
+			}
+		 ServerContext sctx = ServerContextFactory.get(wctx.getServletContext());
+	    //得到上下文  
+	    WebContext contex = WebContextFactory.get();  	      
+	    //得到要推送到 的页面  dwr3为项目名称 ， 一定要加上。  
+	    Collection<ScriptSession> scriptSessions =  sctx.getScriptSessionsByPage(wctx.getCurrentPage());;
+	    Util util = new Util(scriptSessions);  	      
+	    //下面是创建一个javascript脚本 ， 相当于在页面脚本中添加了一句  show(msg);   
+	    ScriptBuffer sb = new ScriptBuffer();  
+	    sb.appendScript("alarmrefresh("); 
+	    sb.appendScript(")");   
+	    //推送  
+	    util.addScript(sb); 
+	}
 
 }

@@ -146,15 +146,15 @@ public class TalkGroupAction extends ActionSupport{
 			for (int j = 0; j < tsId.length; j++) {
 				
 			    String sql = "replace into homegroup_detachment_limit(homegroupid,detachmentid)VALUES("
-					+ groupid[i] + "," + tsId[j] + ")";
+					+ groupid[i] + ",'"+tsId[j]+"')";
 			    Sql.Update(sql);
 			    this.message = "添加支队成功";
 				log.writeLog(1, "添加支队成功：" + tsId[j], "");
 			}
 		}
 		
-		setMessageHeader();
-		send.ReadDBREQ(header, "group_basestation_static");
+		/*setMessageHeader();
+		send.ReadDBREQ(header, "group_basestation_static");*/
 		this.success=true;
 		
 		return SUCCESS;

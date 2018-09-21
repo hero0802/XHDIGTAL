@@ -295,7 +295,7 @@ if(!grid)
 	// renderTo: Ext.getBody(),
 	disableSelection: false,
 	loadMask: true,  
-    features: [groupingFeature],
+   // features: [groupingFeature],
 	columns:[
 	        // new Ext.grid.RowNumberer({width:50,text:'#'}),
 	         {text: "ID", width: 100, dataIndex: 'id', sortable: false,hidden:true},
@@ -357,10 +357,10 @@ if(!grid)
 
 	         }
 
-	         }/*, {text: "流水号",  flex: 1,dataIndex: 'callid', sortable: false,
+	         }, {text: "流水号",  flex: 1,dataIndex: 'callid', sortable: false,
 	        	 editor : {  
 		        	 allowBlank : false  
-		         }},*/
+		         }},
 	   
 	         ],
 	         plugins : [cellEditing1],

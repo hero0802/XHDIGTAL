@@ -161,10 +161,30 @@ public class BsStationAction extends ActionSupport {
 		ServletActionContext.getResponse().getWriter().write(jsonstr);
 		
 	}
+	public void addLimitBs(int tag,int bs){
+		
+		String sql="";
+		if(tag==0){
+			sql="delete from xhdigital_smsbsnotalarm where bsId="+bs;
+		}else{
+			sql="insert into xhdigital_smsbsnotalarm(bsId)values("+bs+")";
+		}
+		
+		
+		try {
+			Sql_sys.Update(sql);
+			this.success=true;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	//忽略告警
 	public String ignoreBtn() throws Exception{
 		String sql="update xhdigital_alarm set `ignore`='"+ignore+"' where type='"+bsType+"' and alarmId='"+bsId+"'";
 		Sql_sys.Update(sql);
+		addLimitBs(ignore, bsId);
+		IndexDwr.alarmDwr();
 		this.success=true;
 		return SUCCESS;
 	}
@@ -173,6 +193,7 @@ public class BsStationAction extends ActionSupport {
 		String sql="delete from xhdigital_alarm where alarmId='"+bsId+"'";
 		Sql_sys.Update(sql);
 		this.success=true;
+		IndexDwr.alarmDwr();
 		return SUCCESS;
 	}	
 	//强拆
@@ -951,7 +972,8 @@ public class BsStationAction extends ActionSupport {
 			result.put("model", number);
 			result.put("linkModel", Sql_sys.bsId_linkModel(func.StringToInt(id)));
 			result.put("online", Sql_sys.bsId_online(Integer.parseInt(id)));	
-			result.put("status", Sql_sys.bsId_status(func.StringToInt(id)));	
+			result.put("status", Sql_sys.bsId_status(func.StringToInt(id)));
+			result.put("offlinerepeaten", Sql_sys.bsId_offlinerepeaten(func.StringToInt(id)));
 			list.add(result);
 			
 			tempmMap.put("items", list);
@@ -987,7 +1009,8 @@ public class BsStationAction extends ActionSupport {
 				result.put("model", number);
 				result.put("linkModel", Sql_sys.bsId_linkModel(func.StringToInt(bsidStr[i])));
 				result.put("online", Sql_sys.bsId_online(Integer.parseInt(bsidStr[i])));
-				result.put("status", Sql_sys.bsId_status(func.StringToInt(bsidStr[i])));	
+				result.put("status", Sql_sys.bsId_status(func.StringToInt(bsidStr[i])));
+				result.put("offlinerepeaten", Sql_sys.bsId_offlinerepeaten(func.StringToInt(id)));
 				list.add(result);
 				bsModelC(Integer.parseInt(bsidStr[i]),number);
 			}

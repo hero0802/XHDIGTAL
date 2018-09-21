@@ -241,6 +241,12 @@
 <action name="setGps" class="com.action.GpsAction" method="setGps">  
      <result type="json" name="success"></result> 
 </action>
+<action name="addOnlineUser" class="com.action.GpsAction" method="addOnlineUser">  
+     <result type="json" name="success"></result> 
+</action>
+<action name="truncateOnlineUser" class="com.action.GpsAction" method="truncateOnlineUser">  
+     <result type="json" name="success"></result> 
+</action>
 <!--监听语音-->        
 <action name="startMonotor" class="com.action.BsStationAction" method="startMonitor">  
      <result type="json" name="success"></result> 

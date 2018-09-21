@@ -408,9 +408,9 @@
 	margin:10px;
 	/* background:#ccc;  */
 	min-width:110px;
-	min-height:120px;
+	min-height:140px;
 	max-width:110px;
-	max-height:120px;
+	max-height:140px;
 	text-align: center; 
 	border:2px solid green;
 	cursor: pointer;
@@ -516,7 +516,7 @@ div #badge-right-center{
 .btn-success{background-color: #629b58!important;
 	border-color: #87b87f}
 .clear{clear:both} 
-.gps-div{background:padding:0;text-align: left;width:25px;}
+.gps-div{background:padding:0;text-align: left;width:30px;}
 .gps-div span{
 	color:#fff;font-size:9px;font-weight:800;padding:2px;background:red;
 }
@@ -538,7 +538,7 @@ div #badge-right-center{
     margin:10px;
     /* background:#ccc;  */
     min-width:110px;
-    min-height:80px;
+    min-height:90px;
     /* max-width:110px;
     max-height:80px; */
     text-align: center; 
@@ -555,7 +555,7 @@ div #badge-right-center{
 	
 }
 #group-view .group-div.listenning{
-	   border:4px solid red;
+	   border:2px solid red;
 	  
     -moz-box-shadow: 0px 0px 10px #888888;
     -webkit-box-shadow: 0px 0px 10px #888888;
@@ -568,7 +568,7 @@ div #badge-right-center{
 }
 #group-view .group-div.listenning p span{
 	 color:#fff;
-       font-weight:800;
+      /*  font-weight:800; */
 }
 /* .x-grid-group-title{
 	background:green;

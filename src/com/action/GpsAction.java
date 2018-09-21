@@ -1,17 +1,23 @@
 package com.action;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.Var;
 import org.apache.struts2.ServletActionContext;
 
+import com.bean.UserOnlineBean;
 import com.func.FlexJSON;
+import com.func.GsonUtil;
 import com.func.WebFun;
 import com.func.XhLog;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.listener.BScontrolListener;
 import com.listener.GpsClockTaskListener;
 import com.listener.GpsTaskListener;
@@ -26,6 +32,8 @@ public class GpsAction extends ActionSupport {
 	private boolean success;
 	private String message;
 	private String deleteIds;
+	
+	private String userJson;
 
 	private int start;
 	private int limit;
@@ -460,6 +468,7 @@ public class GpsAction extends ActionSupport {
 		if(TcpKeepAliveClient.getSocket().isConnected()){
 			if(TcpKeepAliveClient.getM_calling()==0){
 				send.setGps(Integer.parseInt(mscId), 1, 0, 0, 0, 0, 0, 0, 0);
+				
 				this.success = true;
 			}else{
 				this.success = false;
@@ -575,6 +584,38 @@ public class GpsAction extends ActionSupport {
 			e.printStackTrace();
 		}
 
+		return SUCCESS;
+	}
+	public String addOnlineUser(){
+		Type type = new TypeToken<List<UserOnlineBean>>(){}.getType();
+		List<UserOnlineBean> user=new Gson().fromJson(userJson,type);
+		StringBuilder sql=new StringBuilder();
+		sql.append("insert into now_user_online (userId,name,time) values");
+		for (UserOnlineBean userOnlineBean : user) {
+			sql.append("("+userOnlineBean.getUserId()+",'"+userOnlineBean.getName()+"','"+func.nowDate()+"')");
+			sql.append(",");
+		}
+		sql.deleteCharAt(sql.length()-1);
+		try {
+			Sql_sys.Update(sql.toString());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return SUCCESS;
+	}
+	public String truncateOnlineUser(){
+		String sql1="truncate table now_user_online";
+		try {
+			Sql_sys.Update(sql1);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		return SUCCESS;
 	}
 
@@ -840,6 +881,14 @@ public class GpsAction extends ActionSupport {
 
 	public void setPushgpsen(int pushgpsen) {
 		this.pushgpsen = pushgpsen;
+	}
+
+	public String getUserJson() {
+		return userJson;
+	}
+
+	public void setUserJson(String userJson) {
+		this.userJson = userJson;
 	}
 
 	

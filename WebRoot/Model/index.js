@@ -51,7 +51,7 @@ var radioMenu = '	<ul class="left-menu">'
 		+ '	<br><span>短信</span>'
 		+ '</a></li>'
 		+ '<li  class="menu-block-active"><a href="View/useronline.html" target="main-view"><img src="resources/images/picture/useroffonline.png" height="32px" width="32px"></img>'
-		+ '	<br><span>离线统计</span>'
+		+ '	<br><span>在线统计</span>'
 		+ '</a></li>'
 		+ '<li  class="menu-block-active" style="margin-top:40px;"><a href="View/gpsInfo.html" target="main-view"><img src="resources/images/picture/gps.png" height="32px" width="32px"></img>'
 		+ '	<br><span style="color:red">GPS记录</span>'
@@ -206,8 +206,8 @@ if(!grid)
 { grid=Ext.create('Ext.grid.Panel',{
 	/*region:'center',*/
 	store:alarmstore,
-	trackMouseOver: false,
-	disableSelection: false,
+	/*trackMouseOver: false,
+	disableSelection: false,*/
 	loadMask: true,  
 	columns:[
 	         new Ext.grid.RowNumberer({width:50,text:'#'}),
@@ -607,6 +607,8 @@ function alarm(){
 		layout: 'fit',
 		title:"系统告警信息",
 		items:grid,
+		resizable : false,
+		
 		buttons:[{
 		        	 text:'关闭',
 		        	 iconCls:'cancel',

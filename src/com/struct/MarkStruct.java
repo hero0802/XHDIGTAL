@@ -6,6 +6,7 @@ public class MarkStruct {
 	private int model=-1;
 	private int linkModel=-1;
 	private int status=-1;
+	private int offlinerepeaten=-1;
 	public int getBsId() {
 		return bsId;
 	}
@@ -35,6 +36,12 @@ public class MarkStruct {
 	}
 	public void setStatus(int status) {
 		this.status = status;
+	}
+	public int getOfflinerepeaten() {
+		return offlinerepeaten;
+	}
+	public void setOfflinerepeaten(int offlinerepeaten) {
+		this.offlinerepeaten = offlinerepeaten;
 	}
 	
 	

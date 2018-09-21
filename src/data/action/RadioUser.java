@@ -14,6 +14,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.func.Cookies;
 import com.func.FlexJSON;
+import com.func.WebFun;
 import com.func.XhLog;
 import com.func.MD5;
 import com.func.StringUtil;
@@ -38,6 +39,7 @@ public class RadioUser extends ActionSupport{
 	
 	
 	private String msc;
+	private String mscType;
 	private String startTime;
 	private String endTime;
 	private int tag=0;
@@ -51,6 +53,7 @@ public class RadioUser extends ActionSupport{
 	private XhLog log=new XhLog();	
 	private FlexJSON json=new FlexJSON();
 	private StringUtil stru=new StringUtil();
+	private WebFun func = new WebFun();
 	
 	
 	
@@ -59,6 +62,19 @@ public class RadioUser extends ActionSupport{
     	String sql="select * from xhdigital_gpsinfo where srcId='"+msc+"' and infoTime>'"+endTime+"' limit 1";
     	
     	ArrayList data = sysSql.DBList(sql);
+		HashMap result=new HashMap();
+		result.put("items", data);
+		result.put("total", data.size());
+		String jsonstr = json.Encode(result);
+		ServletActionContext.getResponse().setContentType("text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jsonstr);
+    }
+    
+    //支队
+    public void RadioUserDetm()throws Exception{
+    	String sql="select detachment_id as id,detachment_name as name from detachment";
+    	
+    	ArrayList data = Sql.DBList(sql);
 		HashMap result=new HashMap();
 		result.put("items", data);
 		result.put("total", data.size());
@@ -105,9 +121,14 @@ public class RadioUser extends ActionSupport{
 	}
 	
 	public void useronline(){
-		String sql="",str="",sql2 = null;
+		String sql="",str="",str2="",sql2 = null;
+		if (func.StringToInt(mscType) > 0) {
+			str += " and mscid like '" + func.StringToInt(mscType) + "%'";
+			str2 += " and a.mscid like '" + func.StringToInt(mscType) + "%'";
+		}
 		if(!msc.equals("")){
-			str=" and mscid="+msc;
+			str=" and mscid like '"+msc+"%'";
+			str2=" and a.mscid like '"+msc+"%'";
 		}
 		
 		if(tag==0){
@@ -115,31 +136,34 @@ public class RadioUser extends ActionSupport{
 					+ "time between '"+startTime+"' and '"+endTime+"'  "+str; 
 			if (StringUtil.isNullOrEmpty(sort) == false)
 			{
-				sql="select * from xhdigital_offonline where "
-						+ "time between '"+startTime+"' and '"+endTime+"'  "+str+" order by "+sort+" "+dir+" limit "+start+","+limit;
+				sql="select a.mscid,a.online,a.time,b.person as name from xhdigital_offonline as a "
+						+ "left join xhdigital_radiouser as b on a.mscid=b.mscId where "
+						+ "a.time between '"+startTime+"' and '"+endTime+"'  "+str2+" order by a."+sort+" "+dir+" limit "+start+","+limit;
 			}
 			else
 			{           
-				sql="select * from xhdigital_offonline where "
-						+ "time between '"+startTime+"' and '"+endTime+"' "+str+" order by time desc limit "+start+","+limit;       
+				sql="select a.mscid,a.online,a.time,b.person as name from xhdigital_offonline as a "
+						+ " left join xhdigital_radiouser as b on a.mscid=b.mscId where "
+						+ "a.time between '"+startTime+"' and '"+endTime+"' "+str2+" order by a.time desc limit "+start+","+limit;       
 			}
 		}else if(tag==1){
 			sql2="select count(DISTINCT mscid) from xhdigital_offonline where "
 					+ "time between '"+startTime+"' and '"+endTime+"'  "+str; 
 			if (StringUtil.isNullOrEmpty(sort) == false)
 			{
-				sql="select * from xhdigital_offonline where "
-						+ "time between '"+startTime+"' and '"+endTime+"'  "+str+" group by mscid  order by "+sort+" "+dir+" limit "+start+","+limit;
+				sql="select a.mscid,a.online,a.time,b.person as name from xhdigital_offonline as a"
+						+ "left join xhdigital_radiouser as b on a.mscid=b.mscId  where "
+						+ "a.time between '"+startTime+"' and '"+endTime+"'  "+str2+" group by a.mscid  order by a."+sort+" "+dir+" limit "+start+","+limit;
 			}
 			else
 			{           
-				sql="select * from xhdigital_offonline where "
-						+ "time between '"+startTime+"' and '"+endTime+"' "+str+" group by mscid order by mscid asc limit "+start+","+limit; 
+				sql="select a.mscid,a.online,a.time,b.person as name from xhdigital_offonline as a "
+						+ "left join xhdigital_radiouser as b on a.mscid=b.mscId where   a.time between '"+startTime+"' and '"+endTime+"' "+str2+" group by a.mscid order by a.mscid asc limit "+start+","+limit; 
 				
 			}
 		}else if(tag==2){
-			sql2="select count(*) from hometerminal where onlinestatus=1";
-			sql="select id as mscid, onlinestatus as online,update_time as time from hometerminal where onlinestatus=1";
+			sql2="select count(*) from now_user_online ";
+			sql="select userId as mscid,online,time,name from now_user_online";
 			/*
 			
 			sql2="select count(DISTINCT mscid) from xhdigital_offonline where "
@@ -160,14 +184,18 @@ public class RadioUser extends ActionSupport{
 		
 		try {
 			ArrayList data=new ArrayList();
+			System.out.println(sql);
+			System.out.println(sql2);
 			int count=0;
-			if(tag!=2){
+			data = sysSql.DBList(sql);
+			count=sysSql.getCount(sql2);
+			/*if(tag!=2){
 				data = sysSql.DBList(sql);
 				count=sysSql.getCount(sql2);
 			}else{
 				data = Sql.DBList(sql);
 				count=Sql.getCount(sql2);
-			}
+			}*/
 			HashMap result=new HashMap();
 			result.put("items", data);
 			result.put("total", count);
@@ -350,6 +378,16 @@ public class RadioUser extends ActionSupport{
 
 	public void setTag(int tag) {
 		this.tag = tag;
+	}
+
+
+	public String getMscType() {
+		return mscType;
+	}
+
+
+	public void setMscType(String mscType) {
+		this.mscType = mscType;
 	}
 	
 	

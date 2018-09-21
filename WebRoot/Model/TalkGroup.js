@@ -376,7 +376,7 @@ if(!grid)
 }
 var TkGroupBsGrid=Ext.create('Ext.grid.Panel',{
 	margin:'0 0 0 10',
-	title:'当前组允许漫游基站列表',
+	title:'当前组允许联网基站列表',
 	region:'center',
 	// width:400,
 	store:groupBsStore ,
@@ -425,7 +425,7 @@ var TkGroupBsGrid=Ext.create('Ext.grid.Panel',{
 });
 var TkGroupDetachmentGrid=Ext.create('Ext.grid.Panel',{
 	margin:'0 0 0 10',
-	title:'限制支队手台列表',
+	title:'当前组允许ID组列表',
 	region:'south',
 	height:document.documentElement.clientHeight/2,
 	// width:400,
@@ -460,7 +460,7 @@ var TkGroupDetachmentGrid=Ext.create('Ext.grid.Panel',{
 
 	         emptyText:'<span>没有查询到数据</span>',
 	         bbar:[{
-	        	 xtype:"button",text:"增加限制支队",iconCls:'add',handler:addTGDem
+	        	 xtype:"button",text:"增加当前组允许支队",iconCls:'add',handler:addTGDem
 	         }]
 
 });
