@@ -42,6 +42,7 @@ public class RadioUser extends ActionSupport{
 	private String mscType;
 	private String startTime;
 	private String endTime;
+	private String lastId;
 	private int tag=0;
 	
 	private XhMysql db=new XhMysql();
@@ -88,28 +89,48 @@ public class RadioUser extends ActionSupport{
 	{
 		String sql ="",sql2=""; 
 		String str="";
-		if (!name.equals("")) {
-			str=" and name like '"+name+"%' ";
+		StringBuilder sqlparam=new StringBuilder();
+		if(!mscType.equals("") && !mscType.equals("0")){
+			int a=Integer.parseInt(mscType);
+			sqlparam.append(" and id like '"+a+"%'");
 		}
+		if(!lastId.equals("")){
+			sqlparam.append(" and right(id,1)="+lastId);
+		}
+		if (!name.equals("")) {
+			sqlparam.append(" and name like '"+name+"%'");
+		}
+		if(!id.equals("")){
+			sqlparam.append(" and id like '"+id+"%'");
+		}
+		str=sqlparam.toString();
+		
+		
+		
 		if (authoritystatus!=10) {
 			if (authoritystatus==0) {
-				str+=" and (authoritystatus=0 or authoritystatus is null) ";
+				sqlparam.append("and (authoritystatus=0 or authoritystatus is null)");
 			}else {
-				str+=" and authoritystatus="+authoritystatus;
+				sqlparam.append(" and authoritystatus="+authoritystatus);
 			}
 			
 		}
-		sql2="select count(id) from hometerminal where id like '"+id+"%' "+str;
+		sql2="select count(id) from hometerminal where 1=1  "+str;
 		if (StringUtil.isNullOrEmpty(sort) == false)
 		{
-			sql="select * from hometerminal where id like '"+id+"%'" + str +
+			sql="select * from hometerminal where 1=1 " + str +
 			    " order by "+sort+" "+dir+" limit "+start+","+limit;
 		}
 		else
 		{           
-			sql="select * from hometerminal where id like '"+id+"%' " +str+
+			sql="select * from hometerminal where 1=1 " +str+
 		    " order by id asc limit "+start+","+limit;        
-		}		
+		}	
+		
+		System.out.println("sql->"+sql);
+		System.out.println("sql2->"+sql2);
+		
+		
 		ArrayList data = Sql.DBList(sql);
 
 		HashMap result=new HashMap();
@@ -388,6 +409,14 @@ public class RadioUser extends ActionSupport{
 
 	public void setMscType(String mscType) {
 		this.mscType = mscType;
+	}
+
+	public String getLastId() {
+		return lastId;
+	}
+
+	public void setLastId(String lastId) {
+		this.lastId = lastId;
 	}
 	
 	

@@ -84,6 +84,15 @@ Ext.define('radiouser_bs',{
 	        ], 
 	        idProperty : 'basestationid'
 })
+Ext.define('detm',{
+	extend:'Ext.data.Model',
+	fields:[
+	        {name: 'id'},
+	        {name: 'name'}
+	      
+	        ], 
+	        idProperty : 'id'
+})
 // 创建数据源
 var store = Ext.create('Ext.data.Store',{
 	model:'radiouser',	
@@ -109,6 +118,21 @@ var store = Ext.create('Ext.data.Store',{
     	        }] ,
     simpleSortMode: true 
 }
+});
+var detachmentStore = Ext.create('Ext.data.Store', {
+	fields : [ {name : 'id'},{name:'name'}],
+	remoteSort : true,
+	pageSize : 500,
+	proxy : {
+		type : 'ajax',
+		url : '../data/RadioUserDetm.action',
+		reader : {
+			type : 'json',
+			root : 'items',
+			totalProperty : 'total'
+		},
+		simpleSortMode : true
+	}
 });
 // 创建数据源
 var bsStore = Ext.create('Ext.data.Store',{
@@ -367,7 +391,18 @@ if(!grid)
 	         },{
 	        	 dock: 'top',
 	             xtype: 'toolbar',
-	             items:[{fieldLabel:'用户ID',xtype:'textfield',name:'id',id:'id',labelWidth: 60,width:180,emptyText:'用户ID' },	                    
+	             items:[{
+		 				xtype:'combobox',fieldLabel:'支队',id:'mscType',name:'mscType',labelWidth:30,
+		 				store:detachmentStore,
+			    		queryMode: "local",
+			    		editable: false,
+			            displayField: "name",
+			            valueField: "id",
+			            emptyText: "--请选择--",
+			    		width:180
+					},
+					{fieldLabel:'号码末位',xtype:'textfield',name:'lastId',id:'lastId',labelWidth: 80,width:180,emptyText:'号码末位' },
+					{fieldLabel:'用户ID',xtype:'textfield',name:'id',id:'id',labelWidth: 60,width:180,emptyText:'用户ID' },	
 	                    {fieldLabel:'用户名称',xtype:'textfield',name:'name',id:'name',labelWidth:60,width:180,emptyText:'用户名称'},    
 	               		  searchAction,'-',{
 	               			  text:'清除',
@@ -510,7 +545,9 @@ var radiouserAttr=Ext.create('Ext.panel.Panel',{
 store.on('beforeload', function (store, options) {  
     var new_params = { 
     		id: Ext.getCmp('id').getValue(),
-    		name: Ext.getCmp('name').getValue()
+    		name: Ext.getCmp('name').getValue(),
+    		lastId:Ext.getCmp('lastId').getValue(),
+    		mscType:Ext.getCmp('mscType').getValue(),
     		};  
     Ext.apply(store.proxy.extraParams, new_params);  
 
@@ -565,6 +602,14 @@ grid.getSelectionModel().on({
 }
 	
 });
+detachmentStore.on('load', function (s, options) {  
+	var ins_rec = Ext.create('detm',{
+	      id:0,
+	      name:'===全部==='
+	    }); 
+	    s.insert(0,ins_rec);
+	    Ext.getCmp("mscType").setValue(0);
+});
 // 显示表格
 Ext.QuickTips.init(); 
 // 禁止整个页面的右键
@@ -577,6 +622,7 @@ Ext.onReady(function(){
 	items:[grid,radiouserAttr]
      })
 	store.load({params:{start:0,limit:100}}); 
+	detachmentStore.load();
 });
 
 

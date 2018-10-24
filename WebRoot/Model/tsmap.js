@@ -2068,14 +2068,17 @@ function GetBsView(){
 	/*	str+='<div style="width:100%;"><span  id="badge-right" title="基站ID">'+record.get('bsId')+'</span>';
 		str+='<span  id="badge-right-center" title="联网信道"  class="ch_'+record.get('bsId')+'" >ch:'+record.get('channelno')+'</span>';
 		str+='</div><div><table >';*/
-		str+='<div><table>';
+		str+='<div><table class="bs-table">';
 		str+='<tr>';
-		str+='<td colspan="2"><span  id="badge-right" title="基站ID">'+record.get('bsId')+'</span></td>';
+		str+='<td colspan=2><span  id="badge-right" title="基站ID">'+record.get('bsId')+'</span></td>';
 		str+='<td><span  id="badge-right-center" title="联网信道"  class="ch_'+record.get('bsId')+'" >ch:'+record.get('channelno')+'</span></td>'
+		str+="</tr>";
+		
+		
 		str+='<tr style="padding:5px;" ><td colspan="3" style="font-size:10px;color:#000"> &nbsp;';
 		str+=record.get("groupName");
 		str+='</td></tr>';
-		str+='<tr><td><img id="imgRf_'+record.get('bsId')+'" src="'+iconRfr+'" style="margin:0 auto"><br><span style="font-size:11px">收</span></td><td style="text-align:center"><img id="img_'+record.get('bsId')+'" src="'+icon+'" style="margin:0 auto"></td><td><img id="imgRf_'+record.get('bsId')+'" src="'+iconRfs+'" style="margin:0 auto"><br><span style="font-size:11px">发</span></td></tr>';
+		str+='<tr align="center" valign="middle"><td><img id="imgRf_'+record.get('bsId')+'" src="'+iconRfr+'" style="margin:0 auto"><br><span style="font-size:11px">收</span></td><td><img id="img_'+record.get('bsId')+'" src="'+icon+'" style="vertical-align:middle;"></td><td><img id="imgRf_'+record.get('bsId')+'" src="'+iconRfs+'" style="margin:0 auto"><br><span style="font-size:11px">发</span></td></tr>';
 		if(record.get("gps").toString()=='0'){
 			str+='<tr style="color:red;font-weight: bold; font-size: 11px;"><td  colspan="3" id="bsName-'+record.get('bsId')+'"><span>'+record.get('bsName')+'</span></td></tr>';
 		}else{
