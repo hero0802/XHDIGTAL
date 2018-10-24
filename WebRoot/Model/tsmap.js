@@ -2068,9 +2068,9 @@ function GetBsView(){
 	/*	str+='<div style="width:100%;"><span  id="badge-right" title="基站ID">'+record.get('bsId')+'</span>';
 		str+='<span  id="badge-right-center" title="联网信道"  class="ch_'+record.get('bsId')+'" >ch:'+record.get('channelno')+'</span>';
 		str+='</div><div><table >';*/
-		str+='<div><table >';
+		str+='<div><table>';
 		str+='<tr>';
-		str+='<td><span  id="badge-right" title="基站ID">'+record.get('bsId')+'</span></td>';
+		str+='<td colspan="2"><span  id="badge-right" title="基站ID">'+record.get('bsId')+'</span></td>';
 		str+='<td><span  id="badge-right-center" title="联网信道"  class="ch_'+record.get('bsId')+'" >ch:'+record.get('channelno')+'</span></td>'
 		str+='<tr style="padding:5px;" ><td colspan="3" style="font-size:10px;color:#000"> &nbsp;';
 		str+=record.get("groupName");
