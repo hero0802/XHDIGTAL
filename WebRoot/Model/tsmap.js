@@ -2078,7 +2078,7 @@ function GetBsView(){
 		str+='<tr style="padding:5px;" ><td colspan="3" style="font-size:10px;color:#000"> &nbsp;';
 		str+=record.get("groupName");
 		str+='</td></tr>';
-		str+='<tr align="center" valign="middle"><td><img id="imgRf_'+record.get('bsId')+'" src="'+iconRfr+'" style="margin:0 auto"><br><span style="font-size:11px">收</span></td><td><img id="img_'+record.get('bsId')+'" src="'+icon+'" style="vertical-align:middle;"></td><td><img id="imgRf_'+record.get('bsId')+'" src="'+iconRfs+'" style="margin:0 auto"><br><span style="font-size:11px">发</span></td></tr>';
+		str+='<tr align="center" valign="middle"><td width="25px"><img id="imgRf_'+record.get('bsId')+'" src="'+iconRfr+'" style="margin:0 auto"><br><span style="font-size:11px">收</span></td><td><img id="img_'+record.get('bsId')+'" src="'+icon+'" style="vertical-align:middle;"></td><td><img id="imgRf_'+record.get('bsId')+'" src="'+iconRfs+'" style="margin:0 auto"><br><span style="font-size:11px">发</span></td></tr>';
 		if(record.get("gps").toString()=='0'){
 			str+='<tr style="color:red;font-weight: bold; font-size: 11px;"><td  colspan="3" id="bsName-'+record.get('bsId')+'"><span>'+record.get('bsName')+'</span></td></tr>';
 		}else{
