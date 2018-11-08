@@ -859,205 +859,37 @@ public class TcpKeepAliveClient extends Thread {
 		TrunkCommon.GPS gps = null;
 		try {
 			gps = TrunkCommon.GPS.parseFrom(result);
+			log.info("DS<-MSO[GPS]:"+gps.getContent().toStringUtf8());
 		} catch (InvalidProtocolBufferException e1) {
 			// TODO Auto-generated catch block
 			log.info("===[ERROR]====GPS");
 		}
-		/*log.info("==========[GPS Data]=======");*/
-		/*log.info("[GPS]----buf>>"+ func.BytesToHexS(buf));
+		String recvstr=gps.getContent().toStringUtf8();
+		String[] gpsData=recvstr.split(":");
+		String lat=gpsData[3];
+		String lng=gpsData[4];
+		String height=gpsData[5];
+		String star=gpsData[7];
+		  
 		
-		log.info("[GPS]----result>>"+ func.BytesToHexS(result));*/
-		/*log.info("[GPS]----msId>>" + gps.getMsid());
-		log.info("[GPS]----ch_type>>" + gps.getChType());
-		log.info("[GPS]----content>>"
-				+ func.BytesToHexS(gps.getContent().toByteArray()));*/
-		/*log.info("----------------------------");*/
-		String hex = "", m_hex = "";
-		for (byte b : gps.getContent().toByteArray()) {
-			/*
-			 * String m_c = String.format("%x", b); log.debug("m_c:"+m_c);
-			 */
-			String m_a = func.ByteToHexS(b);
-			// log.debug("m_a:"+m_a);
-			String m_b = func.hex_16_2(m_a);
-			hex += m_b;
-			m_hex += m_b + " | ";
-
-		}
-		int csbko = Integer.parseInt(hex.substring(2, 8), 2);// 2,6
-		int fid = func.hex_2_10(hex.substring(8, 16));// 8,8
-		int m_lat = 0, m_lon = 0, lat_1 = 0, lat_2 = 0, lon_1 = 0, lon_2 = 0;
-		int speed = 0, rssi = 0, power = 0;
-		String UTChh = "", UTCmm = "", UTCss = "";
-		double lat = 0, lon = 0;
-		int q = 0;
-
-		/*
-		 * System.out.println("GPS========hex.substring(2,7)->"+hex.substring(2,8
-		 * ));
-		 * System.out.println("GPS========hex.substring(8, 15)->"+hex.substring
-		 * (8, 16));
-		 * 
-		 * System.out.println("GPS========hex->" + m_hex);
-		 */
-		java.text.DecimalFormat df = new java.text.DecimalFormat("0.000000");
-
-		try {
-			if (gps.getChType() == 0) {
-				if (hex.length() >= 80) {
-					// 控制信道短格式
-					q = func.hex_2_10(hex.substring(3, 4));
-					speed = func.hex_2_10(hex.substring(4, 11));// 4,7
-					m_lat = func.hex_2_10(hex.substring(11, 18));// 11,7 纬度
-					lat_1 = func.hex_2_10(hex.substring(18, 24));// 18,6 纬度的整数部分
-					lat_2 = func.hex_2_10(hex.substring(24, 38));// 24,14
-																	// 纬度的小数部分
-					m_lon = func.hex_2_10(hex.substring(38, 46));// 38,8 经度
-					lon_1 = func.hex_2_10(hex.substring(46, 52));// 46,6 经度整数部分
-					lon_2 = func.hex_2_10(hex.substring(52, 66));// 52,14 经度
-																	// 小数部分
-					if (gps.getContent().toByteArray().length == 10) {
-
-					} else {
-						/*
-						 * UTChh =
-						 * String.valueOf(func.hex_2_10(hex.substring(66,
-						 * 71)));// 66,5 UTCmm =
-						 * String.valueOf(func.hex_2_10(hex.substring(71,
-						 * 77)));// 71,6 UTCss =
-						 * String.valueOf(func.hex_2_10(hex.substring(77,
-						 * 83)));// 66,6 log.info("GPS====HH->" + UTChh);
-						 * log.info("GPS====MM->" + UTCmm);
-						 * log.info("GPS====lon->" + UTCss);
-						 */
-					}
-
-					lat = m_lat + ((double) lat_1 + (double) lat_2 / 10000)
-							/ 60;
-					lon = m_lon + ((double) lon_1 + (double) lon_2 / 10000)
-							/ 60;
-					lat = Double.parseDouble(df.format(lat));
-					lon = Double.parseDouble(df.format(lon));
-				}
-
-				// sysFun.saveTsLonLat(gps.getTsid(), m_lon, m_lat);
-			} else if (gps.getChType() == 5) {
-				log.debug("length:" + hex.length());
-				if (hex.length() == 72) {
-					// 控制信道短格式
-					q = -1;
-					m_lat = func.hex_2_10(hex.substring(9, 16));// 9,7
-					lat_1 = func.hex_2_10(hex.substring(16, 22));// 16,6
-					lat_2 = func.hex_2_10(hex.substring(22, 32));// 22,10
-					m_lon = func.hex_2_10(hex.substring(32, 40));// 32,8
-					lon_1 = func.hex_2_10(hex.substring(40, 46));// 40,6
-					lon_2 = func.hex_2_10(hex.substring(46, 56));// 46,10
-
-					lat = m_lat + ((double) lat_1 + (double) lat_2 / 1000) / 60;
-					lon = m_lon + ((double) lon_1 + (double) lon_2 / 1000) / 60;
-					lat = Double.parseDouble(df.format(lat));
-					lon = Double.parseDouble(df.format(lon));
-					
-				}
-
-				// sysFun.saveTsLonLat(gps.getTsid(), m_lon, m_lat);
-			} else {
-				/*
-				 * System.out.println("GPS========csbko->" + csbko);
-				 * System.out.println("GPS========fid->" + fid); // C_GPSU if
-				 * (csbko == 29 && fid == 104) { speed =
-				 * func.hex_2_10(hex.substring(18, 25)); // 18,7 m_lat =
-				 * func.hex_2_10(hex.substring(25, 32));// 25,7 lat_1 =
-				 * func.hex_2_10(hex.substring(32, 38)); // 32,6 lat_2 =
-				 * func.hex_2_10(hex.substring(38, 52));// 38,14 m_lon =
-				 * func.hex_2_10(hex.substring(52, 60));// 52,8 lon_1 =
-				 * func.hex_2_10(hex.substring(60, 66));// 60,6 lon_2 =
-				 * func.hex_2_10(hex.substring(66, 80));// 66,14
-				 * 
-				 * lat = sysFun.TsLat(gps.getTsid()) + Double.parseDouble(lat_1
-				 * + "." + lat_2) / 60; lon = sysFun.TsLon(gps.getTsid()) +
-				 * Double.parseDouble(lon_1 + "." + lon_2) / 60;
-				 * 
-				 * lat=Double.parseDouble(df.format(lat));
-				 * lon=Double.parseDouble(df.format(lon)); } // C_GPS2U if
-				 * (csbko == 21 && fid == 104) {
-				 * 
-				 * speed = func.hex_2_10(hex.substring(18, 25)); // 18,7 lat_1 =
-				 * func.hex_2_10(hex.substring(27, 33)); // 27,6 lat_2 =
-				 * func.hex_2_10(hex.substring(33, 43));// 33,10 lon_1 =
-				 * func.hex_2_10(hex.substring(46, 52));// 46,6 lon_2 =
-				 * func.hex_2_10(hex.substring(52, 62));// 52,10 rssi =
-				 * func.hex_2_10(hex.substring(62, 65));// 62,3 power =
-				 * func.hex_2_10(hex.substring(65, 68));// 65,3
-				 * 
-				 * lat = sysFun.TsLat(gps.getTsid()) + Double.parseDouble(lat_1
-				 * + "." + lat_2) / 60; lon = sysFun.TsLon(gps.getTsid()) +
-				 * Double.parseDouble(lon_1 + "." + lon_2) / 60;
-				 * 
-				 * lat=Double.parseDouble(df.format(lat));
-				 * lon=Double.parseDouble(df.format(lon));
-				 * 
-				 * } // C_GPS3U if (csbko == 21 && fid == 8) {
-				 * 
-				 * lat_1 = func.hex_2_10(hex.substring(20, 26)); // 20,6 lat_2 =
-				 * func.hex_2_10(hex.substring(26, 36));// 26,10 lon_1 =
-				 * func.hex_2_10(hex.substring(39, 45));// 39,6 lon_2 =
-				 * func.hex_2_10(hex.substring(45, 55));// 45,10
-				 * 
-				 * lat = sysFun.TsLat(gps.getTsid()) + Double.parseDouble(lat_1
-				 * + "." + lat_2) / 60; lon = sysFun.TsLon(gps.getTsid()) +
-				 * Double.parseDouble(lon_1 + "." + lon_2) / 60;
-				 * 
-				 * lat=Double.parseDouble(df.format(lat));
-				 * lon=Double.parseDouble(df.format(lon));
-				 * 
-				 * }
-				 */
-
-			}
-			/*
-			 * log.info("GPS====m_lat->" + m_lat); log.info("GPS====lat1->" +
-			 * lat_1); log.info("GPS====lat2->" + lat_2);
-			 * log.info("GPS====m_lon->" + m_lon); log.info("GPS====lon1->" +
-			 * lon_1); log.info("GPS====lon2->" + lon_2);
-			 */
 		
-			log.info("DS<-MSO[GPS] srcId:"+gps.getMsid()+";q:" + q + "; speed:" + speed + "; lat:"
-					+ df.format(lat) + "; lon:" + df.format(lon));
+			log.info("DS<-MSO[GPS] srcId:"+gps.getMsid()+";lat="+lat+";lng="+lng+";height="+height+";star="+star);
 			String sql = "";
-			/*String sql2 = "update hometerminal set lat='" + lat + "',lng='"
-					+ lon + "' where id=" + gps.getMsid();*/
 			try {
-				if (q == 0) {
-					sql = "insert into xhdigital_gpsinfo(srcId,latitude,longitude,infoTime,starNum,typeId)VALUES('"
-							+ gps.getMsid()
-							+ "','"
-							+ lat
-							+ "','"
-							+ lon
-							+ "','"
-							+ func.nowDate() + "','" + speed + "',0)";
-				} else {
-					sql = "insert into xhdigital_gpsinfo(srcId,latitude,longitude,infoTime,starNum,typeId)VALUES('"
-							+ gps.getMsid()
-							+ "','"
-							+ lat
-							+ "','"
-							+ lon
-							+ "','"
-							+ func.nowDate() + "','" + speed + "','" + q + "')";
-				}
+				sql = "insert into xhdigital_gpsinfo(srcId,latitude,longitude,heigh,infoTime,starNum,typeId)VALUES('"
+						+ gps.getMsid()
+						+ "','"
+						+ lat
+						+ "','"
+						+ lng
+						+ "','"+height+"','"+ func.nowDate() + "','" + star + "',1)";
 				Sql.Update(sql);
-				/*if (lat > 38 && lat < 40 && lon > 116 && lon < 119) {
-					//xhSql.Update(sql2);
-					
-				}*/
 				
 				
 				
 				HashMap<String,Object> result = (HashMap<String, Object>) xhSql.radioUserMap(gps.getMsid());
 				result.put("srcId", gps.getMsid());
-				result.put("lng",lon);
+				result.put("lng",lng);
 				result.put("lat",lat);
 				String jsonstr = json.Encode(result);
 				RadioDwr.RadioGps(jsonstr);
@@ -1068,9 +900,6 @@ public class TcpKeepAliveClient extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} catch (StringIndexOutOfBoundsException e) {
-			// TODO: handle exception
-		}
 
 	}
 
@@ -1469,6 +1298,8 @@ public class TcpKeepAliveClient extends Thread {
 			// TODO Auto-generated catch block
 		}
 	}
+	
+
 
 	// 发送短信
 	public void senSms(int len, byte[] buf, String callid) {
@@ -1493,14 +1324,15 @@ public class TcpKeepAliveClient extends Thread {
 		}
 
 		byte[] arr = func.ucs2ToUtf8(valueArr);
+		
 		log.info("====短信=====");
 		log.info("[SMS]----type>>" + sms.getType());
 		log.info("[SMS]----Srcid>>" + sms.getSrcid());
 		log.info("[SMS]----Tarid>>" + sms.getTarid());
-		log.info("[SMS]----Content.recv>>"
-				+ Arrays.toString(sms.getContent().toByteArray()));
+		log.info("[SMS]----Content.recv>>"+Arrays.toString(valueArr));
 		try {
-			log.info("[SMS]----Content.ToUtf8>>" + new String(arr, "utf-8"));
+			log.info("[SMS]----Content.ToUtf8>>" + Arrays.toString(arr));
+			log.info("[SMS]----Content.ToUtf8>>"+ new String(arr, "utf-8"));
 		} catch (UnsupportedEncodingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -1673,10 +1505,20 @@ public class TcpKeepAliveClient extends Thread {
 				bsStruct.setdB(Integer.parseInt(conString[13], 16));
 				bsStruct.setjV(Integer.parseInt(conString[14]));
 				bsStruct.setBack_power(Integer.parseInt(conString[15]));
-				bsStruct.setTemp2(Integer.parseInt(conString[16]));
-				bsStruct.setGps(Integer.parseInt(conString[17].split("=")[1]));
-				bsStruct.setSleep(Integer.parseInt(conString[18].split("=")[1]
-						.split(";")[0]));
+				//850
+				if(conString.length==19){
+					bsStruct.setTemp2(Integer.parseInt(conString[16]));
+					bsStruct.setGps(Integer.parseInt(conString[17].split("=")[1]));
+					bsStruct.setSleep(Integer.parseInt(conString[18].split("=")[1]
+							.split(";")[0]));
+				}
+				//920
+				if(conString.length==20){
+					//bsStruct.setTemp2(Integer.parseInt(conString[16]));
+					bsStruct.setGps(Integer.parseInt(conString[18].split("=")[1]));
+					bsStruct.setSleep(Integer.parseInt(conString[19].split("=")[1]
+							.split(";")[0]));
+				}
 				//告警类型：1：断站；2：中心；3：交换；4：温度;5:gps失锁；6：反向功率过大；7：交流；8：功率
 				int temp=Integer.parseInt(func.readXml("Alarm", "temp"));
 				int bpower=Integer.parseInt(func.readXml("Alarm", "back_power"));				

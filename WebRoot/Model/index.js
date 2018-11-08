@@ -40,9 +40,9 @@ var systemMenu = '<ul class="left-menu">'
 		+ '<li  class="menu-block-active" style="height:80px;"><a href="View/channelSendCount.html" target="main-view"><img src="resources/images/picture/channel.png" height="32px" width="32px"></img>'
 		+ '	<br><span>基站发射统计</span>'
 		+ '</a></li>'
-		+ '<li  class="menu-block-active" style="height:80px;"><a href="View/callerror.html" target="main-view"><img src="resources/images/picture/callerror.png" height="32px" width="32px"></img>'
+		/*+ '<li  class="menu-block-active" style="height:80px;"><a href="View/callerror.html" target="main-view"><img src="resources/images/picture/callerror.png" height="32px" width="32px"></img>'
 		+ '	<br><span>呼叫失败统计</span>'
-		+ '</a></li>'
+		+ '</a></li>'*/
 		+ '</ul>';
 var radioMenu = '	<ul class="left-menu">'
 		+ '<li  class="menu-block-active"><a href="map.html" target="main-view"><img src="resources/images/picture/cellphone5.png" height="32px" width="32px"></img><br><span>终端分布</span>'
@@ -59,9 +59,9 @@ var radioMenu = '	<ul class="left-menu">'
 		+ '<li  class="menu-block-active"><a href="View/gpsSetting.html" target="main-view"><img src="resources/images/picture/gpsSet.png" height="32px" width="32px"></img>'
 		+ '	<br><span style="color:red">GPS设置</span>'
 		+ '</a></li>'
-		+ '<li  class="menu-block-active"><a href="View/gpsPush.html" target="main-view"><img src="resources/images/picture/gpsoff.png" height="32px" width="32px"></img>'
+	/*	+ '<li  class="menu-block-active"><a href="View/gpsPush.html" target="main-view"><img src="resources/images/picture/gpsoff.png" height="32px" width="32px"></img>'
 		+ '	<br><span style="color:red">GPS屏蔽</span>'
-		+ '</a></li>'
+		+ '</a></li>'*/
 		+ '</ul>';
 var configMenu = '	<ul class="left-menu">'
 		+ '<li  class="menu-block-active"><a href="View/bsStation.html" target="main-view"><img src="resources/images/picture/net.png" height="32px" width="32px"></img>'
@@ -69,8 +69,8 @@ var configMenu = '	<ul class="left-menu">'
 		+ '</a></li>'
 		+ '<li class="menu-block-active"><a href="View/talkGroup.html" target="main-view"><img src="resources/images/picture/groupConfig.png" height="32px" width="32px"></img><br><span>组配置</span>'
 		+ '</a></li>'
-		+ '<li class="menu-block-active"><a href="View/mdconnect.html" target="main-view"><img src="resources/images/picture/connect.png" height="32px" width="32px"></img><br><span>模数互联</span>'
-		+ '</a></li>'
+		/*+ '<li class="menu-block-active"><a href="View/mdconnect.html" target="main-view"><img src="resources/images/picture/connect.png" height="32px" width="32px"></img><br><span>模数互联</span>'
+		+ '</a></li>'*/
 		+ '<li class="menu-block-active"><a href="View/smsAlarm.html" target="main-view"><img src="resources/images/picture/smsnet.png" height="32px" width="32px"></img><br><span>短信告警</span>'
 		+ '</a></li>'
 		+ '<li class="menu-block-active" style="margin-top:80px;"><a href="View/radioUser.html" target="main-view"><img src="resources/images/picture/phoneMarker2.png" height="32px" width="18px"></img><br><span style="color:red">终端配置</span>'
@@ -85,7 +85,7 @@ var powerMenu = '<ul class="left-menu">'
 	+ '<li  class="menu-block-active"><a href="View/msoConfg.html" target="main-view"><img src="resources/images/picture/center.png" height="32px" width="32px"></img><br><span>中心配置</span>'
 	+ '</a></li>';
 
-if(parseInt(getcookie("groupid"))==10000){
+if(parseInt(getcookie("groupid"))==27){
 	powerMenu +='<li  class="menu-block-active"><a href="View/config.html" target="main-view"><img src="resources/images/picture/net.png" height="32px" width="32px"></img>'
 	+ '	<br><span>联网配置</span></a></li>' 
 	+ '<li  class="menu-block-active"><a href="View/webUser.html" target="main-view"><img src="resources/images/picture/user.png" height="32px" width="32px"></img><br><span>用户管理</span>'

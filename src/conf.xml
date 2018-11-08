@@ -15,7 +15,7 @@
 		<xh_dbname>xh_pdt_simulcast</xh_dbname>
 	</centerDataBase>
 	<centerNet>
-		<center_ip>127.0.0.1</center_ip>
+		<center_ip>localhost</center_ip>
 		<center_port>12002</center_port>
 		<udp_port>16000</udp_port>
 	</centerNet>

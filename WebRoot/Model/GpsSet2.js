@@ -209,32 +209,38 @@ var leftPanel=Ext.create('Ext.form.Panel',{
 				listeners:{
 				'change':function(){
 				      var type=leftPanel.getForm().findField('type').getValue()['type'];
-				      if(type==4 || type==5){
-				    	 
-				    	  Ext.getCmp('t_interval').enable();
-				    	  Ext.getCmp('d_index').enable();
+				      if(type==0){
+				    	  Ext.getCmp('gpsen').show();
+				    	  Ext.getCmp('t_interval').hide();
+				    	  Ext.getCmp('d_index').hide();
+				    	  Ext.getCmp('tip-img').hide();
+				      }else if(type==4){
+				    	  Ext.getCmp('gpsen').hide();
+				    	  Ext.getCmp('t_interval').show();
+				    	  Ext.getCmp('tip-img').show();
+				    	  Ext.getCmp('d_index').hide();
 				      }else{
-				    	  Ext.getCmp('t_interval').disable();
-				    	  Ext.getCmp('d_index').disable();
+				    	  Ext.getCmp('gpsen').hide();
+				    	  Ext.getCmp('t_interval').hide();
+				    	  Ext.getCmp('d_index').show();
+				    	  Ext.getCmp('tip-img').hide();
 				      }
 			     }
 			    },
 				items: [
 			            { boxLabel: '立即发送(查询)', name:'type', inputValue:0,checked: true },
-			            { boxLabel: '开机触发', name:'type', inputValue:1},
-			            { boxLabel: '关机触发', name:'type', inputValue:2},
-			            { boxLabel: '开关机触发', name:'type', inputValue:3},
-			            { boxLabel: '时间或距离任一满足触发', name:'type', inputValue:4},
-			            { boxLabel: '时间或距离同时满足触发', name:'type', inputValue:5}
+			           
+			            { boxLabel: '定时触发', name:'type', inputValue:4},
+			            { boxLabel: '定距离触发', name:'type', inputValue:5}
 			]}]
 		},{
 			xtype:'fieldset',title:'其他',margin:'0 10 0 10',
 			items:[{
-				xtype:'checkbox',fieldLabel:'上报GPS',name:'gpsen',boxLabel:'是',checked:true,labelWidth:80,margin:'0 0 10 0'
+				xtype:'checkbox',fieldLabel:'上报GPS',id:'gpsen',name:'gpsen',boxLabel:'是',checked:true,labelWidth:80,margin:'0 0 10 0'
 			},{
 				layout:'column',border:false,items:[{
 				xtype:'numberfield',fieldLabel:'时间间隔',id:'t_interval',name:'t_interval',emptyText:'0:无效',
-				labelWidth:80,width:170,margin:'0 0 10 0',minValue:0,maxValue:10801,disabled:true,
+				labelWidth:80,width:170,margin:'0 0 10 0',minValue:0,maxValue:10801,hidden:true,
 				listeners:{
 					'blur':function(){
 					      var time=leftPanel.getForm().findField('t_interval').getValue();
@@ -251,11 +257,11 @@ var leftPanel=Ext.create('Ext.form.Panel',{
 				     }
 				    }
 			},{
-				border:false,margin:'3 0 0 20',stlye:'cursor:pointer',
+				border:false,margin:'3 0 0 20',id:'tip-img',stlye:'cursor:pointer',hidden:true,
 				html:"<a href='#' onclick='tooltip()'><img src='../resources/images/btn/info.png'/> </a>"
 			}]
 			},{
-				xtype:'combobox',fieldLabel:'距离间隔',id:'d_index',name:'d_index',labelWidth:80,disabled:true,
+				xtype:'combobox',fieldLabel:'距离间隔',id:'d_index',name:'d_index',labelWidth:80,hidden:true,
 	    		store:[
 	    		       [0,'无效'],
 	    		       [1,'5米'],
@@ -283,11 +289,7 @@ var leftPanel=Ext.create('Ext.form.Panel',{
 			},*/{
 				xtype:'combobox',fieldLabel:'GPS格式',name:'format',
 				labelWidth:80,
-	    		store:[[0,'控制信道短格式'],
-	    		       [1,'控制信道长格式'],
-	    		       [2,'业务信道C_GPSU格式'],
-	    		       [3,'业务信道C_GPS2U格式'],
-	    		       [4,'业务信道C_GPS3U格式']],
+	    		store:[[0,'控制信道短格式']],
 	    		queryMode:'local',value:0,width:300,margin:'0 0 10 0'
 			}]
 		}]

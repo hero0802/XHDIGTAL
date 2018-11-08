@@ -54,7 +54,10 @@ public class WebFun {
 	private final static byte B_00001111 = 15;
 	private final static byte B_00111100 = 60;
 	
-	protected final Log log = LogFactory.getLog(WebFun.class);
+	
+	
+	
+	protected final static Log log = LogFactory.getLog(WebFun.class);
 	
 	public String xmlPath(){
 		String str=WebFun.class.getResource("/conf.xml").getPath();
@@ -452,7 +455,7 @@ public class WebFun {
 		}
 		return null;
 	}
-	public byte[] utf8ToUsc2(String str) {
+	public static byte[] utf8ToUsc2(String str) {
 
 		try {
 			ByteArray byteArray = new ByteArray();
@@ -494,17 +497,29 @@ public class WebFun {
 		return null;
 	}
 
-	public byte[] ucs2ToUtf8(byte[] arr) {
-		if (arr.length < 1 || (arr.length/2)>0) {
+	public static byte[] ucs2ToUtf8(byte[] arr) {
+		if (arr.length < 1 || (arr.length%2)>0) {
 			return null;
 		}
+		//大端转小端
+
+		for (int i = 0; i < arr.length; i += 2) {
+			byte[] temp1 = new byte[1];
+			temp1[0] = arr[i];
+			arr[i] = arr[i + 1];
+			arr[i + 1] = temp1[0];
+		}
+		
+		
+		
+		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
 		for (int i = 0; i < arr.length; i += 2) {
-			char ch = (char) (arr[i] * 256 + arr[i + 1]);
+			char ch = (char) (arr[i] * 128 + arr[i + 1]);
 			if (ch <= 0x007F) {
 				baos.write(ch);
-			} else if (ch <= 0x07FF) {
+			} else if (ch >0x007F && ch <= 0x07FF) {
 				byte ub1 = arr[i];
 				byte ub2 = arr[i + 1];
 				byte b1 = (byte) (0xc0 | (ub1 << 2) | (ub2 >> 6));
@@ -522,9 +537,12 @@ public class WebFun {
 				baos.write(b3);
 			}
 		}
-		return baos.toByteArray();
+		byte[] aa=baos.toByteArray();
+		return aa;
 
 	}
+	
+	
 
 	// 读取xml文档
 	public String readXml(String str1, String str2) {
@@ -585,7 +603,7 @@ public class WebFun {
 		writer.close();
 	}
 	
-	public String BytesToHexS(byte[] str){
+	public static String BytesToHexS(byte[] str){
 		if (str==null) {
 			return "";
 		}else {
@@ -600,7 +618,7 @@ public class WebFun {
 			return string;
 		}
 	}
-	public String ByteToHexS(byte str){
+	public static String ByteToHexS(byte str){
 		String string="";
 		String c=Integer.toHexString(str& 0xFF);
 		if (c.length()==1) {
