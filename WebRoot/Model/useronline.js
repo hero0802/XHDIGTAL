@@ -231,7 +231,7 @@ if(!grid)
 	         dockedItems: [{
 	             xtype: 'toolbar',
 	             dock: 'top',
-	             items: [ {
+	             items: [/* {
 		 				xtype:'combobox',fieldLabel:'支队',id:'mscType',name:'mscType',labelWidth:30,
 		 				store:detachmentStore,
 			    		queryMode: "local",
@@ -240,7 +240,7 @@ if(!grid)
 			            valueField: "id",
 			            emptyText: "--请选择--",
 			    		width:180
-					},{fieldLabel:'手台ID',xtype:'textfield',name:'mscid',id:'mscid',labelWidth: 50,width:130,emptyText:'手台ID' },
+					},*/{fieldLabel:'手台ID',xtype:'textfield',name:'mscid',id:'mscid',labelWidth: 50,width:130,emptyText:'手台ID' },
 		        	         {fieldLabel:'起始时间',
 		        	        	 xtype:'datetimefield',
 		        	        	 id:'Ftime',
@@ -340,7 +340,8 @@ var offonlineGrid=Ext.create('Ext.grid.Panel',{
 
 store.on('beforeload', function (store, options) {  
     var new_params = { 
-    		mscType: Ext.getCmp('mscType').getValue(),
+    		/*mscType: Ext.getCmp('mscType').getValue(),*/
+    		mscType:0,
     		msc: Ext.getCmp('mscid').getValue(),
     		startTime: Ext.getCmp('Ftime').getValue(),
     		endTime: Ext.getCmp('Etime').getValue(),
@@ -361,7 +362,7 @@ var i=0;
 var timeout=null;
 userOnlineStore.on('beforeload', function (s, options) {  
     var new_params = { 
-    		mscType:Ext.getCmp('mscType').getValue(),
+    		mscType:0,
     		mscId:Ext.getCmp("mscid").getValue(),
     		online:1,
     		};  

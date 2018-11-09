@@ -53,8 +53,8 @@ function LocalMapType() {
 }
 LocalMapType.prototype.tileSize = new google.maps.Size(256, 256);
 LocalMapType.prototype.maxZoom = 17; // 地图显示最大级别
-LocalMapType.prototype.minZoom = 2; // 地图显示最小级别
-LocalMapType.prototype.name = "天津市地图";
+LocalMapType.prototype.minZoom = 6; // 地图显示最小级别
+LocalMapType.prototype.name = "西藏自治区地图";
 LocalMapType.prototype.alt = "显示本地地图数据";
 LocalMapType.prototype.getTile = function(coord, zoom, ownerDocument) {
 	img = ownerDocument.createElement("img");
@@ -80,6 +80,22 @@ LocalMapType.prototype.getTile = function(coord, zoom, ownerDocument) {
 	CheckImgExists(strURL);
 	return img;
 };
+//检查图片是否存在
+function CheckImgExists(imgurl) {  
+	$('img').error(function(){
+       $(this).attr('src', "resources/images/picture/maperror.png");
+     });
+
+} 
+function nofind(){
+    
+    var img=event.srcElement;
+        
+    img.src="resources/images/picture/maperror.png";
+        
+    img.onerror=null; // 控制不要一直跳动
+    
+}
 
 var form=new Ext.FormPanel({
 	   title:"手台轨迹查询",
@@ -231,7 +247,7 @@ var usergrid=Ext.create('Ext.grid.Panel',{
 	         },{
 	             xtype: 'toolbar',
 	             dock: 'top',
-	             items: [{
+	             items: [/*{
 	 				xtype:'combobox',fieldLabel:'支队',id:'mscType',name:'mscType',labelWidth:30,
 	 				store:detachmentStore,
 		    		queryMode: "local",
@@ -240,7 +256,7 @@ var usergrid=Ext.create('Ext.grid.Panel',{
 		            valueField: "id",
 		            emptyText: "--请选择--",
 		    		width:130
-				},{
+				},*/{
 	 				xtype:'combobox',fieldLabel:'状态',id:'status',name:'status',labelWidth:30,
 		    		store:[
 		    		       [2,"不限制"],[0,"离线"],[1,"在线"]],
@@ -345,7 +361,7 @@ var mapPanel=Ext.create('Ext.panel.Panel',{
 });
 userStore.on('beforeload', function (store, options) {  
     var new_params = { 
-    		mscType:Ext.getCmp("mscType").getValue(),
+    		mscType:0,
     		mscId:Ext.getCmp("mscId").getValue(),
     		online:Ext.getCmp("status").getValue(),
     		};  
@@ -407,7 +423,7 @@ Ext.onReady(function(){
 	mapInitialize();
 	/*ClearPhoneMarker();*/
 	userStore.load();
-	detachmentStore.load();
+	//detachmentStore.load();
 	//MapData();
 	dwr_Data();
 	dwr.engine.setActiveReverseAjax(true);
@@ -954,19 +970,13 @@ function ClearPhoneMarker(){
 		      }
 		})	
 }
-// 检查图片是否存在
-function CheckImgExists(imgurl) {  
-	$('img').error(function(){
-       $(this).attr('src', "resources/images/picture/maperror.png");
-     });
 
-} 
 function mapInitialize() {
 	var zoom=getCookie("radiouser_zoom")==""?9:parseInt(getCookie("radiouser_zoom"));
 	
 	
 	
-	var lat=39.387,lng=117.335;
+	var lat=29.709378,lng=91.114822;
 	if(getCookie("radiouser_center_lat")!="" && getCookie("radiouser_center_lng")!=""){
 		lat=parseFloat(getCookie("radiouser_center_lat"));
 		lng=parseFloat(getCookie("radiouser_center_lng"));
@@ -980,7 +990,7 @@ function mapInitialize() {
 		mapTypeControl: true,
 		mapTypeControlOptions : {
 			style : google.maps.MapTypeControlStyle.DEFAULT,
-			mapTypeIds : ['localMap' ]
+			mapTypeIds : ['localMap']
 		// 定义地图类型
 		},
 		panControl : true,

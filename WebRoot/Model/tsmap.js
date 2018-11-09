@@ -1742,8 +1742,8 @@ function LocalMapType() {
 }
 LocalMapType.prototype.tileSize = new google.maps.Size(256, 256);
 LocalMapType.prototype.maxZoom = 17; // 地图显示最大级别
-LocalMapType.prototype.minZoom = 8; // 地图显示最小级别
-LocalMapType.prototype.name = "天津市地图";
+LocalMapType.prototype.minZoom = 6; // 地图显示最小级别
+LocalMapType.prototype.name = "西藏自治区地图";
 LocalMapType.prototype.alt = "显示本地地图数据";
 LocalMapType.prototype.getTile = function(coord, zoom, ownerDocument) {
 	img = ownerDocument.createElement("img");
@@ -1772,13 +1772,10 @@ LocalMapType.prototype.getTile = function(coord, zoom, ownerDocument) {
 function mapInitialize() {
 	
 	var zoom=getCookie("map_zoom")==""?9:parseInt(getCookie("map_zoom"));
-	console.log("zoom:"+getCookie("map_zoom"))
-	var lat=39.387,lng=117.335;
+	var lat=29.709378,lng=91.114822;
 	if(getCookie("map_center_lat")!="" && getCookie("map_center_lng")!=""){
 		lat=parseFloat(getCookie("map_center_lat"));
 		lng=parseFloat(getCookie("map_center_lng"));
-		/*console.log("lat:"+getCookie("map_center_lat"))
-		console.log("lng:"+getCookie("map_center_lng"))*/
 	}
 	var myLatlng = new google.maps.LatLng(lat, lng);
 	var localMapType = new LocalMapType();

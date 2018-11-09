@@ -391,7 +391,7 @@ if(!grid)
 	         },{
 	        	 dock: 'top',
 	             xtype: 'toolbar',
-	             items:[{
+	             items:[/*{
 		 				xtype:'combobox',fieldLabel:'支队',id:'mscType',name:'mscType',labelWidth:30,
 		 				store:detachmentStore,
 			    		queryMode: "local",
@@ -402,7 +402,7 @@ if(!grid)
 			    		width:180
 					},
 					{fieldLabel:'号码末位',xtype:'textfield',name:'lastId',id:'lastId',labelWidth: 80,width:180,emptyText:'号码末位' },
-					{fieldLabel:'用户ID',xtype:'textfield',name:'id',id:'id',labelWidth: 60,width:180,emptyText:'用户ID' },	
+					*/{fieldLabel:'用户ID',xtype:'textfield',name:'id',id:'id',labelWidth: 60,width:180,emptyText:'用户ID' },	
 	                    {fieldLabel:'用户名称',xtype:'textfield',name:'name',id:'name',labelWidth:60,width:180,emptyText:'用户名称'},    
 	               		  searchAction,'-',{
 	               			  text:'清除',
@@ -546,8 +546,8 @@ store.on('beforeload', function (store, options) {
     var new_params = { 
     		id: Ext.getCmp('id').getValue(),
     		name: Ext.getCmp('name').getValue(),
-    		lastId:Ext.getCmp('lastId').getValue(),
-    		mscType:Ext.getCmp('mscType').getValue(),
+    		lastId:"",
+    		mscType:0,
     		};  
     Ext.apply(store.proxy.extraParams, new_params);  
 
@@ -602,14 +602,14 @@ grid.getSelectionModel().on({
 }
 	
 });
-detachmentStore.on('load', function (s, options) {  
+/*detachmentStore.on('load', function (s, options) {  
 	var ins_rec = Ext.create('detm',{
 	      id:0,
 	      name:'===全部==='
 	    }); 
 	    s.insert(0,ins_rec);
 	    Ext.getCmp("mscType").setValue(0);
-});
+});*/
 // 显示表格
 Ext.QuickTips.init(); 
 // 禁止整个页面的右键
