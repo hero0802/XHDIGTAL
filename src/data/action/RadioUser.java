@@ -90,11 +90,11 @@ public class RadioUser extends ActionSupport{
 		String sql ="",sql2=""; 
 		String str="";
 		StringBuilder sqlparam=new StringBuilder();
-		if(!mscType.equals("") && !mscType.equals("0")){
+		if(mscType!=null && !mscType.equals("") && !mscType.equals("0")){
 			int a=Integer.parseInt(mscType);
 			sqlparam.append(" and id like '"+a+"%'");
 		}
-		if(!lastId.equals("")){
+		if(lastId!=null && !lastId.equals("")){
 			sqlparam.append(" and right(id,1)="+lastId);
 		}
 		if (!name.equals("")) {
@@ -103,7 +103,7 @@ public class RadioUser extends ActionSupport{
 		if(!id.equals("")){
 			sqlparam.append(" and id like '"+id+"%'");
 		}
-		str=sqlparam.toString();
+	
 		
 		
 		
@@ -115,6 +115,7 @@ public class RadioUser extends ActionSupport{
 			}
 			
 		}
+		str=sqlparam.toString();
 		sql2="select count(id) from hometerminal where 1=1  "+str;
 		if (StringUtil.isNullOrEmpty(sort) == false)
 		{
