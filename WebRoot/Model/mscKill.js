@@ -257,6 +257,8 @@ store.on('beforeload', function (store, options) {
     var new_params = { 
     		id: Ext.getCmp('id').getValue(),
     		name: Ext.getCmp('name').getValue(),
+    		mscType:0,
+    		lastId:"",
     		authoritystatus: Ext.getCmp('authoritystatus').getValue()
     		};  
     Ext.apply(store.proxy.extraParams, new_params);  
