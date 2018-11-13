@@ -210,20 +210,14 @@ var leftPanel=Ext.create('Ext.form.Panel',{
 				'change':function(){
 				      var type=leftPanel.getForm().findField('type').getValue()['type'];
 				      if(type==0){
-				    	  Ext.getCmp('gpsen').show();
 				    	  Ext.getCmp('t_interval').hide();
 				    	  Ext.getCmp('d_index').hide();
-				    	  Ext.getCmp('tip-img').hide();
 				      }else if(type==4){
-				    	  Ext.getCmp('gpsen').hide();
 				    	  Ext.getCmp('t_interval').show();
-				    	  Ext.getCmp('tip-img').show();
 				    	  Ext.getCmp('d_index').hide();
 				      }else{
-				    	  Ext.getCmp('gpsen').hide();
 				    	  Ext.getCmp('t_interval').hide();
 				    	  Ext.getCmp('d_index').show();
-				    	  Ext.getCmp('tip-img').hide();
 				      }
 			     }
 			    },
@@ -235,12 +229,13 @@ var leftPanel=Ext.create('Ext.form.Panel',{
 			]}]
 		},{
 			xtype:'fieldset',title:'其他',margin:'0 10 0 10',
-			items:[{
+			items:[{xtype:'numberfield',fieldLabel:'时隙',name:'slot',width:160,labelWidth:80,minValue:0,maxValue:1,value:0},
+				{
 				xtype:'checkbox',fieldLabel:'上报GPS',id:'gpsen',name:'gpsen',boxLabel:'是',checked:true,labelWidth:80,margin:'0 0 10 0'
 			},{
 				layout:'column',border:false,items:[{
 				xtype:'numberfield',fieldLabel:'时间间隔',id:'t_interval',name:'t_interval',emptyText:'0:无效',
-				labelWidth:80,width:170,margin:'0 0 10 0',minValue:0,maxValue:10801,hidden:true,
+				labelWidth:80,width:170,margin:'0 0 10 0',minValue:0,maxValue:10801,hidden:true/*,
 				listeners:{
 					'blur':function(){
 					      var time=leftPanel.getForm().findField('t_interval').getValue();
@@ -255,11 +250,11 @@ var leftPanel=Ext.create('Ext.form.Panel',{
 					    		});
 					     }
 				     }
-				    }
-			},{
+				    }*/
+			}/*,{
 				border:false,margin:'3 0 0 20',id:'tip-img',stlye:'cursor:pointer',hidden:true,
 				html:"<a href='#' onclick='tooltip()'><img src='../resources/images/btn/info.png'/> </a>"
-			}]
+			}*/]
 			},{
 				xtype:'combobox',fieldLabel:'距离间隔',id:'d_index',name:'d_index',labelWidth:80,hidden:true,
 	    		store:[
@@ -515,9 +510,7 @@ function start(){
    	 Ext.MessageBox.show({  
    			title : "提示",  
    			left:0,
-   			msg : "时间间隔范围区间不正确,正确区间：<br>" +
-   					"1-30秒<br>"+"62-100秒<br>"+"153-240秒<br>"+"405-500秒<br>"+
-   					"1010-1100秒<br>"+" 3330-3750秒<br>"+"7200s秒<br>"+"10800s秒<br>" , 
+   			msg : "时间间隔范围区间不正确" , 
    			icon: Ext.MessageBox.ERROR  
    		});
    	 return;
@@ -584,9 +577,7 @@ function manyStart(){
 	   	 Ext.MessageBox.show({  
 	   			title : "提示",  
 	   			left:0,
-	   			msg : "时间间隔范围区间不正确,正确区间：<br>" +
-	   					"1-30秒<br>"+"62-100秒<br>"+"153-240秒<br>"+"405-500秒<br>"+
-	   					"1010-1100秒<br>"+" 3330-3750秒<br>"+"7200s秒<br>"+"10800s秒<br>" , 
+	   			msg : "时间间隔范围区间不正确", 
 	   			icon: Ext.MessageBox.ERROR  
 	   		});
 	   	 return;
@@ -760,6 +751,7 @@ function sendGpsSet(number){
 		t_interval: time_index(leftForm.findField('t_interval').getValue())==-1?0:time_index(leftForm.findField('t_interval').getValue()),
 		d_index:leftForm.findField('d_index').getValue(),
 		pool_ch:poolch,
+		slot:leftForm.findField('slot').getValue(),
 		format:leftForm.findField('format').getValue()
 	},  
 	method : 'POST',
@@ -857,6 +849,11 @@ function sendGpsEnabled(srcId,dstId,enableFlag){
 
 
 function time_index(time){
+	if(time==0){
+		return -1
+	}else{
+		return time;
+	}
 	//时间间隔
 	//数值n 		时间（s）
 	//0 			时间触发无效
@@ -868,7 +865,7 @@ function time_index(time){
 	//111-125 	*30s     3330-3750
 	//126 		7200s
 	//127 		10800s
-	if(time==0){
+	/*if(time==0){
 		return 0;
 	}
 	if(time>=1 && time<=30){
@@ -897,7 +894,7 @@ function time_index(time){
 	}
 	else{
 		return -1;
-	}
+	}*/
 	
 }
 function tooltip(){

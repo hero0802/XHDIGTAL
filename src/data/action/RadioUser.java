@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.struts2.ServletActionContext;
@@ -141,6 +142,18 @@ public class RadioUser extends ActionSupport{
 		ServletActionContext.getResponse().setContentType("text/html;charset=UTF-8");
 		ServletActionContext.getResponse().getWriter().write(jsonstr);
 	}
+	
+	public List<Map<String,Object>> RadioUserList() throws Exception
+	{
+		StringBuilder sql=new StringBuilder();
+		sql.append("select a.id,b.model,b.number,b.esn,a.type,b.pdtId,b.company,b.post,b.job,b.personNumber,");
+		sql.append("b.checkPerson,b.person from xhdigital.hometerminal as a left join xhdigital.xhdigital_radiouser as b on a.id=b.mscId");
+		List<Map<String,Object>> data=sysSql.DBList(sql.toString());
+		return data;
+	}
+	
+	
+	
 	
 	public void useronline(){
 		String sql="",str="",str2="",sql2 = null;

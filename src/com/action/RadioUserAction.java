@@ -1,21 +1,45 @@
 package com.action;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.Var;
 import org.apache.struts2.ServletActionContext;
+import org.fusesource.hawtbuf.ByteArrayInputStream;
 
 import jxl.Cell;
+import jxl.CellView;
 import jxl.Sheet;
 import jxl.Workbook;
+import jxl.format.Alignment;
+import jxl.format.Border;
+import jxl.format.BorderLineStyle;
+import jxl.format.Colour;
+import jxl.format.Orientation;
+import jxl.format.UnderlineStyle;
+import jxl.format.VerticalAlignment;
+import jxl.write.Label;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
+import jxl.write.biff.RowsExceededException;
 
 import com.socket.MessageStruct;
 import com.socket.SendData;
@@ -24,6 +48,7 @@ import com.func.Cookies;
 import com.func.XhLog;
 import com.func.MD5;
 import com.func.WebFun;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.protobuf.TrunkCommon;
 import com.protobuf.TrunkMsoBs;
@@ -32,6 +57,8 @@ import com.sql.SysSql;
 import com.sql.XhMysql;
 import com.sql.XhSql;
 import com.struct.radioUserStruct;
+
+import data.action.RadioUser;
 
 public class RadioUserAction extends ActionSupport{
 	private boolean success;
@@ -100,6 +127,7 @@ public class RadioUserAction extends ActionSupport{
 	private String uploadContentType; //限制上传的后缀名  
 	private String uploadFileName;
 	private String uploadFileSize;
+	private InputStream excelFile;
     
 	private XhMysql db=new XhMysql();
 	private XhSql Sql=new XhSql();
@@ -266,25 +294,28 @@ public class RadioUserAction extends ActionSupport{
             
             int clos=rs.getColumns();//得到所有的列
             int rows=rs.getRows();//得到所有的行
+            System.out.println("ddd-->"+clos);
             for(int i = 2; i < rows; i++) {  
                 Cell [] cell = rs.getRow(i);  
                 int cellLen=cell.length;
                 if(cellLen>3){
-                	for(int j=1; j<16; j++) {  
+                	for(int j=0; j<cellLen; j++) {  
                         //getCell(列，行)  
                         //out.print(sheet.getCell(j, i).getContents());  
                 		radioUserStruct radiouser=new radioUserStruct();
+                		radiouser.setRadioId(rs.getCell(j++, i).getContents());
                 		radiouser.setModel(rs.getCell(j++, i).getContents());
                 		radiouser.setNumber(rs.getCell(j++, i).getContents());
                 		radiouser.setEsn(rs.getCell(j++, i).getContents());
                 		
-                		radiouser.setPdtId(rs.getCell(j++, i).getContents());
+                		
                 		radiouser.setOpenpass(rs.getCell(j++, i).getContents());
+                		radiouser.setPdtId(rs.getCell(j++, i).getContents());
                 		
                 		//radiouser.setMptId(rs.getCell(j++, i).getContents());
-                		radiouser.setRadioId(rs.getCell(j++, i).getContents());
-                		radiouser.setLastId(rs.getCell(j++, i).getContents());
-                		radiouser.setKey(rs.getCell(j++, i).getContents());
+                		
+                		//radiouser.setLastId(rs.getCell(j++, i).getContents());
+                		//radiouser.setKey(rs.getCell(j++, i).getContents());
                 		//radiouser.setMoniId(rs.getCell(j++, i).getContents());
                 		
                 		radiouser.setCompany(rs.getCell(j++, i).getContents());
@@ -308,11 +339,12 @@ public class RadioUserAction extends ActionSupport{
     							radiouser.setType(0);
     						}
 						}
+                		radiouser.setOpenpass("");
                 		
                 		
                 		
                 		try {
-                			radiouser.setMscId(Integer.parseInt(radiouser.getRadioId()+radiouser.getLastId()));
+                			radiouser.setMscId(Integer.parseInt(radiouser.getRadioId()));
                 			list.add(radiouser);
                 			
 						} catch (NumberFormatException e) {
@@ -555,6 +587,136 @@ public class RadioUserAction extends ActionSupport{
 		}
     	
     }
+	public String excel_user() throws Exception{
+		Map<String,Object> map=new HashMap<String, Object>();
+		fileName="终端信息列表.xls";
+		fileName=new String(fileName.getBytes(),"ISO8859-1");
+		try {
+			 ByteArrayOutputStream os = new ByteArrayOutputStream();
+			WritableWorkbook book = Workbook.createWorkbook(os);
+			WritableFont font = new WritableFont(
+					WritableFont.createFont("微软雅黑"), 15, WritableFont.NO_BOLD,
+					false, UnderlineStyle.NO_UNDERLINE, Colour.BLACK);
+			WritableCellFormat fontFormat = new WritableCellFormat(font);
+			fontFormat.setAlignment(Alignment.CENTRE); // 水平居中
+			fontFormat.setVerticalAlignment(VerticalAlignment.JUSTIFY);// 垂直居中
+			fontFormat.setWrap(true); // 自动换行
+			fontFormat.setBackground(Colour.WHITE);// 背景颜色
+			fontFormat.setBorder(Border.ALL, BorderLineStyle.THIN,
+					Colour.DARK_GREEN);
+			fontFormat.setOrientation(Orientation.HORIZONTAL);// 文字方向
+
+			// 设置头部字体格式
+			WritableFont font_header = new WritableFont(WritableFont.TIMES, 12,
+					WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE,
+					Colour.BLACK);
+			// 应用字体
+			WritableCellFormat fontFormat_h = new WritableCellFormat(font_header);
+			// 设置其他样式
+			fontFormat_h.setAlignment(Alignment.CENTRE);// 水平对齐
+			fontFormat_h.setVerticalAlignment(VerticalAlignment.CENTRE);// 垂直对齐
+			fontFormat_h.setBorder(Border.ALL, BorderLineStyle.THIN);// 边框
+			fontFormat_h.setBackground(Colour.WHITE);// 背景色
+			fontFormat_h.setWrap(true);// 不自动换行
+
+			// 设置主题内容字体格式
+			WritableFont font_Content = new WritableFont(WritableFont.TIMES,
+					11, WritableFont.NO_BOLD, false,
+					UnderlineStyle.NO_UNDERLINE, Colour.GRAY_80);
+			// 应用字体
+			WritableCellFormat fontFormat_Content = new WritableCellFormat(font_Content);
+			// 设置其他样式
+			fontFormat_Content.setAlignment(Alignment.CENTRE);// 水平对齐
+			fontFormat_Content.setVerticalAlignment(VerticalAlignment.CENTRE);// 垂直对齐
+			fontFormat_Content.setBorder(Border.ALL, BorderLineStyle.THIN);// 边框
+			fontFormat_Content.setBackground(Colour.WHITE);// 背景色
+			fontFormat_Content.setWrap(true);// 自动换行
+		
+		
+
+			WritableSheet sheet0 = book.createSheet("终端号码列表", 0);
+			
+			
+			excel_radio(sheet0,fontFormat,fontFormat_h,fontFormat_Content);
+			
+			book.write();
+			book.close();
+			
+			excelFile=new ByteArrayInputStream(os.toByteArray());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+		return SUCCESS;
+		
+	}
+	public  void  excel_radio(WritableSheet sheet,WritableCellFormat fontFormat,WritableCellFormat fontFormat_h,WritableCellFormat fontFormat_Content) throws RowsExceededException, WriteException{
+		CellView cellView = new CellView();  
+		cellView.setAutosize(true); //设置自动大小  
+		sheet.addCell(new Label(0, 0, "终端ID", fontFormat_h));
+		sheet.addCell(new Label(1, 0, "型号", fontFormat_h));
+		sheet.addCell(new Label(2, 0, "机器号", fontFormat_h));
+		sheet.addCell(new Label(3, 0, "ESN", fontFormat_h));
+		sheet.addCell(new Label(4, 0, "终端类型", fontFormat_h));
+		sheet.addCell(new Label(5, 0, "PDT ID", fontFormat_h));
+		sheet.addCell(new Label(6, 0, "使用单位", fontFormat_h));
+		sheet.addCell(new Label(7, 0, "岗位", fontFormat_h));
+		sheet.addCell(new Label(8, 0, "职务", fontFormat_h));
+		sheet.addCell(new Label(9, 0, "警号", fontFormat_h));
+		sheet.addCell(new Label(10, 0, "登记人", fontFormat_h));
+		sheet.addCell(new Label(11, 0, "使用人", fontFormat_h));
+	
+		sheet.setColumnView(0, 20);
+		sheet.setColumnView(1, 20);
+		sheet.setColumnView(2, 20);
+		sheet.setColumnView(3, 20);
+		sheet.setColumnView(4, 20);
+		sheet.setColumnView(5, 20);
+		sheet.setColumnView(6, 20);
+		sheet.setColumnView(7, 20);
+		sheet.setColumnView(8, 20);
+		sheet.setColumnView(9, 20);
+		sheet.setColumnView(10, 20);
+		sheet.setColumnView(11, 20);
+		RadioUser user=new RadioUser();
+		List<Map<String, Object>> userlist = null;
+		try {
+			userlist = user.RadioUserList();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for(int i=0;i<userlist.size();i++){
+			Map<String,Object> map=userlist.get(i);
+			//a.id,b.model,b.number,b.esn,a.type,b.pdtId,b.company,b.post,b.job,b.personNumberb.checkPerson,b.person
+			String type="";
+			if(map.get("type")!=null){
+			
+				if(map.get("type").toString().equals("1")){
+					type="车载台";
+				}else if(map.get("type").toString().equals("2")){
+					type="调度台";
+				}else if(map.get("type").toString().equals("3")){
+					type="固定台";
+				}
+			}
+			sheet.addCell(new Label(0, i + 1,map.get("id")==null?"":map.get("id").toString(), fontFormat_Content));
+			sheet.addCell(new Label(1, i + 1,map.get("model")==null?"":map.get("model").toString(), fontFormat_Content));
+			sheet.addCell(new Label(2, i + 1,map.get("number")==null?"":map.get("number").toString(), fontFormat_Content));
+			sheet.addCell(new Label(3, i + 1,map.get("esn")==null?"":map.get("esn").toString(), fontFormat_Content));
+			sheet.addCell(new Label(4, i + 1,type, fontFormat_Content));
+			sheet.addCell(new Label(5, i + 1,map.get("pdtId")==null?"":map.get("pdtId").toString(), fontFormat_Content));
+			sheet.addCell(new Label(6, i + 1,map.get("company")==null?"":map.get("company").toString(), fontFormat_Content));
+			sheet.addCell(new Label(7, i + 1,map.get("post")==null?"":map.get("post").toString(), fontFormat_Content));
+			sheet.addCell(new Label(8, i + 1,map.get("job")==null?"":map.get("job").toString(), fontFormat_Content));
+			sheet.addCell(new Label(9, i + 1,map.get("personNumber")==null?"":map.get("personNumber").toString(), fontFormat_Content));
+			sheet.addCell(new Label(10, i + 1,map.get("checkPerson")==null?"":map.get("checkPerson").toString(), fontFormat_Content));
+			sheet.addCell(new Label(11, i + 1,map.get("person")==null?"":map.get("person").toString(), fontFormat_Content));
+			
+		}
+		
+	}
 	//数据包头
 	public void setMessageHeader()
 	{		
@@ -910,6 +1072,14 @@ public class RadioUserAction extends ActionSupport{
 	}
 	public void setPersonNumber(String personNumber) {
 		this.personNumber = personNumber;
+	}
+
+	public InputStream getExcelFile() {
+		return excelFile;
+	}
+
+	public void setExcelFile(InputStream excelFile) {
+		this.excelFile = excelFile;
 	}
     
     

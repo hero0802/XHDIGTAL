@@ -283,22 +283,14 @@ var excelToAction=Ext.create('Ext.Action',{
 	disabled:false,
 	handler:excelIn
 });
-var toExcelAction=Ext.create('Ext.Action',{
-	iconCls:'excel',
-	text:'导出数据',
-	tooltip:'导出数据',
-	disabled:false,
-	handler:Excel_btn
-});
 // 创建菜单
 var contextMenu = Ext.create('Ext.menu.Menu', {
     items: [
         addAction,
         updateAction,
         deleteAction,'-',
-        refreshAction/*
-						 * ,'-', stunAction,reviveAction,killAction
-						 */
+        refreshAction/*,'-',
+        stunAction,reviveAction,killAction*/
     ]
 });
 // 创建grid
@@ -319,7 +311,7 @@ if(!grid)
 	        	 renderer : function(v){
 	        	 return"<a href='#' onclick=update_btn() title='详细信息' style='color:blue'>"+v+"</a>";
 	         }
-	         },{text: "使用人", width:150, dataIndex: 'name', sortable: false
+	         },{text: "名称", width:150, dataIndex: 'name', sortable: false
 	         },{text: "类型", width:100, dataIndex: 'type', sortable: false,
 	        	 renderer:function(v){
 	        	 if(v==0){return "手台";}
@@ -338,18 +330,17 @@ if(!grid)
 	        	 else if(v==5){return "<span class='badge' >摇毙中</span>"}
 	        	 else{return "<span>未知</span>"}
 	         }
-	         },/*
-				 * {text: "用户激活", width:70, dataIndex: 'regstatus', sortable:
-				 * false, renderer:function(v){ if(v){return "<span><img
-				 * src='../resources/images/picture/true.png'/></span>"}
-				 * else{return "<span><img
-				 * src='../resources/images/picture/false.png'/></span>"} }
-				 * },{text: "GPS", width:60, dataIndex: 'gpsen', sortable:
-				 * false, renderer:function(v){ if(v){return "<span><img
-				 * src='../resources/images/picture/true.png'/></span>"}
-				 * else{return "<span><img
-				 * src='../resources/images/picture/false.png'/></span>"} } },
-				 */{text: "短信组发", width:100, dataIndex: 'g_smsen', sortable: false,
+	         },/*{text: "用户激活", width:70, dataIndex: 'regstatus', sortable: false,
+	        	 renderer:function(v){
+	        	 if(v){return "<span><img src='../resources/images/picture/true.png'/></span>"}
+	        	 else{return "<span><img src='../resources/images/picture/false.png'/></span>"}
+	         }
+	         },{text: "GPS", width:60, dataIndex: 'gpsen', sortable: false,
+	        	 renderer:function(v){
+	        	 if(v){return "<span><img src='../resources/images/picture/true.png'/></span>"}
+	        	 else{return "<span><img src='../resources/images/picture/false.png'/></span>"}
+	         }
+	         },*/{text: "短信组发", width:100, dataIndex: 'g_smsen', sortable: false,
 	        	 renderer:function(v){
 	        	 if(v){return "<span><img src='../resources/images/picture/true.png'/></span>"}
 	        	 else{return "<span><img src='../resources/images/picture/false.png'/></span>"}
@@ -364,13 +355,12 @@ if(!grid)
 	        	 if(v){return "<span><img src='../resources/images/picture/true.png'/></span>"}
 	        	 else{return "<span><img src='../resources/images/picture/false.png'/></span>"}
 	         }
-	         }/*
-				 * ,{text: "单呼", flex:2, dataIndex: 'i_callen', sortable: false,
-				 * renderer:function(v){ if(v){return "<span><img
-				 * src='../resources/images/picture/true.png'/></span>"}
-				 * else{return "<span><img
-				 * src='../resources/images/picture/false.png'/></span>"} } }
-				 */
+	         }/*,{text: "单呼", flex:2, dataIndex: 'i_callen', sortable: false,
+	        	 renderer:function(v){
+	        	 if(v){return "<span><img src='../resources/images/picture/true.png'/></span>"}
+	        	 else{return "<span><img src='../resources/images/picture/false.png'/></span>"}
+	         }
+	         }*/
 	         ],
 	         plugins : [cellEditing],
 	         frame:false,
@@ -397,18 +387,22 @@ if(!grid)
 	         dockedItems: [{
 	        	 dock: 'left',
 	             xtype: 'toolbar',
-	             items:[excelToAction,addAction,'-',updateAction,'-',deleteAction,'-',toExcelAction]
+	             items:[excelToAction,addAction,'-',updateAction,'-',deleteAction]
 	         },{
 	        	 dock: 'top',
 	             xtype: 'toolbar',
-	             items:[/*
-						 * {
-						 * xtype:'combobox',fieldLabel:'支队',id:'mscType',name:'mscType',labelWidth:30,
-						 * store:detachmentStore, queryMode: "local", editable:
-						 * false, displayField: "name", valueField: "id",
-						 * emptyText: "--请选择--", width:180 },
-						 * {fieldLabel:'号码末位',xtype:'textfield',name:'lastId',id:'lastId',labelWidth: 80,width:180,emptyText:'号码末位' },
-						 */{fieldLabel:'用户ID',xtype:'textfield',name:'id',id:'id',labelWidth: 60,width:180,emptyText:'用户ID' },	
+	             items:[/*{
+		 				xtype:'combobox',fieldLabel:'支队',id:'mscType',name:'mscType',labelWidth:30,
+		 				store:detachmentStore,
+			    		queryMode: "local",
+			    		editable: false,
+			            displayField: "name",
+			            valueField: "id",
+			            emptyText: "--请选择--",
+			    		width:180
+					},
+					{fieldLabel:'号码末位',xtype:'textfield',name:'lastId',id:'lastId',labelWidth: 80,width:180,emptyText:'号码末位' },
+					*/{fieldLabel:'用户ID',xtype:'textfield',name:'id',id:'id',labelWidth: 60,width:180,emptyText:'用户ID' },	
 	                    {fieldLabel:'用户名称',xtype:'textfield',name:'name',id:'name',labelWidth:60,width:180,emptyText:'用户名称'},    
 	               		  searchAction,'-',{
 	               			  text:'清除',
@@ -424,9 +418,9 @@ if(!grid)
 	             // style:'background: skyblue',
 	             store: store, 
 	          	 displayInfo: true, 
-	          	 items:[/*
-						 * '-', stunAction,'-',reviveAction,'-',killAction
-						 */]
+	          	 items:[/*'-',
+                 stunAction,'-',reviveAction,'-',killAction
+                */]
 
 	          	
 	         }]
@@ -559,7 +553,7 @@ store.on('beforeload', function (store, options) {
 
 });
 var radioUserAttrRecord="";
-// 表格行选择
+//表格行选择
 grid.getSelectionModel().on({
 	selectionchange:function(sm,selections){
 	var data=grid.getSelectionModel().getSelection();
@@ -578,16 +572,6 @@ grid.getSelectionModel().on({
 				if(rs.total>0){
 					var data=rs.items[0];
 					radioUserAttrRecord=data;
-					var type=data.type;
-					/*if(type==1){
-						type="车载台";
-					}else if(type==2){
-						type="调度台";
-					}else if(type==3){
-						type="固定台"
-					}else{
-						type="";
-					}*/
 					var html='<div>';
 					html+='<table border=1 cellpadding="1" cellspacing="1" id="callerInfo-table">';
 					html+='<tr class="tr-yellow"><th>属性</th><th>信息</th></tr>';
@@ -595,11 +579,10 @@ grid.getSelectionModel().on({
 					html+='<tr><td>型号</td><td>'+data.model+'</td></tr>';
 					html+='<tr><td>机器号</td><td>'+data.number+'</td></tr>';
 					html+='<tr><td>ESN</td><td>'+data.esn+'</td></tr>';
+					html+='<tr><td>开机密码</td><td>'+data.openpass+'</td></tr>';
 					html+='<tr><td>PDT ID</td><td>'+data.pdtId+'</td></tr>';
-					/*
-					 * html+='<tr><td>MPT ID</td><td>'+data.mptId+'</td></tr>';
-					 * html+='<tr><td>模拟ID</td><td>'+data.moniId+'</td></tr>';
-					 */
+					/*html+='<tr><td>MPT ID</td><td>'+data.mptId+'</td></tr>';
+					html+='<tr><td>模拟ID</td><td>'+data.moniId+'</td></tr>';*/
 					html+='<tr><td>登记人</td><td>'+data.checkPerson+'</td></tr>';
 					html+='<tr class="tr-default"><td>使用单位</td><td>'+data.company+'</td></tr>';
 					html+='<tr class="tr-default"><td>使用人</td><td>'+data.person+'</td></tr>';
@@ -619,11 +602,14 @@ grid.getSelectionModel().on({
 }
 	
 });
-/*
- * detachmentStore.on('load', function (s, options) { var ins_rec =
- * Ext.create('detm',{ id:0, name:'===全部===' }); s.insert(0,ins_rec);
- * Ext.getCmp("mscType").setValue(0); });
- */
+/*detachmentStore.on('load', function (s, options) {  
+	var ins_rec = Ext.create('detm',{
+	      id:0,
+	      name:'===全部==='
+	    }); 
+	    s.insert(0,ins_rec);
+	    Ext.getCmp("mscType").setValue(0);
+});*/
 // 显示表格
 Ext.QuickTips.init(); 
 // 禁止整个页面的右键
@@ -760,7 +746,7 @@ function update_btn()
 			layout:'form',
 			items:[{
 				xtype:'panel',
-				layout:"form",
+				layout:"column",
 				border:false,
 				items:[{
 					xtype:'numberfield',fieldLabel:'<span style="color:red">终端ID</span>',name:'id',allowBlank: true,
@@ -771,7 +757,7 @@ function update_btn()
 	        		store:[[0,'手台'],[1,'车载台'],[2,'调度台'],[3,'固定台']],
 	        		queryMode:'local',value:0,width:170,margin:'0 30 0 0'
 				},{
-					xtype:'textfield',fieldLabel:'使用人',name:'name',
+					xtype:'textfield',fieldLabel:'名称',name:'name',
 					labelWidth:80,width:170,margin:'0 30 0 0'
 				}]
 			},{
@@ -904,11 +890,9 @@ function update_btn()
 						xtype:'textfield',fieldLabel:'型号',name:'model',labelWidth:60,width:180,margin:'0 30 0 0'
 					},{
 						xtype:'textfield',fieldLabel:'机器号',name:'number',labelWidth:60,width:180,margin:'0 30 0 0'
-					},/*
-						 * {
-						 * xtype:'textfield',fieldLabel:'ESN',name:'esn',labelWidth:60,width:180,margin:'0
-						 * 30 0 0' },
-						 */{
+					},/*{
+						xtype:'textfield',fieldLabel:'ESN',name:'esn',labelWidth:60,width:180,margin:'0 30 0 0'
+					},*/{
 						xtype:'textfield',fieldLabel:'开机密码',name:'openpass',labelWidth:60,width:180,margin:'0 30 0 0'
 					},{
 						xtype:'textfield',fieldLabel:'使用单位',name:'company',labelWidth:60,width:180,margin:'0 30 0 0'
@@ -928,7 +912,7 @@ function update_btn()
 		width : 600,
 		height:1000,
 		border:0,
-		bodyStyle :'overflow-x:visible;overflow-y:scroll', // 隐藏水平滚动条
+		bodyStyle :'overflow-x:visible;overflow-y:scroll', //隐藏水平滚动条
 		items:updateForm
 	});
 	var data = grid.getSelectionModel().getSelection();
@@ -979,7 +963,7 @@ function update_btn()
 		        				 params : {
 		        				 id:form.findField('id').getValue(),
 		        				 name:form.findField('name').getValue(),
-		        				 /* alias:form.findField('alias').getValue(), */
+		        				 /*alias:form.findField('alias').getValue(),*/
 		        				 // np:form.findField('np').getValue(),
 		        				 type:form.findField('type').getValue(),
 		        				 regstatus:form.findField('regstatus').getValue()?1:0,
@@ -1090,7 +1074,6 @@ function add(){
         height:80,  
         layout:'column',  
         border:true,  
-        hidden:true,
         style:'margin: 5 10 5 10',
         labelWidth:40,  
         items:[{
@@ -1098,7 +1081,7 @@ function add(){
 			items:[{
 			xtype:'combobox',fieldLabel:'',name:'id_type',
 			labelWidth:50,
-    		store:[[0,'默认模式']],
+    		store:[[0,'默认模式'],[1,'天津模式']],
     		queryMode:'local',value:0,width:150,margin:'0 30 0 0',
     		listeners:{
     			change:function(){
@@ -1120,19 +1103,14 @@ function add(){
 	var  normal = new Ext.form.FieldSet({  
         title:'终端号码',  
         height:80,  
-        layout:'form',  
+        layout:'column',  
         border:true,  
         style:'margin: 5 10 5 10',
         labelWidth:40,  
         items:[{
 			layout:'column',border:false,
-			items:[{xtype:'numberfield',fieldLabel:'号码',labelWidth:50,width:150,name:'mscId1',emptyText:''},
-			       {
-				xtype:'displayfield',fieldLabel:'',value:'<span style="color:red; font-size:2em">-></span>',
-				labelWidth:1,width:60,margin:'0 0 0 0',name:'link',hidden:true
-	    		
-			},
-			       {xtype:'numberfield',fieldLabel:'', labelWidth:50,width:150,name:'mscId2',emptyText:'',hidden:true}]
+			items:[{xtype:'numberfield',fieldLabel:'号码',labelWidth:50,name:'mscId1',emptyText:''},
+			       {xtype:'numberfield',fieldLabel:'',name:'mscId2',emptyText:'',margin:'0 0 0 20',hidden:true}]
 		}]  
     }); 
 	var  tj = new Ext.form.FieldSet({  
@@ -1157,7 +1135,7 @@ function add(){
 	    			if(np!=null){str+=np;}
 	    			if(fgn!=null){str+="-"+fgn;}
 	    			if(gn!=null){str+="-"+gn;}
-	    			// addForm.form.findField("alias").setValue(str);
+	    			//addForm.form.findField("alias").setValue(str);
 	    		}
 	    		}
 			}]
@@ -1176,7 +1154,7 @@ function add(){
 	    			if(np!=null){str+=np;}
 	    			if(fgn!=null){str+="-"+fgn;}
 	    			if(gn!=null){str+="-"+gn;}
-	    			// addForm.form.findField("alias").setValue(str);
+	    			//addForm.form.findField("alias").setValue(str);
 	    		}
 	    		}
 	    		
@@ -1205,7 +1183,7 @@ function add(){
 	    			if(np!=null){str+=np;}
 	    			if(fgn!=null){str+="-"+fgn;}
 	    			if(gn!=null){str+="-"+gn;}
-	    			// addForm.form.findField("alias").setValue(str);
+	    			//addForm.form.findField("alias").setValue(str);
 	    		}
 	    		}
 			},{
@@ -1230,15 +1208,15 @@ var addForm=new Ext.FormPanel({
 		layout:'form',
 		items:[{
 			xtype:'panel',
-			layout:"form",
+			layout:"column",
 			border:false,
 			items:[{
 				xtype:'textfield',fieldLabel:'使用人',name:'name',
 				labelWidth:80,width:170,margin:'0 30 0 0'
-			},/*
-				 * { xtype:'textfield',fieldLabel:'别名',name:'alias',
-				 * labelWidth:80,width:170,margin:'0 30 0 0' },
-				 */{
+			},/*{
+				xtype:'textfield',fieldLabel:'别名',name:'alias',
+				labelWidth:80,width:170,margin:'0 30 0 0'
+			},*/{
 				xtype:'numberfield',fieldLabel:'鉴权码',name:'esn',hidden:true,
 				labelWidth:80,width:170,margin:'0 30 0 0',minValue:0
 			},{
@@ -1364,11 +1342,9 @@ var addForm=new Ext.FormPanel({
 					xtype:'textfield',fieldLabel:'型号',name:'model',labelWidth:60,width:180,margin:'0 30 0 0'
 				},{
 					xtype:'textfield',fieldLabel:'机器号',name:'number',labelWidth:60,width:180,margin:'0 30 0 0'
-				},/*
-					 * {
-					 * xtype:'textfield',fieldLabel:'ESN',name:'esn',labelWidth:60,width:180,margin:'0
-					 * 30 0 0' },
-					 */{
+				},/*{
+					xtype:'textfield',fieldLabel:'ESN',name:'esn',labelWidth:60,width:180,margin:'0 30 0 0'
+				},*/{
 					xtype:'textfield',fieldLabel:'开机密码',name:'openpass',labelWidth:60,width:180,margin:'0 30 0 0'
 				},{
 					xtype:'textfield',fieldLabel:'使用单位',name:'company',labelWidth:60,width:180,margin:'0 30 0 0'
@@ -1401,11 +1377,10 @@ var addForm=new Ext.FormPanel({
 					addForm.form.findField('gnEnd').hide();
 					addForm.form.findField('zzz').hide();
 					addForm.form.findField('zz').hide();
-					// addForm.form.findField('alias').show();
+					//addForm.form.findField('alias').show();
 					addForm.form.findField('name').show();
 				}else{
 					addForm.form.findField('mscId2').hide();
-					addForm.form.findField('link').hide();
 				}
 				
 			}
@@ -1420,22 +1395,30 @@ var addForm=new Ext.FormPanel({
 					addForm.form.findField('gnEnd').show();
 					addForm.form.findField('zzz').show();
 					addForm.form.findField('zz').show();
-					// addForm.form.findField('alias').hide();
+					//addForm.form.findField('alias').hide();
 					addForm.form.findField('name').hide();
 				}else{
 					addForm.form.findField('mscId2').show();
-					addForm.form.findField('link').show();
 				}
 				
 			}
 			}]
 		},addForm]
 	});
-/*
- * var tabPanel=Ext.create("Ext.tab.Panel",{ region:"center",
- * animCollapse:false, padding:0, border:false, // plain:true, layout:'fit',
- * frame: false, enableTabScroll:true, items:[{ title:"首页", items:Panel }] });
- */
+/*	var tabPanel=Ext.create("Ext.tab.Panel",{
+		region:"center",
+		animCollapse:false,
+		padding:0,
+		border:false,
+		// plain:true,
+		layout:'fit',  
+		frame: false, 
+		enableTabScroll:true,
+		items:[{
+			title:"首页",
+			items:Panel
+		}]
+	});*/
 	if(!addWindow){
 	addWindow = new Ext.Window({
 		border:0,
@@ -1558,7 +1541,7 @@ var addForm=new Ext.FormPanel({
 			        					}
 			        					}
 			        					
-			        			}, 10);  // 每隔 1秒钟
+			        			}, 10);  //每隔 1秒钟  
 			        	
 			        		 }else{
 			        			 addNorRun(form,myMask);
@@ -1597,7 +1580,7 @@ var addForm=new Ext.FormPanel({
 			        					}
 			        					}
 			        					
-			        			}, 10);  // 每隔 1秒钟
+			        			}, 10);  //每隔 1秒钟  
 			        	
 			        		 }else{
 			        			 addRun(form,myMask);
@@ -1616,7 +1599,7 @@ var addForm=new Ext.FormPanel({
 		        	 text:'取消',
 		        	 iconCls:'cancel',
 		        	 handler:function(){
-		        	 // addForm.form.reset();
+		        	 //addForm.form.reset();
 		        	 addWindow.hide();
 		         }
 		         }
@@ -1663,7 +1646,7 @@ function addRun(form,mask){
 				 gn:form.findField('gn').getValue(),
 				 
 				 name:form.findField('name').getValue(),
-				 /* alias:form.findField('alias').getValue(), */
+				 /*alias:form.findField('alias').getValue(),*/
 				// np:form.findField('np').getValue(),
 				 type:form.findField('type').getValue(),
 				 regstatus:form.findField('regstatus').getValue()?1:0,
@@ -1748,7 +1731,7 @@ function addNorRun(form,mask){
 
 				 
 				 name:form.findField('name').getValue(),
-				 /* alias:form.findField('alias').getValue(), */
+				 /*alias:form.findField('alias').getValue(),*/
 				// np:form.findField('np').getValue(),
 				 type:form.findField('type').getValue(),
 				 regstatus:form.findField('regstatus').getValue()?1:0,
@@ -1827,7 +1810,7 @@ function addRunMany(form,fgn,gn,alias){
 			 Ext.Ajax.request({  
 				 url : '../controller/addRadioUser.action',  
 				 params : {
-				 // id:id,
+				 //id:id,
 				 id_type:form.findField('id_type').getValue(),
 				 np:form.findField('np').getValue(),
 				 fgn:fgn,
@@ -1907,7 +1890,7 @@ function addNorRunMany(form,mscId){
 			 Ext.Ajax.request({  
 				 url : '../controller/addRadioUser.action',  
 				 params : {
-				 // id:id,
+				 //id:id,
 				 id_type:form.findField('id_type').getValue(),
 				 id:mscId,			 
 				 name:"",
@@ -1982,7 +1965,6 @@ function addNorRunMany(form,mscId){
 }
 // 导出excel数据
 function Excel_btn() { 
-	window.location.href="../excel/excel_user"
 }
 // 编辑归属基站
 function editRadioUserBS(){
@@ -2406,10 +2388,10 @@ function killRadio(){
 			}})
 	}
 }
-// 导入数据
+//导入数据
 function excelIn(){
 	var excelForm=Ext.create('Ext.FormPanel',{
-		width:750,
+		width:500,
 		fileUpload: true, 
 		autoHeight:true,
 		bodyPadding:10,
@@ -2417,11 +2399,11 @@ function excelIn(){
 		border:false,
 		frame:false,
 		fileUpload : true,	
-		items : // 元素
+		items : //元素
 			[{  				  
 		        xtype: 'filefield',
 		        name: 'filePath',
-		        /* inputType: 'file', */
+		        /*inputType: 'file',*/
 		        fieldLabel: '文件地址',
 		        labelWidth:60, 
 		        anchor: '100%',
@@ -2429,9 +2411,6 @@ function excelIn(){
 			     buttonConfig: {
                      iconCls: 'excel'
                  }
-			},{
-				xtype:'panel',
-				html:'<p>导入文件内容格式如下</p><img src="../resources/images/picture/radio.png" height="170" width="740">'
 			}
 			 ]
 	})
@@ -2450,7 +2429,7 @@ function excelIn(){
 			 var myMask = new Ext.LoadMask(Ext.getBody(), {  
                  msg: '正在验证数据，请稍后！',  
                  loadMask: true, 
-                 removeMask: true // 完成后移除
+                 removeMask: true //完成后移除  
              });
 			if(form.isValid){
 				var ex=excelForm.form.findField('filePath').getValue().split(".")[1].toLowerCase();
@@ -2469,15 +2448,19 @@ function excelIn(){
    				async:false,
    			     success : function(response) { 
 					myMask.hide();
-				   /*
-					 * var rs = Ext.decode(response);
-					 * 
-					 * if(rs.success){ Ext.example.msg("提示","导入成功");
-					 * excelWin.hide(); store.reload(); }else{
-					 * Ext.MessageBox.show({ title : "提示", msg :
-					 * "数据导入失败!,检查文件名后缀是否为[.xls .XLS]" , icon:
-					 * Ext.MessageBox.INFO }); }
-					 */
+				   /*  var rs = Ext.decode(response);
+				     
+				     if(rs.success){
+				    	 Ext.example.msg("提示","导入成功"); 
+					     excelWin.hide();
+					     store.reload();
+				     }else{
+				    	 Ext.MessageBox.show({  
+		   					 title : "提示",  
+		   					 msg : "数据导入失败!,检查文件名后缀是否为[.xls   .XLS]" , 
+		   					 icon: Ext.MessageBox.INFO  
+		   				 }); 
+				     }*/
 					 Ext.example.msg("提示","导入成功"); 
 				     excelWin.hide();
 				     store.reload();
@@ -2529,7 +2512,7 @@ function leader(){
 	 var myMask = new Ext.LoadMask(Ext.getBody(), {  
          msg: '正在更新数据，请稍后！',  
          loadMask: true, 
-         removeMask: true // 完成后移除
+         removeMask: true //完成后移除  
      });
 	 myMask.show();
 	Ext.Ajax.request({  

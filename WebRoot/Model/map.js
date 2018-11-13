@@ -179,7 +179,7 @@ var usergrid=Ext.create('Ext.grid.Panel',{
 	            	 itemdblclick:function(dataview, record, item, index, e){
 	            		 refreshMap=2;
 	            		 clearMarkers();
-	            		 nowMscId=record.get("id");
+	            		 /*nowMscId=record.get("id");
 	            		 var record = usergrid.getSelectionModel().getLastSelected(); 
 	            			form.getForm().findField("name").setValue(record.get("id"));
 	            			for(var i=0;i<userStore.getCount();i++){
@@ -187,7 +187,7 @@ var usergrid=Ext.create('Ext.grid.Panel',{
 	            					userStore.getAt(i).set('result','获取数据中');
 	            				}
 	            			}
-	            		 GetGPS(record.get("id"));
+	            		 GetGPS(record.get("id"));*/
 	            		
 	            		 
 	            	 },
@@ -215,6 +215,15 @@ var usergrid=Ext.create('Ext.grid.Panel',{
 	        	 xtype:'toolbar',
 	        	 dock:'top',
 	        	 items:[{
+	        		 xtype:'numberfield',
+	        		 name:'slot',
+	        		 labelWidth:30,
+	        		 minValue:0,maxValue:2,
+	        		 value:1,
+	        		 id:'slot',
+	        		 fieldLabel:'时隙',
+	        		 width:150
+	        	 },{
 	            	 xtype:'button',
 	            	 id:'handlerTask',
 	            	 text:'<span>上拉GPS</span>',
@@ -323,7 +332,7 @@ var mapPanel=Ext.create('Ext.panel.Panel',{
 			width:100,
 			id:'form-zoom',
 			margin:2,
-			value:getCookie("radiouser_zoom")==""?9:parseInt(getCookie("radiouser_zoom"))
+			value:getCookie("radiouser_zoom")==""?6:parseInt(getCookie("radiouser_zoom"))
 		},{
 			xtype:'textfield',
 			fieldLabel:'经度',
@@ -492,7 +501,7 @@ function OneMaker(str){
 	}*/
 		
 
-	if(data.lat*1 > 38 && data.lat*1 < 40 && data.lng*1 > 116 && data.lng*1 < 119){
+	//if(data.lat*1 > 38 && data.lat*1 < 40 && data.lng*1 > 116 && data.lng*1 < 119){
 	 //markers.push(marker);
 	clearMarkers();
 	var image = "";
@@ -554,7 +563,7 @@ function OneMaker(str){
         });  
     })(oneRadioMakerFlag, data);
 	   setMapCenter(lat,lng);
-	}
+	//}
 	
 	
 }
@@ -575,7 +584,7 @@ function RadioMaker(str){
 	
 		
 
-	if(data.lat*1 > 38 && data.lat*1 < 40 && data.lng*1 > 116 && data.lng*1 < 119){
+	//if(data.lat*1 > 38 && data.lat*1 < 40 && data.lng*1 > 116 && data.lng*1 < 119){
 	 //markers.push(marker);
 	var image = "";
 	var wgloc={};
@@ -640,7 +649,7 @@ function RadioMaker(str){
             infoWindow.open(map, marker);  
         });  
     })(marker, data);
-	}
+	//}
 	
 }
 
@@ -918,7 +927,8 @@ function gpsSet(a){
 	Ext.Ajax.request({
 		url : 'controller/handleTask.action', 
 		params : { 
-		 mscId:userStore.getAt(a).get('id')
+		 mscId:userStore.getAt(a).get('id'),
+		 slot:Ext.getCmp('slot').getValue()
 	},
 	method : 'POST',
 	    waitTitle : '请等待' ,  
@@ -972,7 +982,7 @@ function ClearPhoneMarker(){
 }
 
 function mapInitialize() {
-	var zoom=getCookie("radiouser_zoom")==""?9:parseInt(getCookie("radiouser_zoom"));
+	var zoom=getCookie("radiouser_zoom")==""?6:parseInt(getCookie("radiouser_zoom"));
 	
 	
 	

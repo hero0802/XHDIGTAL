@@ -1771,7 +1771,7 @@ LocalMapType.prototype.getTile = function(coord, zoom, ownerDocument) {
 };
 function mapInitialize() {
 	
-	var zoom=getCookie("map_zoom")==""?9:parseInt(getCookie("map_zoom"));
+	var zoom=getCookie("map_zoom")==""?6:parseInt(getCookie("map_zoom"));
 	var lat=29.709378,lng=91.114822;
 	if(getCookie("map_center_lat")!="" && getCookie("map_center_lng")!=""){
 		lat=parseFloat(getCookie("map_center_lat"));
@@ -1901,9 +1901,14 @@ function MapData(){
 				}
 			}
 		}
+		var wgloc={};
+		wgloc.lat=record.get("lat");
+		wgloc.lng=record.get("lng");
+		var lat=transformFromWGSToGCJ(wgloc).lat;
+		var lng=transformFromWGSToGCJ(wgloc).lng;
 		
 		   marker = new MarkerWithLabel({
-			position : new google.maps.LatLng(record.get("lat"),record.get("lng")),
+			position : new google.maps.LatLng(lat,lng),
 			map : map,
 			title : "ID:"+record.get("bsId")+"  名称:"+record.get("bsName"),
 			id : record.get("bsId"),
@@ -1979,9 +1984,14 @@ function MapMaker9(){
 			icon="mapfiles/bs_small_red.png";
 			// labelClass="marker-label-error";
 		}
+		var wgloc={};
+		wgloc.lat=record.get("lat");
+		wgloc.lng=record.get("lng");
+		var lat=transformFromWGSToGCJ(wgloc).lat;
+		var lng=transformFromWGSToGCJ(wgloc).lng;
 		
 		   marker = new google.maps.Marker({
-			position : new google.maps.LatLng(record.get("lat"),record.get("lng")),
+			position : new google.maps.LatLng(lat,lng),
 			map : map,
 			title : "ID:"+record.get("bsId")+"  名称:"+record.get("bsName"),
 			id : record.get("bsId"),

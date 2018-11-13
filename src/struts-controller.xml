@@ -379,6 +379,16 @@
 <action name="changeBsId" class="com.action.ChannelCountAction" method="changeBsId">  
      <result type="json" name="success"></result> 
 </action>
-</package>                      
+</package>  
+<package name="EXCEL" extends="json-default" namespace="/excel"> 
+ <action name="excel_user" class="com.action.RadioUserAction" method="excel_user">    
+  <result name="success" type="stream">     
+               <param name="contentType">application/vnd.ms-excel;charset=ISO8859-1</param>
+               <param name="inputName">excelFile</param>
+               <param name="contentDisposition">attachment;filename="${fileName}"</param>
+               <param name="bufferSize">4096</param>             
+  </result>    
+</action>  
+</package>                    
  <!-- Add packages here -->
 </struts>

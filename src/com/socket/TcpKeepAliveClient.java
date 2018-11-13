@@ -12,11 +12,14 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -866,23 +869,35 @@ public class TcpKeepAliveClient extends Thread {
 		}
 		String recvstr=gps.getContent().toStringUtf8();
 		String[] gpsData=recvstr.split(":");
-		String lat=gpsData[3];
-		String lng=gpsData[4];
-		String height=gpsData[5];
-		String star=gpsData[7];
+		String dstId="";
+		String lat="";
+		String lng="";
+		String height="";
+		String star="";
+		String type="";
+		
+		if(gpsData[0].equals("OnTriggerReport")){
+			dstId=gpsData[2];
+			lat=gpsData[3];
+			lng=gpsData[4];
+			height=gpsData[5];
+			star=gpsData[7];
+			type=gpsData[8];
+		}
+		
+		
+		
+		
 		  
 		
 		
-			log.info("DS<-MSO[GPS] srcId:"+gps.getMsid()+";lat="+lat+";lng="+lng+";height="+height+";star="+star);
+			log.info("DS<-MSO[GPS] srcId:"+gps.getMsid()+";lat="+lat+";lng="+lng+";height="+height+";star="+star+";type="+type);
 			String sql = "";
 			try {
-				sql = "insert into xhdigital_gpsinfo(srcId,latitude,longitude,heigh,infoTime,starNum,typeId)VALUES('"
-						+ gps.getMsid()
-						+ "','"
-						+ lat
-						+ "','"
+				sql = "insert into xhdigital_gpsinfo(srcId,dstId,latitude,longitude,heigh,infoTime,starNum,typeId,infoType)VALUES('"
+						+ gps.getMsid()+ "','"+dstId+"','"+ lat+ "','"
 						+ lng
-						+ "','"+height+"','"+ func.nowDate() + "','" + star + "',1)";
+						+ "','"+height+"','"+ func.nowDate() + "','" + star + "',1,'"+type+"')";
 				Sql.Update(sql);
 				
 				
@@ -908,6 +923,9 @@ public class TcpKeepAliveClient extends Thread {
 	//告警类型：1：断站；2：中心；3：交换；4：温度;5:gps失锁；6：反向功率过大；7：交流；8：功率
 	public void alarm(int type,int status,int id){
 		String content="";
+		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		df.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+		String now_date=df.format(new Date());
 		if(type==1){
 			content=id+"号基站："+xhSql.bsId_bsName(id)+"连接断开";
 		}else if(type==2){
@@ -930,14 +948,18 @@ public class TcpKeepAliveClient extends Thread {
 		String sql1= "select * from xhdigital_alarm where type='"+type+"' and alarmId='"+id+"'";
 		String sql2="insert into xhdigital_alarm(alarmId,content,type)values('"+id+"','"+content+"','"+type+"')";
 		String sql3="delete from xhdigital_alarm where type='"+type+"' and alarmId="+id;
+		String insert_sql="insert into xhdigital_alarm_old(alarmId,content,type)values('"+id+"','"+content+"','"+type+"')";
+		String update_sql="update xhdigital_alarm_old set flag=1,recover_time='"+now_date+"' where flag=0 and  type='"+type+"' and alarmId="+id;
 		try {
 			if(Sql.exists(sql1)){
 				if(status==1){
 					Sql.Update(sql3);
+					Sql.Update(update_sql);
 				}	
 			}else{
 				if(status==0){
 					Sql.Update(sql2);
+					Sql.Update(insert_sql);
 				}
 			}
 		} catch (Exception e) {

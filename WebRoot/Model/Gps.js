@@ -124,28 +124,26 @@ if(!grid)
 	        	 editor : {  
 	        	 allowBlank : false  
 	         }}, 
-	         {text: "速度(km/h)", width: 80, dataIndex: 'starNum', sortable: false,
-	        	 editor : {  
-	        	 allowBlank : false  
-	         }}, 
-	     /*    {text: "地平线", width: 80, dataIndex: 'horizon', sortable: false,
+	        {text: "星数", width: 80, dataIndex: 'starNum', sortable: false,
 	        	 editor : {  
 	        	 allowBlank : false  
 	         }  }, 
-	         {text: "获取类型", flex: 1, dataIndex: 'infoType', sortable: false,
+	         {text: "数据类型", width: 120, dataIndex: 'infoType', sortable: false,
 	        	 editor : {  
 	        	 allowBlank : false  
 	         },renderer:function(v){
 	        	 if(v==129){return "定时上报";
-	        	 }else if(v==130){return "定距离上报";}else{return "未知";}
-	         }  },*/
-	         {text: "质量",width: 120, dataIndex: 'typeId', sortable: true,
+	        	 }else if(v==130){return "定距离上报";}
+	        	 else if(v==131){return "立即请求";}
+	        	 else{return "未知";}
+	         }  },
+	         /*{text: "质量",width: 120, dataIndex: 'typeId', sortable: true,
 	        	 editor : {  
 	        	 allowBlank : false  
 	         },align:'center',renderer:function(v){
 	        	 if(v==0){return "<span style='color:red'>质量差</span>";}
 	        	 else{return "";}
-	         }}, 
+	         }},*/ 
 	         {text: "产生时间", width: 150, dataIndex: 'infoTime', sortable: true,
 	        	 editor : {  
 	        	 allowBlank : false  

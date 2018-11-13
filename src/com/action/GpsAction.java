@@ -467,7 +467,9 @@ public class GpsAction extends ActionSupport {
 		/*String[] mscids = mscId.split(",");*/
 		if(TcpKeepAliveClient.getSocket().isConnected()){
 			if(TcpKeepAliveClient.getM_calling()==0){
-				send.setGps(Integer.parseInt(mscId), 1, 0, 0, 0, 0, 0, 0, 0);
+				/*send.setGps(id, gpsen, type, t_interval, d_index, pool_ch,
+						format, slot, mask);*/
+				send.setGps(Integer.parseInt(mscId), 1, 0, 0, 0, 0, 0, slot, 0);
 				
 				this.success = true;
 			}else{

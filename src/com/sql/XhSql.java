@@ -283,9 +283,6 @@ public class XhSql {
 				Object v = rs.getObject(i);	    		
 
 				if(v != null && (v.getClass() == Date.class || v.getClass() == java.sql.Date.class)){
-					//Timestamp ts= rs.getTimestamp(i);
-					//v = new java.util.Date(ts.getTime());
-					//v = ts;
 					if(v.equals("0000-00-00 00:00:00")){
 						v="";
 					}
