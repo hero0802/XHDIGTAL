@@ -576,6 +576,10 @@ public class GpsAction extends ActionSupport {
 				send.setGps(id, gpsen, type, t_interval, d_index, pool_ch,
 						format, slot, mask);
 				this.success = true;
+				if(gpsen==0){
+					del_radio_push_gps(id);
+				}
+				
 			} else {
 				this.success = false;
 				this.message = "网络未连接";
@@ -587,6 +591,31 @@ public class GpsAction extends ActionSupport {
 		}
 
 		return SUCCESS;
+	}
+	public void insert_radio_push_gps(int idstr,String type){
+		StringBuilder sql=new StringBuilder();
+		sql.append("replace into radio_push_gps(radio_id,info_type)values(");
+		sql.append(idstr);
+		sql.append(",");
+		sql.append(type);
+		sql.append(")");
+		try {
+			Sql_sys.Update(sql.toString());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void del_radio_push_gps(int idstr){
+		StringBuilder sql=new StringBuilder();
+		sql.append("delete from radio_push_gps where radio_id=");
+		sql.append(idstr);
+		try {
+			Sql_sys.Update(sql.toString());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	public String addOnlineUser(){
 		Type type = new TypeToken<List<UserOnlineBean>>(){}.getType();

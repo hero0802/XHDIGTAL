@@ -101,7 +101,7 @@ var leftPanel=Ext.create('Ext.form.Panel',{
 		},{
 			xtype:'fieldset',title:'其他',margin:'30 10 0 4',layout:"column",
 			items:[{
-				xtype:'checkbox',fieldLabel:'上报GPS',id:'gpsen',name:'gpsen',boxLabel:'是',checked:true,labelWidth:60,margin:'0 20 0 0'
+				xtype:'checkbox',fieldLabel:'是否上报GPS',id:'gpsen',name:'gpsen',boxLabel:'是',checked:true,labelWidth:60,margin:'0 20 0 0'
 			},/*{xtype:'numberfield',fieldLabel:'时隙',name:'slot',width:160,labelWidth:80,minValue:0,maxValue:1,value:0},
 			*/{
 				layout:'column',border:false,items:[{

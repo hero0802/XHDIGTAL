@@ -75,6 +75,9 @@
    
      <action name="Gps" class="data.action.Gps" method="Gps">  
      <result type="json" name="success"></result>   
+   </action> 
+     <action name="user_push_gps" class="data.action.Gps" method="user_push_gps">  
+     <result type="json" name="success"></result>   
    </action>  
    
      <action name="GpsOperation" class="data.action.GpsOperation" method="GpsOperation">  

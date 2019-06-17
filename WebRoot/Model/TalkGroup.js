@@ -696,7 +696,7 @@ var right=Ext.create('Ext.panel.Panel',{
 	border:false,
 	region:'east',
 	width:450,
-	items:[TkGroupBsGrid,TkGroupDetachmentGrid]
+	items:[TkGroupBsGrid/*,TkGroupDetachmentGrid*/]
 })
 //显示表格
 Ext.QuickTips.init(); 

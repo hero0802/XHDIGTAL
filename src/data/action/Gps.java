@@ -19,6 +19,7 @@ import com.sql.SysSql;
 public class Gps extends ActionSupport{
 	private int start;
 	private int limit;
+	private int type;
 	private String sort;
 	private String dir;
 	
@@ -47,6 +48,30 @@ public class Gps extends ActionSupport{
 		HashMap result=new HashMap();
 		result.put("items", data);
 		result.put("total", Sql.getCount(sql2));
+		String jsonstr = json.Encode(result);
+		ServletActionContext.getResponse().setContentType("text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jsonstr);
+	}
+	public void user_push_gps() throws Exception
+	{
+		StringBuilder sql=new StringBuilder();
+		sql.append("select a.*,b.person as name from radio_push_gps as a ");
+		sql.append("left join xhdigital_radiouser as b on a.radio_id=b.mscId where 1=1 ");
+		if(type!=0){
+			sql.append(" and a.info_type="+type);
+		}
+		sql.append(" limit "+start+","+limit);
+		
+		StringBuilder count_sql=new StringBuilder();
+		count_sql.append("select count(*) from radio_push_gps where 1=1 ");
+		if(type!=0){
+			count_sql.append(" and info_type="+type);
+		}
+		ArrayList data = Sql.DBList(sql.toString());
+
+		HashMap result=new HashMap();
+		result.put("items", data);
+		result.put("total", Sql.getCount(count_sql.toString()));
 		String jsonstr = json.Encode(result);
 		ServletActionContext.getResponse().setContentType("text/html;charset=UTF-8");
 		ServletActionContext.getResponse().getWriter().write(jsonstr);
@@ -106,6 +131,12 @@ public class Gps extends ActionSupport{
 	}
 	public void setEtime(String etime) {
 		Etime = etime;
+	}
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
 	}
 	
 	

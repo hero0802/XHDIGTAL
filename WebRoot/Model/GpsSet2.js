@@ -15,6 +15,22 @@ var store=Ext.create('Ext.data.Store',{
 	autoLoad:true,
 	data:[]
 })
+var user_store=Ext.create('Ext.data.Store',{
+	fields:[{name:'radio_id'},{name:'name'},{name:'info_type'}],
+	remoteSort: true,
+	pageSize:50,
+	proxy: {
+	type: 'ajax',
+	url : '../data/user_push_gps.action',
+	timeout: 10000,
+	reader: {
+	// 数据格式为json
+	type: 'json',
+	root: 'items',
+	// 获取数据总数
+	totalProperty: 'total'
+	}}
+})
  //创建多选 
      var selModel = Ext.create('Ext.selection.CheckboxModel'); 
      var cellEditing = Ext.create('Ext.grid.plugin.CellEditing', { 
@@ -84,11 +100,96 @@ if(!grid)
 })
 }
 
+var userGrid=Ext.create('Ext.grid.Panel',{	
+	region:'center',
+	store:user_store,
+	trackMouseOver: false,
+	renderTo: Ext.getBody(),
+	disableSelection: false,
+	loadMask: true,  
+	columns:[
+	         new Ext.grid.RowNumberer({width:50,text:'#'}), 
+	         {text: "号码", width: 100, dataIndex: 'radio_id'
+	         },{text: "使用人", width: 100, dataIndex: 'name', sortable: true
+	         },{text: "GPS上报方式", width: 100, dataIndex: 'info_type', sortable: true,
+	        	 renderer:function(v){
+	        		 if(v==129){
+	        			 return "定时上报";
+	        		 }else if(v==130){
+	        			 return "定距离上报";
+	        		 }else{
+	        			 return "未知";
+	        		 }
+	        	 }
+	         }
+	         ],
+	         plugins : Ext.create('Ext.grid.plugin.CellEditing', { 
+	        		        clicksToEdit: 2
+	        		     }),
+	         frame:false,
+	         border:true,
+	         forceFit: true,
+	         columnLines : true, 
+	         height:document.documentElement.clientHeight,
+	         
+	         selModel: Ext.create('Ext.selection.CheckboxModel'),
+	         viewConfig: {
+	             stripeRows: true
+	         },	        
+	         dockedItems: [{
+	             xtype: 'toolbar',
+	             dock: 'top',
+	             items: [{
+		 				xtype:'combobox',fieldLabel:'上报方式',id:'info_type',name:'info_type',labelWidth:30,
+			    		store:[
+			    		       [0,"不限制"],[129,"定时上报"],[130,"定距离上报"]],
+			    		queryMode:'local',value:0,width:190,labelWidth:70
+					},{
+	            	 xtype:'button',
+	            	 text:'查询',
+	            	 iconCls:'search',
+	            	 handler:function(){
+	            	 user_store.reload();
+	             }
+	             },{
+	            	 xtype:'button',
+	            	 text:'添加至数据列表',
+	            	 iconCls:'add',
+	            	 handler:add_user
+	             }]
+	         },{
+	             dock: 'bottom',
+	             xtype: 'pagingtoolbar',
+	             store: user_store, 
+	          	 displayInfo: true, 
+
+	          	 displayMsg: '显示 {0} - {1} 条，共计 {2} 条', 
+	          	 emptyMsg: "没有数据",
+	          	 beforePageText:'第',
+	          	 afterPageText:'页 共{0}页',
+	          	 firstText:'首页',
+	          	 prevText:'上一页',
+	          	 nextText:'下一页',
+	          	 lastText:'尾页',
+	          	 refreshText:'刷新',
+	          	 prependButtons:true
+	         }]
+
+})
+
+
 store.on('beforeload', function (store, options) {  
     var new_params = { 
     		
     		};  
     Ext.apply(store.proxy.extraParams, new_params);  
+
+});
+user_store.on('beforeload', function (s, options) {  
+    var new_params = { 
+    		  type:Ext.getCmp("info_type").getValue()
+    		};  
+    Ext.apply(s.proxy.extraParams, new_params);  
 
 });
 var userPanel=Ext.create('Ext.form.Panel',{
@@ -231,7 +332,7 @@ var leftPanel=Ext.create('Ext.form.Panel',{
 			xtype:'fieldset',title:'其他',margin:'0 10 0 10',
 			items:[{xtype:'numberfield',fieldLabel:'时隙',name:'slot',width:160,labelWidth:80,minValue:0,maxValue:1,value:0},
 				{
-				xtype:'checkbox',fieldLabel:'上报GPS',id:'gpsen',name:'gpsen',boxLabel:'是',checked:true,labelWidth:80,margin:'0 0 10 0'
+				xtype:'checkbox',fieldLabel:'是否上报GPS',id:'gpsen',name:'gpsen',boxLabel:'是',checked:true,labelWidth:80,margin:'0 0 10 0'
 			},{
 				layout:'column',border:false,items:[{
 				xtype:'numberfield',fieldLabel:'时间间隔',id:'t_interval',name:'t_interval',emptyText:'0:无效',
@@ -286,6 +387,13 @@ var leftPanel=Ext.create('Ext.form.Panel',{
 				labelWidth:80,
 	    		store:[[0,'控制信道短格式']],
 	    		queryMode:'local',value:0,width:300,margin:'0 0 10 0'
+			}]
+		},{
+			xtype:'fieldset',title:'当前终端上报gps信息列表',margin:'50 10 0 10',
+			items:[{
+				xtype:'button',text:'显示列表',margin:'20 10 20 10',
+				handler:show_user_grid
+				
 			}]
 		}]
 	}]
@@ -419,6 +527,41 @@ function addOne(){
 	}
 	
 }
+function add_user(){
+	var userForm=userPanel.getForm();
+	var number=userForm.findField('number').getValue();
+	
+	var data=userGrid.getSelectionModel().getSelection();
+	if(data.length <1){
+		Ext.MessageBox.show({  
+			title : "提示",  
+			msg : "请至少选择一条数据" , 
+			icon: Ext.MessageBox.ERROR  
+		});
+		return;
+	}
+	
+
+	
+	
+	Ext.Array.each(data,function(record){
+		var tag=false;
+		store.each(function(rec){
+			if(rec.get('number')==record.get("radio_id")){
+				tag=true;
+			}
+		});
+		if(!tag){
+			store.addSorted({number:record.get("radio_id"),status:"等待处理.."});
+		}
+	});
+	
+	
+
+	
+	//m_userName="无";
+	
+}
 //批量添加
 function addMany(){
 	var userForm=userPanel.getForm();
@@ -478,6 +621,35 @@ function addMany(){
 		
 	}
 	
+}
+//显示用户列表
+var userWin
+function show_user_grid()
+{	
+	if(!userWin){
+		
+		userWin = new Ext.Window({
+			width:600,
+			height:500,
+			//x:300,
+			//y:200,
+			modal:true,
+			layout: 'fit',
+			title:"当前终端上报gps列表",
+			resizable: false, 
+			closable:false,
+			items:userGrid,	
+			buttons:[{text:'取消',
+			        	 iconCls:'cancel',
+			        	 handler: function(){
+			        		 userWin.hide();
+			         }}
+			         ]
+
+		});
+	}
+	userWin.show();	
+	user_store.load();
 }
 //删除数据
 function del_btn() {  

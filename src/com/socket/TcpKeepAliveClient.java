@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.action.BsStationAction;
+import com.action.GpsAction;
 import com.action.RadioUserAction;
 import com.config.config;
 import com.dwr.IndexDwr;
@@ -253,7 +254,7 @@ public class TcpKeepAliveClient extends Thread {
 										handler(comId, dataLen, callid,
 												realBuf, len);
 										i += length + 4;
-										writeBuf = null;
+										this.writeBuf=new byte[0];
 									}
 
 								}
@@ -859,6 +860,7 @@ public class TcpKeepAliveClient extends Thread {
 	public void Gps(int len, String callid, byte[] buf) {
 		result = new byte[len - 26];
 		System.arraycopy(buf, 24, result, 0, len - 26);
+		GpsAction action=new GpsAction();
 		TrunkCommon.GPS gps = null;
 		try {
 			gps = TrunkCommon.GPS.parseFrom(result);
@@ -884,13 +886,6 @@ public class TcpKeepAliveClient extends Thread {
 			star=gpsData[7];
 			type=gpsData[8];
 		}
-		
-		
-		
-		
-		  
-		
-		
 			log.info("DS<-MSO[GPS] srcId:"+gps.getMsid()+";lat="+lat+";lng="+lng+";height="+height+";star="+star+";type="+type);
 			String sql = "";
 			try {
@@ -909,6 +904,10 @@ public class TcpKeepAliveClient extends Thread {
 				String jsonstr = json.Encode(result);
 				RadioDwr.RadioGps(jsonstr);
 				PullUserOnlineDwr.BackUserGps(jsonstr);
+				
+				if(type.equals("129") || type.equals("130")){
+					action.insert_radio_push_gps(gps.getMsid(),type);
+				}
                 
 				
 			} catch (Exception e) {
