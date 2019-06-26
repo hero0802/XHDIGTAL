@@ -450,7 +450,7 @@ public class TcpKeepAliveClient extends Thread {
 			callNowMap.put("starttime", date);
 			callNowMap.put("usetime", -1);
 			callList.add(callNowMap);
-			if (callList.size() > 100) {
+			if (callList.size() > 50) {
 				for (int i = 10; i < callList.size(); i++) {
 					callList.remove(i);
 				}
