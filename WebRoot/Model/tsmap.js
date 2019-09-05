@@ -1947,7 +1947,7 @@ function MapData(){
 			    		  [{text: "基站联网", func: function() {bsNetOn(bsId)}},
 			    		  {text: "基站脱网", func: function() {bsNetOff(bsId)}}],
 			    		  [{text: "设置信道号", func: function() {setNum(bsId)}}],
-			    		  
+			    		  [{text: "复位基站", func: function() {resetBs(bsId)}}],
 			    		  
 			    		  [{text: "功率设定", func: function() {set_power(bsId)}}],
 			    		  
@@ -2115,6 +2115,7 @@ function GetBsView(){
 					    		
 					    		  
 					    		  [{text: "设置信道号", func: function() {setNumOne($(this).attr("bsId"))}}],
+					    		  [{text: "复位基站", func: function() {resetBs($(this).attr("bsId"))}}],
 					    		  
 					    		  [{text: "功率设定", func: function() {set_power($(this).attr("bsId"))}}],
 					    		  
@@ -2372,6 +2373,40 @@ function setNumOne(id){
 		}]
 	})
 	win.show();
+}
+function resetBs(id){ 
+	Ext.MessageBox.confirm( 
+			 "请确认"
+			,"确定复位基站【"+id+"】吗？"
+			,function( button,text ){
+				if( button == 'yes'){
+					Ext.Ajax.request({
+						url : 'controller/resetBs.action', 
+						params : {  
+							bsIds:id
+					},
+					method : 'POST',
+					    waitTitle : '请等待' ,  
+					    waitMsg: '正在提交中', 
+					    success : function(response,opts) { 
+					     var rs = Ext.decode(response.responseText)
+					     console.log(rs.success)
+					     console.log(rs.message)
+					     if(rs.success){
+					    	 Ext.example.msg("提示","复位基站成功"); 
+					     }else{
+					    	 Ext.example.msg("提示",rs.message);  
+					     }
+						     
+					    },
+					    failure: function(response) {
+					    	Ext.example.msg("提示","失败");  
+					      }
+					})
+				}
+			} 
+		);
+	
 }
 // 设定功率
 function set_power(id){
@@ -4031,6 +4066,7 @@ function createMarker(location,bsId,title,labelContent,icon,record){
 				    		  [{text: "基站联网", func: function() {bsNetOn(bsId)}},
 				    		  {text: "基站脱网", func: function() {bsNetOff(bsId)}}],
 				    		  [{text: "设置信道号", func: function() {setNum(bsId)}}],
+				    		  [{text: "复位基站", func: function() {resetBs(bsId)}}],
 				    		  
 				    		  
 				    		  [{text: "功率设定", func: function() {set_power(bsId)}}],

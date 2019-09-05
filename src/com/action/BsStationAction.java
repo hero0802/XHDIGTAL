@@ -638,9 +638,9 @@ public class BsStationAction extends ActionSupport {
 		if(TcpKeepAliveClient.getSocket().isConnected()){
 			clearConData();
 			send.BSControl(header, Integer.parseInt(id),"cmdsetptt:1;", TrunkCommon.BSControl.TYPE.STATUS);
-			Thread.sleep(1000);
+			Thread.sleep(1500);
 			send.BSControl(header, Integer.parseInt(id),"cmdgetstatus;", TrunkCommon.BSControl.TYPE.STATUS);
-			Thread.sleep(200);
+			Thread.sleep(500);
 			send.BSControl(header, Integer.parseInt(id),"cmdsetptt:0;", TrunkCommon.BSControl.TYPE.STATUS);
 			this.success = true;
 			//SocketDwr.BsControlDwr();
@@ -721,6 +721,42 @@ public class BsStationAction extends ActionSupport {
 		this.success = true;
 		return SUCCESS;
 	}
+	// 复位基站
+    public String resetBs() throws Exception, IOException {
+			String[] ids=bsIds.split(",");
+			String sql="",sql2="";
+			if(TcpKeepAliveClient.getSocket().isConnected()){
+				for (int i = 0; i < ids.length; i++) {
+					String str = send.BSControl(header, Integer.parseInt(ids[i]), "cmdsetrst:"
+							+ ";", TrunkCommon.BSControl.TYPE.STATUS);
+					HashMap result = new HashMap();
+					result.put("bsId", Integer.parseInt(ids[i]));
+					String jsonstr = json.Encode(result);
+					log4j.info("复位基站："+ids[i]+":"+number);
+					//SocketDwr.BsChannelno(jsonstr);
+					
+					HashMap info = new HashMap();
+					info.put("content", "操作：复位"+ids[i]+"号基站");
+					info.put("status", 2);
+					info.put("time", func.nowDate());
+					TcpKeepAliveClient.getBsInfoList().add(info);
+					SocketDwr.bsInfoDwr();
+					
+					log.writeLog(4, "操作：复位"+ids[i]+"号基站", "");
+					
+					Thread.sleep(200);
+				}
+				this.success = true;
+				
+			}else{
+				this.success=false;
+				this.message="TCP连接中断";
+			}
+			
+			
+			
+			return SUCCESS;
+		}
 /*	public String bsCHNum() throws Exception, IOException {
 		String str = send.BSControl(header, Integer.parseInt(id), "cmdsetch:"
 				+ (number - 1) + ";", TrunkCommon.BSControl.TYPE.STATUS);

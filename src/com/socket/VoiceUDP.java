@@ -34,9 +34,10 @@ public class VoiceUDP extends Thread {
 	protected final static Log log = LogFactory.getLog(VoiceUDP.class);
 	private static WebFun func = new WebFun();
 	private static DatagramSocket socket = null;
-	private boolean isconnected = false;
+	private static boolean isconnected = false;
 	public static byte[] data = new byte[2000];
 	public static int index = 0;
+	private static int voice_port=0;
 	private static Map<String, List<byte[]>> voiceMap = new HashMap<String, List<byte[]>>();
 
 	public VoiceUDP() {
@@ -45,6 +46,7 @@ public class VoiceUDP extends Thread {
 	public void run() {
 		/* System.out.println("-------主监听线程----------start----------"); */
 		NetDataTypeTransform dd = new NetDataTypeTransform();
+		
 		while (!isconnected) {
 
 			if (socket == null || socket.isClosed()) {
@@ -96,6 +98,7 @@ public class VoiceUDP extends Thread {
 					int len = packet.getLength();
 					String callid = "";
 					int group=0;
+					//System.out.println("收据：");
 					
 					if (len >= 334) {
 						try {
@@ -104,7 +107,7 @@ public class VoiceUDP extends Thread {
 							System.arraycopy(buf, 331, groupId, 0, 3);
 							callid = dd.ByteArraytoString(callIdByte, 0, 8);
 							group=dd.BigByteArrayToThreeByte(groupId, 0);
-							//System.out.println("接收数据： callid="+callid+";group="+group);
+							
 							String filestr = TcpKeepAliveClient.getCallMap().get(callid).get("fileName").toString();
 							if (filestr != null) {// config.ReadConfig("voicePath")
 								func.writeVoiceFile(filestr, voiceData);
@@ -132,7 +135,11 @@ public class VoiceUDP extends Thread {
 
 				}
 			} catch (Exception e) {
-				socket.close();
+				if(!socket.isClosed()){
+					socket.close();
+				}
+				
+				//e.printStackTrace();
 				isconnected = false;
 				log.info("UDP disconnect!");
 			}
@@ -144,9 +151,13 @@ public class VoiceUDP extends Thread {
 		InetAddress serverIp = null;
 		try {
 			serverIp = InetAddress.getByName(ip);
-			int port = Integer.parseInt(func.readXml("sound", "port"));
+			
+			if(voice_port==0){
+				voice_port=Integer.parseInt(func.readXml("sound", "port"));
+			}
+
 			DatagramPacket sendPacket = new DatagramPacket(str, str.length,
-					serverIp, port);
+					serverIp, voice_port);
 			socket.send(sendPacket);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -183,6 +194,14 @@ public class VoiceUDP extends Thread {
 
 	public static void setVoiceMap(Map<String, List<byte[]>> voiceMap) {
 		VoiceUDP.voiceMap = voiceMap;
+	}
+
+	public static boolean isIsconnected() {
+		return isconnected;
+	}
+
+	public static void setIsconnected(boolean isconnected) {
+		VoiceUDP.isconnected = isconnected;
 	}
 
 	public static int getIndex() {

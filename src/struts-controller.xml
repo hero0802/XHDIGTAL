@@ -190,6 +190,10 @@
 <!--设置基站信道号-->        
 <action name="bsCh" class="com.action.BsStationAction" method="bsCHNum">  
      <result type="json" name="success"></result> 
+</action> 
+<!-- 复位基站 -->
+<action name="resetBs" class="com.action.BsStationAction" method="resetBs">  
+     <result type="json" name="success"></result> 
 </action>  
 <!--打开基站电源-->        
 <action name="bsPowOn" class="com.action.BsStationAction" method="bs_pow_on">  

@@ -450,9 +450,9 @@ public class TcpKeepAliveClient extends Thread {
 			callNowMap.put("starttime", date);
 			callNowMap.put("usetime", -1);
 			callList.add(callNowMap);
-			if (callList.size() > 50) {
-				for (int i = 10; i < callList.size(); i++) {
-					callList.remove(i);
+			if (callList.size() > 100) {
+				for (int i = 0; i < (callList.size()-90); i++) {
+					callList.remove(callList.size()-1);
 				}
 			}
 
@@ -538,7 +538,7 @@ public class TcpKeepAliveClient extends Thread {
 				m_rssi = Integer.parseInt(rssi_map.get(callMap.get(callid).get("bsId").toString()));
 			}
 
-			if (time2 >0) {
+			if (time2 >=0) {
 				String sql = "insert into xhdigital_call(starttime,caller,called,callid,rssi,ig,bsId,filePath,slot,usetime)"
 						+ "VALUES('"
 						+ callMap.get(callid).get("startDate").toString()
@@ -1501,7 +1501,9 @@ public class TcpKeepAliveClient extends Thread {
 				+ Arrays.toString(sms.getContent().toByteArray()));
 		try {
 			log.info("[SMS]----Content.ToUtf8>>" + new String(arr, "utf-8"));
-		} catch (UnsupportedEncodingException e1) {
+		} catch(NullPointerException e){
+			log.info("数据为空");
+		}catch (UnsupportedEncodingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -1611,7 +1613,7 @@ public class TcpKeepAliveClient extends Thread {
 			// TODO Auto-generated catch block
 			log.info("===[ERROR]====BSControl");
 		}
-		log.info("DS<-CENTER[BSControl]----BsId=" + bs.getBsid()+";Type="+bs.getType()+";content="+bs.getContent().toStringUtf8());
+		log.debug("DS<-CENTER[BSControl]----BsId=" + bs.getBsid()+";Type="+bs.getType()+";content="+bs.getContent().toStringUtf8());
 		String index = bs.getType().toString();
 		BsControlType type = null;
 		if (index.equals("STATUS")) {

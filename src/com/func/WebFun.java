@@ -16,6 +16,7 @@ import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -257,11 +258,12 @@ public class WebFun {
 		/*
 		 * if(!creatTxtFile(filename)){ return ; };
 		 */
-		String filePath = webPath()+config.ReadConfig("voicePath") + "/" + filename+ ".wav";
+		String filePath = webPath()+"/resources/wav/" + filename+ ".wav";
 		//建立输出字节流
 		//FileOutputStream fos = new FileOutputStream(filePath);
 		FileOutputStream fos = null;
 		try {
+			
 			fos = new FileOutputStream(filePath, true);
 			fos.write(str);
 		} catch (Exception ex) {
@@ -644,5 +646,24 @@ public class WebFun {
 		    }
 		    return ip;
 		}
+	public static int nowHour() {
+		SimpleDateFormat dd = new SimpleDateFormat("H");
+		dd.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+		int h = Integer.parseInt(dd.format(new Date()));
+		return h;
+	}
+	public static int nowMin() {
+		SimpleDateFormat dd = new SimpleDateFormat("m");
+		dd.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+		int h = Integer.parseInt(dd.format(new Date()));
+		return h;
+	}
+	// 增加或减少天数
+	public static Date addDay(Date date, int num) {
+		Calendar startDT = Calendar.getInstance();
+		startDT.setTime(date);
+		startDT.add(Calendar.DAY_OF_MONTH, num);
+		return startDT.getTime();
+	}
 
 }

@@ -43,7 +43,7 @@ class CacheClear extends TimerTask{
 		log.info("GpsTaskListener-list:"+(GpsTaskListener.getList()==null?0:GpsTaskListener.getList().size()));
 		log.info("GpsTaskListener-gpsmap:"+(GpsTaskListener.getGpsMap()==null?0:GpsTaskListener.getGpsMap().size()));
 		
-		int calling=TcpKeepAliveClient.getM_calling();
+		/*int calling=TcpKeepAliveClient.getM_calling();
 		
 		if(calling!=1){
 			if(TcpKeepAliveClient.getColorMap()!=null){
@@ -55,7 +55,7 @@ class CacheClear extends TimerTask{
 			if(TcpKeepAliveClient.getRssi_map()!=null){
 				TcpKeepAliveClient.getRssi_map().clear();
 			}
-		}
+		}*/
 		
 		
 		

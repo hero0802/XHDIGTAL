@@ -780,7 +780,7 @@ public class SendData {
 					+ ":BSControl:" + "id=" + id + "; type=" + type
 					+ "; content=" + content);
 			out.write(info);
-			// log.info("send->遥测基站："+Arrays.toString(info));
+			log.info("send->遥测基站："+id);
 			return "OK";
 		}
 		return "NO";

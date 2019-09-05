@@ -590,7 +590,7 @@ public class GpsAction extends ActionSupport {
 		Type type = new TypeToken<List<UserOnlineBean>>(){}.getType();
 		List<UserOnlineBean> user=new Gson().fromJson(userJson,type);
 		StringBuilder sql=new StringBuilder();
-		sql.append("insert into now_user_online (userId,name,time) values");
+		sql.append("replace into now_user_online (userId,name,time) values");
 		for (UserOnlineBean userOnlineBean : user) {
 			sql.append("("+userOnlineBean.getUserId()+",'"+userOnlineBean.getName()+"','"+func.nowDate()+"')");
 			sql.append(",");
